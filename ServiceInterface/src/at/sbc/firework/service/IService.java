@@ -5,7 +5,9 @@ import at.sbc.firework.daos.Part;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 14.11.2014.
+ * Stellt d Verbindung zum gemeinsama Speicher her und stellt Methoda zur
+ * verfügung um der aktuelle Status uszumleasa. Für Ändernde Operationa
+ * muss a neue Transaktion erstellt wöra.
  */
 public interface IService {
     void start() throws ServiceException;
