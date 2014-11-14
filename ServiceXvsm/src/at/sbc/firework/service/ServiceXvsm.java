@@ -14,8 +14,8 @@ public class ServiceXvsm implements IService {
     private Capi capi;
 
 
-    private static URI SPACE_URI = URI.create("xvsm://localhost:9876");
-    private final long DEFAULT_TIMEOUT = 2000;
+    private URI spaceUri = null; // URI.create("xvsm://localhost:9876/");
+    private final long DEFAULT_TIMEOUT = 5000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
     private ContainerReference stockContainer;
@@ -24,22 +24,29 @@ public class ServiceXvsm implements IService {
     public void start() throws ServiceException {
         System.out.println("Starting XVSM...");
 
-        MzsCore core = DefaultMzsCore.newInstanceWithoutSpace();
+        MzsCore core;
+        if (this.spaceUri == null) {
+            // use embedded space
+            core = DefaultMzsCore.newInstance(0);
+            System.out.println("Space URI: " + core.getConfig().getSpaceUri());
+        } else {
+            core = DefaultMzsCore.newInstanceWithoutSpace();
+            System.out.println("Space URI: " + this.spaceUri);
+        }
+
         capi = new Capi(core);
 
         // Lager erstellen
         try {
             stockContainer = FindOrCreateContainer(CONTAINER_NAME_STOCK);
         } catch (MzsCoreException e) {
-            e.printStackTrace();
             throw new XvsmException(e);
         }
     }
 
     private ContainerReference FindOrCreateContainer(String name) throws MzsCoreException {
         ContainerReference container;
-        container = capi.lookupContainer(name, SPACE_URI, DEFAULT_TIMEOUT, null);
-
+        container = CapiUtil.lookupOrCreateContainer(name, spaceUri, null, null, capi);
         return container;
     }
 
@@ -47,13 +54,13 @@ public class ServiceXvsm implements IService {
     public void stop() throws ServiceException {
         if (capi != null)
         {
-            /*
             try {
-                capi.shutdown(SPACE_URI);
+                if (spaceUri == null) {
+                    capi.shutdown(null);
+                }
             } catch (MzsCoreException e) {
                 throw new XvsmException(e);
             }
-            */
             capi = null;
         }
     }
