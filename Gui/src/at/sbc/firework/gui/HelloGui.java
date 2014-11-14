@@ -1,9 +1,11 @@
 package at.sbc.firework.gui;
 
-import at.sbc.firework.daos.Stick;
+import at.sbc.firework.daos.*;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceXvsm;
+
+import java.util.ArrayList;
 
 /**
  * Created by daniel on 14.11.2014.
@@ -20,7 +22,14 @@ public class HelloGui {
             service.start();
 
             System.out.println("ADD");
-            service.addToStock(new Stick());
+            service.addToStock(new EffectCharge(12, true));
+            service.addToStock(new Casing(13));
+
+            System.out.println("LIST");
+            for (Part p: service.getStock())
+            {
+                System.out.println(" - " + p.toString());
+            }
 
             System.out.println("STOP");
             service.stop();

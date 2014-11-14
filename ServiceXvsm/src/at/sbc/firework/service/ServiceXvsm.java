@@ -1,10 +1,13 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.daos.Part;
+import at.sbc.firework.daos.Stick;
 import at.sbc.firework.service.IService;
+import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 /**
  * Created by daniel on 14.11.2014.
@@ -14,7 +17,7 @@ public class ServiceXvsm implements IService {
     private Capi capi;
 
 
-    private URI spaceUri = null; // URI.create("xvsm://localhost:9876/");
+    private URI spaceUri = URI.create("xvsm://localhost:9876");
     private final long DEFAULT_TIMEOUT = 5000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
@@ -25,14 +28,8 @@ public class ServiceXvsm implements IService {
         System.out.println("Starting XVSM...");
 
         MzsCore core;
-        if (this.spaceUri == null) {
-            // use embedded space
-            core = DefaultMzsCore.newInstance(0);
-            System.out.println("Space URI: " + core.getConfig().getSpaceUri());
-        } else {
-            core = DefaultMzsCore.newInstanceWithoutSpace();
-            System.out.println("Space URI: " + this.spaceUri);
-        }
+        core = DefaultMzsCore.newInstance(0);
+        System.out.println("Space URI: " + this.spaceUri);
 
         capi = new Capi(core);
 
@@ -46,7 +43,16 @@ public class ServiceXvsm implements IService {
 
     private ContainerReference FindOrCreateContainer(String name) throws MzsCoreException {
         ContainerReference container;
-        container = CapiUtil.lookupOrCreateContainer(name, spaceUri, null, null, capi);
+
+        try {
+            container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
+        } catch (MzsCoreException e) {
+            System.out.println(name + " not found and will be created.");
+            ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
+            obligatoryCoords.add(new FifoCoordinator());
+            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, new ArrayList<Coordinator>(), null);
+        }
+
         return container;
     }
 
@@ -71,9 +77,25 @@ public class ServiceXvsm implements IService {
         Entry entry = new Entry(part);
 
         try {
-            capi.write(stockContainer, DEFAULT_TIMEOUT, null, entry);
+            capi.write(stockContainer, entry);
+
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
+    }
+
+    @Override
+    public ArrayList<Part> getStock() throws ServiceException {
+        ArrayList<Part> result;
+
+        try {
+            ArrayList<Selector> selectors = new ArrayList<Selector>();
+            selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
+            result = capi.read(stockContainer, selectors, DEFAULT_TIMEOUT, null);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return result;
     }
 }
