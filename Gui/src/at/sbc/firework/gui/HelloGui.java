@@ -1,6 +1,7 @@
 package at.sbc.firework.gui;
 
 import at.sbc.firework.service.IService;
+import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceXvsm;
 
 /**
@@ -13,7 +14,11 @@ public class HelloGui {
 
         IService service = new ServiceXvsm();
 
-        service.Start();
-        service.Stop();
+        try {
+            service.Start();
+            service.Stop();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
     }
 }

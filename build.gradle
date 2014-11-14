@@ -30,8 +30,22 @@ project(':ServiceInterface') {
 }
 
 project(':ServiceXvsm') {
+
+
+    task copyTask(type: Copy) {
+        from 'mozartspaces-dist-2.3-SNAPSHOT-r14098-all-with-dependencies.jar'
+        into '../build/libs/'
+    }
+
     dependencies {
         compile project(':ServiceInterface')
+        compile files('mozartspaces-dist-2.3-SNAPSHOT-r14098-all-with-dependencies.jar')
+    }
+
+    jar {
+        manifest {
+            attributes 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        }
     }
 }
 
@@ -40,5 +54,17 @@ project(':Gui') {
     dependencies {
         compile project(':ServiceInterface')
         compile project(':ServiceXvsm')
+    }
+
+    jar {
+        manifest {
+            attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
+        }
+    }
+
+    jar {
+        manifest {
+            attributes 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        }
     }
 }

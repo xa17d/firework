@@ -17,7 +17,23 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ServiceInterface" exported="" />
     <orderEntry type="module" module-name="ServiceXvsm" exported="" />
-    <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.11" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library name="Gradle: C__Users_daniel_Projects_SBC_Gui_ServiceInterface_jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/ServiceInterface.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="Gradle: C__Users_daniel_Projects_SBC_Gui_ServiceXvsm_jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/ServiceXvsm.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
