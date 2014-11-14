@@ -11,7 +11,6 @@ public interface IService {
     void start() throws ServiceException;
     void stop() throws ServiceException;
 
-    void addToStock(Part part) throws ServiceException;
-
+    IServiceTransaction startTransaction() throws ServiceException;
     ArrayList<Part> getStock() throws ServiceException;
 }

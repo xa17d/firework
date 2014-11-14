@@ -2,6 +2,7 @@ package at.sbc.firework.gui;
 
 import at.sbc.firework.daos.*;
 import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceXvsm;
 
@@ -22,12 +23,15 @@ public class HelloGui {
             service.start();
 
             System.out.println("ADD");
-            service.addToStock(new EffectCharge(12, true));
-            service.addToStock(new Casing(13));
+
+            IServiceTransaction t = service.startTransaction();
+            t.addToStock(new EffectCharge(12, true));
+            t.addToStock(new Casing(13));
+            t.commit();
 
             System.out.println("LIST");
-            for (Part p: service.getStock())
-            {
+
+            for (Part p: service.getStock()) {
                 System.out.println(" - " + p.toString());
             }
 

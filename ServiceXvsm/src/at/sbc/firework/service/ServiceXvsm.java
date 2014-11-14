@@ -18,7 +18,7 @@ public class ServiceXvsm implements IService {
 
 
     private URI spaceUri = URI.create("xvsm://localhost:9876");
-    private final long DEFAULT_TIMEOUT = 5000;
+    public static final long DEFAULT_TIMEOUT = 5000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
     private ContainerReference stockContainer;
@@ -71,14 +71,16 @@ public class ServiceXvsm implements IService {
         }
     }
 
+    public Capi getCapi() { return capi; }
+
+    public URI getSpaceUri() { return spaceUri; }
+
+    public ContainerReference getStockContainer() { return stockContainer; }
+
     @Override
-    public void addToStock(Part part) throws ServiceException
-    {
-        Entry entry = new Entry(part);
-
+    public IServiceTransaction startTransaction() throws ServiceException {
         try {
-            capi.write(stockContainer, entry);
-
+            return new ServiceTransactionXvsm(this);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -91,7 +93,7 @@ public class ServiceXvsm implements IService {
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
             selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(stockContainer, selectors, DEFAULT_TIMEOUT, null);
+            result = capi.read(stockContainer, selectors, ServiceXvsm.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
