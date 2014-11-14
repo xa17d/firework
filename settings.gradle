@@ -1,0 +1,3 @@
+rootProject.name = 'Firework'
+
+include 'Gui', 'ServiceInterface', 'ServiceXvsm'
