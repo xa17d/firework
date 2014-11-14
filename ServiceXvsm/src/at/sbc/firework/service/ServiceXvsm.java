@@ -1,11 +1,11 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.Part;
-import at.sbc.firework.daos.Stick;
+import at.sbc.firework.daos.*;
 import at.sbc.firework.service.IService;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -49,8 +49,12 @@ public class ServiceXvsm implements IService {
         } catch (MzsCoreException e) {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
+            obligatoryCoords.add(new TypeCoordinator());
             obligatoryCoords.add(new FifoCoordinator());
-            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, new ArrayList<Coordinator>(), null);
+
+            ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
+
+            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, optionalCoords, null);
         }
 
         return container;

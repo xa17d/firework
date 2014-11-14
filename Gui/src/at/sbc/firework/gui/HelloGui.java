@@ -26,7 +26,9 @@ public class HelloGui {
 
             IServiceTransaction t = service.startTransaction();
             t.addToStock(new EffectCharge(12, true));
-            t.addToStock(new Casing(13));
+            t.addToStock(new Casing(17));
+            t.addToStock(new Casing(18));
+            t.addToStock(new Casing(19));
             t.commit();
 
             System.out.println("LIST");
@@ -34,6 +36,14 @@ public class HelloGui {
             for (Part p: service.getStock()) {
                 System.out.println(" - " + p.toString());
             }
+
+            System.out.println("TAKE OUT");
+
+            IServiceTransaction t2 = service.startTransaction();
+            for (Part p: t2.takeFromStock(Casing.class, 2)) {
+                System.out.println(" Take - " + p.toString());
+            }
+            t2.commit();
 
             System.out.println("STOP");
             service.stop();
