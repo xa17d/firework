@@ -1,5 +1,6 @@
 package at.sbc.firework.gui;
 
+import at.sbc.firework.daos.Stick;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceXvsm;
@@ -15,10 +16,18 @@ public class HelloGui {
         IService service = new ServiceXvsm();
 
         try {
-            service.Start();
-            service.Stop();
+            System.out.println("START");
+            service.start();
+
+            System.out.println("ADD");
+            service.addToStock(new Stick());
+
+            System.out.println("STOP");
+            service.stop();
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+
+        System.out.println("EXIT");
     }
 }
