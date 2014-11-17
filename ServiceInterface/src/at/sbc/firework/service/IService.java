@@ -22,4 +22,6 @@ public interface IService {
     ArrayList<Rocket> listPackingQueue() throws ServiceException;
     ArrayList<Rocket> listGarbage() throws ServiceException;
     ArrayList<RocketPackage5> listDistributionStock() throws ServiceException;
+
+    long getNewId() throws ServiceException;
 }

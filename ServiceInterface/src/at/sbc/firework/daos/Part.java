@@ -9,11 +9,14 @@ public abstract class Part implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Part(long id) {
+    public Part(long supplierId, long id) {
+        this.supplierId = supplierId;
         this.id = id;
     }
 
     private long id;
+    private long supplierId;
 
     public long getId() { return id; }
+    public long getSupplierId() { return supplierId; }
 }

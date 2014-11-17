@@ -1,14 +1,15 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.*;
-import at.sbc.firework.service.IService;
+import at.sbc.firework.daos.Part;
+import at.sbc.firework.daos.Rocket;
+import at.sbc.firework.daos.RocketPackage5;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by daniel on 14.11.2014.
@@ -26,13 +27,16 @@ public class ServiceXvsm implements IService {
     private static final String CONTAINER_NAME_QUALITYCHECKQUEUE= "qualityCheckQueue";
     private static final String CONTAINER_NAME_PACKINGQUEUE= "packingQueue";
     private static final String CONTAINER_NAME_GARBAGE= "garbage";
-    private static final String CONTAINER_NAME_DISTRIBUTIONSTOCK= "distributionStock";
+    private static final String CONTAINER_NAME_DISTRIBUTIONSTOCK = "distributionStock";
+    private static final String CONTAINER_NAME_IDCOUNTER = "idCounter";
+    private static final String IDCOUNTER_KEY = "idCounter";
     private ContainerReference stockContainer;
     private ContainerReference openStockContainer;
     private ContainerReference qualityCheckQueueContainer;
     private ContainerReference packingQueueContainer;
     private ContainerReference garbageContainer;
     private ContainerReference distributionStockContainer;
+    private ContainerReference idCounterContainer;
 
     @Override
     public void start() throws ServiceException {
@@ -53,6 +57,7 @@ public class ServiceXvsm implements IService {
             packingQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
             garbageContainer = FindOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
             distributionStockContainer = FindOrCreateQueueContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
+            idCounterContainer = FindOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -86,6 +91,24 @@ public class ServiceXvsm implements IService {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
             obligatoryCoords.add(new FifoCoordinator());
+
+            ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
+
+            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, optionalCoords, null);
+        }
+
+        return container;
+    }
+
+    private ContainerReference FindOrCreateIdCounterContainer(String name) throws MzsCoreException {
+        ContainerReference container;
+
+        try {
+            container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
+        } catch (MzsCoreException e) {
+            System.out.println(name + " not found and will be created.");
+            ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
+            obligatoryCoords.add(new KeyCoordinator());
 
             ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
 
@@ -158,6 +181,60 @@ public class ServiceXvsm implements IService {
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
         return listContainer(getDistributionStockContainer());
+    }
+
+    @Override
+    public long getNewId() throws ServiceException {
+
+        long id;
+
+        List<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(KeyCoordinator.newSelector(IDCOUNTER_KEY));
+        TransactionReference transaction = null;
+
+        try {
+            transaction = capi.createTransaction(DEFAULT_TIMEOUT, spaceUri);
+
+            // vom Container
+            ArrayList<Long> items;
+            try {
+                items = capi.take(idCounterContainer, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+            }
+            catch (CountNotMetException e) {
+                items = null;
+            }
+
+            Long counter;
+            if (items == null)
+            { counter = new Long(0L); }
+            else
+            { counter = items.get(0); }
+
+            // Increment
+            id = counter + 1;
+
+            // In n container
+            counter = new Long(id);
+
+            Entry entry = new Entry(counter, KeyCoordinator.newCoordinationData(IDCOUNTER_KEY));
+            capi.write(entry, idCounterContainer, DEFAULT_TIMEOUT, transaction);
+
+            capi.commitTransaction(transaction);
+
+        } catch (MzsCoreException e) {
+
+            try {
+                if (transaction != null) {
+                    capi.rollbackTransaction(transaction);
+                }
+            }
+            catch (MzsCoreException e2) {}
+
+
+            throw new XvsmException(e);
+        }
+
+        return id;
     }
 
     public <T extends Serializable> ArrayList<T> listContainer(ContainerReference container) throws ServiceException {

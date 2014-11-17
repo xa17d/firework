@@ -9,9 +9,9 @@ public class EffectCharge extends Part {
 
     private boolean damaged;
 
-    public EffectCharge(long id, boolean damaged)
+    public EffectCharge(long supplierId, long id, boolean damaged)
     {
-        super(id);
+        super(supplierId, id);
 
         this.damaged = damaged;
     }

@@ -9,9 +9,7 @@ import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

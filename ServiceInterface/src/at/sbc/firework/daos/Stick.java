@@ -7,9 +7,9 @@ public class Stick extends Part {
 
     private static final long serialVersionUID = 2L;
 
-    public Stick(long id)
+    public Stick(long supplierId, long id)
     {
-        super(id);
+        super(supplierId, id);
     }
 
     @Override

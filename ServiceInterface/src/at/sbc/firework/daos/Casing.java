@@ -7,9 +7,9 @@ public class Casing extends Part {
 
     private static final long serialVersionUID = 3L;
 
-    public Casing(long id)
+    public Casing(long supplierId, long id)
     {
-        super(id);
+        super(supplierId, id);
     };
 
     @Override

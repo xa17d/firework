@@ -9,9 +9,9 @@ public class PropellingChargePackage extends Part {
 
     private int content;
 
-    public PropellingChargePackage(long id, int content)
+    public PropellingChargePackage(long supplierId, long id, int content)
     {
-        super(id);
+        super(supplierId, id);
 
         this.content = content;
     }

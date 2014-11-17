@@ -24,11 +24,14 @@ public class HelloGui {
 
             System.out.println("ADD");
 
+            long supplierId1 = service.getNewId();
+            long supplierId2 = service.getNewId();
+
             IServiceTransaction t = service.startTransaction();
-            t.addToStock(new EffectCharge(12, true));
-            t.addToStock(new Casing(17));
-            t.addToStock(new Casing(18));
-            t.addToStock(new Casing(19));
+            t.addToStock(new EffectCharge(supplierId1, 12, true));
+            t.addToStock(new Casing(supplierId1, service.getNewId()));
+            t.addToStock(new Casing(supplierId2, service.getNewId()));
+            t.addToStock(new Casing(supplierId2, service.getNewId()));
             t.commit();
 
             System.out.println("LIST");
