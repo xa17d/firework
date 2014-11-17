@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by daniel on 14.11.2014.
  */
-public class ServiceXvsm implements IService {
+public class Service implements IService {
 
     private Capi capi;
 
@@ -243,7 +243,7 @@ public class ServiceXvsm implements IService {
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
             selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(container, selectors, ServiceXvsm.DEFAULT_TIMEOUT, null);
+            result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }

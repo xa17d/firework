@@ -16,24 +16,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ServiceInterface" exported="" />
-    <orderEntry type="module" module-name="ServiceXvsm" exported="" />
-    <orderEntry type="module-library" exported="">
-      <library name="Gradle: C__Users_daniel_Projects_SBC_Gui_ServiceInterface_jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/ServiceInterface.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="Gradle: C__Users_daniel_Projects_SBC_Gui_ServiceXvsm_jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/ServiceXvsm.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

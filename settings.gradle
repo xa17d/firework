@@ -1,3 +1,4 @@
 rootProject.name = 'Firework'
 
-include 'Gui', 'ServiceInterface', 'ServiceXvsm'
+include 'Gui', 'ServiceInterface', 'ServiceXvsm', 'Actors'
+

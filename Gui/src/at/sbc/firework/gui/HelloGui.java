@@ -1,10 +1,7 @@
 package at.sbc.firework.gui;
 
 import at.sbc.firework.daos.*;
-import at.sbc.firework.service.IService;
-import at.sbc.firework.service.IServiceTransaction;
-import at.sbc.firework.service.ServiceException;
-import at.sbc.firework.service.ServiceXvsm;
+import at.sbc.firework.service.*;
 
 import java.util.ArrayList;
 
@@ -16,7 +13,7 @@ public class HelloGui {
     {
         System.out.println("Hello Gui");
 
-        IService service = new ServiceXvsm();
+        IService service = ServiceFactory.getService();
 
         try {
             System.out.println("START");

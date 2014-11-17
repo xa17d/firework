@@ -10,7 +10,6 @@ import org.mozartspaces.core.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by daniel on 14.11.2014.
@@ -19,9 +18,9 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     private Capi capi;
     private TransactionReference transaction;
-    private ServiceXvsm service;
+    private Service service;
 
-    public ServiceTransactionXvsm(ServiceXvsm service) throws MzsCoreException {
+    public ServiceTransactionXvsm(Service service) throws MzsCoreException {
         this.service = service;
         this.capi = service.getCapi();
         this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
@@ -72,7 +71,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         Entry entry = new Entry(item);
 
         try {
-            capi.write(entry, container, ServiceXvsm.DEFAULT_TIMEOUT, transaction);
+            capi.write(entry, container, Service.DEFAULT_TIMEOUT, transaction);
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);

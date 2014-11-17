@@ -68,3 +68,22 @@ project(':Gui') {
         }
     }
 }
+
+project(':Actors') {
+
+    dependencies {
+        compile project(':ServiceInterface')
+    }
+
+    jar {
+        manifest {
+            //attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
+        }
+    }
+
+    jar {
+        manifest {
+            //attributes 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        }
+    }
+}
