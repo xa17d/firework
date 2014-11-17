@@ -1,0 +1,1 @@
+java -cp Gui.jar;ServiceInterface.jar;ServiceAlt.jar at.sbc.firework.gui.HelloGui

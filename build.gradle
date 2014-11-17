@@ -49,6 +49,21 @@ project(':ServiceXvsm') {
     }
 }
 
+project(':ServiceAlt') {
+
+
+    dependencies {
+        compile project(':ServiceInterface')
+        //compile files('mozartspaces-dist-2.3-SNAPSHOT-r14098-all-with-dependencies.jar')
+    }
+
+    jar {
+        manifest {
+            attributes 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        }
+    }
+}
+
 project(':Gui') {
 
     dependencies {

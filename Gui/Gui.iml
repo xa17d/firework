@@ -16,5 +16,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ServiceInterface" exported="" />
+    <orderEntry type="module" module-name="ServiceXvsm" exported="" />
   </component>
 </module>
