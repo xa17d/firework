@@ -33,3 +33,7 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
+#bin
+bin/Gui.jar
+bin/ServiceInterface.jar
+bin/ServiceXvsm.jar

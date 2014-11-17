@@ -30,7 +30,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     private ArrayList<Part> internalTakeFromStock(ContainerReference container, Class<?> type, int count) throws ServiceException
     {
-        List<Selector> selectors = new ArrayList<Selector>();
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
         selectors.add(TypeCoordinator.newSelector(type, count));
         ArrayList<Part> entries = null;
         try {
@@ -44,7 +44,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     private ArrayList<Serializable> internalTakeFromQueue(ContainerReference container, int count) throws ServiceException
     {
-        List<Selector> selectors = new ArrayList<Selector>();
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
         selectors.add(FifoCoordinator.newSelector(count));
         ArrayList<Serializable> entries = null;
         try {
