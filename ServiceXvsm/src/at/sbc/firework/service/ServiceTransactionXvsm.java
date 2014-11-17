@@ -1,11 +1,14 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.daos.Part;
+import at.sbc.firework.daos.Rocket;
+import at.sbc.firework.daos.RocketPackage5;
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.Selector;
 import org.mozartspaces.capi3.TypeCoordinator;
 import org.mozartspaces.core.*;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,13 +30,51 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     }
 
 
-    @Override
-    public void addToStock(Part part) throws ServiceException
+    private ArrayList<Part> internalTakeFromStock(ContainerReference container, Class<?> type, int count) throws ServiceException
     {
-        Entry entry = new Entry(part);
+        List<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(TypeCoordinator.newSelector(type, count));
+        ArrayList<Part> entries = null;
+        try {
+            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.ZERO, transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries;
+    }
+
+    private ArrayList<Serializable> internalTakeFromQueue(ContainerReference container, int count) throws ServiceException
+    {
+        List<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(FifoCoordinator.newSelector(count));
+        ArrayList<Serializable> entries = null;
+        try {
+            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.ZERO, transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries;
+    }
+
+    private <T> T take1FromQueue(ContainerReference container) throws ServiceException
+    {
+        ArrayList<Serializable> items = internalTakeFromQueue(container, 1);
+        if (items.isEmpty()) {
+            return null;
+        }
+        else {
+            return (T)items.get(0);
+        }
+    }
+
+    private void internalAddToContainer(ContainerReference container, Serializable item) throws ServiceException
+    {
+        Entry entry = new Entry(item);
 
         try {
-            capi.write(entry, service.getStockContainer(), ServiceXvsm.DEFAULT_TIMEOUT, transaction);
+            capi.write(entry, container, ServiceXvsm.DEFAULT_TIMEOUT, transaction);
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -41,18 +82,54 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     }
 
     @Override
+    public void addToStock(Part part) throws ServiceException
+    {
+        internalAddToContainer(service.getStockContainer(), part);
+    }
+
+    @Override
     public ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException {
+        return internalTakeFromStock(service.getStockContainer(), type, count);
+    }
 
-        List<Selector> selectors = new ArrayList<Selector>();
-        selectors.add(TypeCoordinator.newSelector(type, count));
-        ArrayList<Part> entries = null;
-        try {
-            entries = capi.take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.ZERO, transaction);
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
+    @Override
+    public void addToOpenStock(Part part) throws ServiceException {
+        internalAddToContainer(service.getOpenStockContainer(), part);
+    }
 
-        return entries;
+    @Override
+    public ArrayList<Part> takeFromOpenStock(Class<?> type, int count) throws ServiceException {
+        return internalTakeFromStock(service.getOpenStockContainer(), type, count);
+    }
+
+    @Override
+    public void addToQualityCheckQueue(Rocket rocket) throws ServiceException {
+        internalAddToContainer(service.getQualityCheckQueueContainer(), rocket);
+    }
+
+    @Override
+    public Rocket takeFromQualityCheckQueue() throws ServiceException {
+        return take1FromQueue(service.getQualityCheckQueueContainer());
+    }
+
+    @Override
+    public void addToPackingQueue(Rocket rocket) throws ServiceException {
+        internalAddToContainer(service.getPackingQueueContainer(), rocket);
+    }
+
+    @Override
+    public Rocket takeFromPackingQueue() throws ServiceException {
+        return take1FromQueue(service.getPackingQueueContainer());
+    }
+
+    @Override
+    public void addToGarbage(Rocket rocket) throws ServiceException {
+        internalAddToContainer(service.getGarbageContainer(), rocket);
+    }
+
+    @Override
+    public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
+        internalAddToContainer(service.getDistributionStockContainer(), rocketPackage);
     }
 
     @Override
@@ -63,4 +140,14 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
             throw new XvsmException(e);
         }
     }
+
+    @Override
+    public void rollback() throws ServiceException {
+        try {
+            capi.rollbackTransaction(transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+    }
+
 }

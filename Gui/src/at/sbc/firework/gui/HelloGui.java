@@ -33,7 +33,7 @@ public class HelloGui {
 
             System.out.println("LIST");
 
-            for (Part p: service.getStock()) {
+            for (Part p: service.listStock()) {
                 System.out.println(" - " + p.toString());
             }
 
@@ -44,6 +44,12 @@ public class HelloGui {
                 System.out.println(" Take - " + p.toString());
             }
             t2.commit();
+
+            System.out.println("LIST 2");
+
+            for (Part p: service.listStock()) {
+                System.out.println(" - " + p.toString());
+            }
 
             System.out.println("STOP");
             service.stop();
