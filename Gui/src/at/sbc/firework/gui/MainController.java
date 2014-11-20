@@ -82,11 +82,13 @@ public class MainController {
 
             Part part = null;
             if(selectedItem == EnumParts.CASING)
-                part = new Casing(supplierId, amount);
+                part = new Casing(supplierId, service.getNewId());
             if(selectedItem == EnumParts.EFFECT_CHARGE)
-                part = new EffectCharge(supplierId, amount, Math.random() < 0.25 ? true : false);
+                part = new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false);
+            if(selectedItem == EnumParts.PROPELLING_CHARGE)
+                part = new PropellingChargePackage(supplierId, service.getNewId(), 500);
             if(selectedItem == EnumParts.STICK)
-                part = new Stick(supplierId, amount);
+                part = new Stick(supplierId, service.getNewId());
 
             if(part != null) {
                 t.addToStock(part);

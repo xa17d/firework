@@ -43,13 +43,13 @@ public class TableController implements IDataChangedListener {
 
         lvStock.setItems(observedStockList);
 
-        dataChanged();
         //TODO
     }
 
     public void setService(IService service) {
         this.service = service;
         service.addChangeListener(this);
+        dataChanged();
     }
 
     public void updateLayout() {

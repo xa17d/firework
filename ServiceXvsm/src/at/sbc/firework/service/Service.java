@@ -185,8 +185,8 @@ public class Service implements IService {
     public ArrayList<Part> listStock() throws ServiceException {
 
         ArrayList<Part> result = new ArrayList<Part>();
-        result.addAll(this.<Part>listContainer(getStockContainer()));
         result.addAll(this.<Part>listContainer(getOpenStockContainer()));
+        result.addAll(this.<Part>listContainer(getStockContainer()));
 
         return result;
     }
