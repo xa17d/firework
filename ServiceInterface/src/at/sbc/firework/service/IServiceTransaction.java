@@ -14,10 +14,8 @@ import java.util.ArrayList;
 public interface IServiceTransaction {
 
     void addToStock(Part part) throws ServiceException;
+    void addToStockFirst(Part part) throws ServiceException;
     ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException;
-
-    void addToOpenStock(Part part) throws ServiceException;
-    ArrayList<Part> takeFromOpenStock(Class<?> type, int count) throws ServiceException;
 
     void addToQualityCheckQueue(Rocket rocket) throws ServiceException;
     Rocket takeFromQualityCheckQueue() throws ServiceException;

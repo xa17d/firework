@@ -6,6 +6,7 @@ import at.sbc.firework.entities.RocketPackage5;
 import org.mozartspaces.capi3.FifoCoordinator;
 import org.mozartspaces.capi3.Selector;
 import org.mozartspaces.capi3.TypeCoordinator;
+import org.mozartspaces.capi3.VectorCoordinator;
 import org.mozartspaces.core.*;
 
 import java.io.Serializable;
@@ -23,7 +24,8 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     public ServiceTransactionXvsm(Service service) throws MzsCoreException {
         this.service = service;
         this.capi = service.getCapi();
-        this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
+        //this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
+        this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
     }
 
 
@@ -31,9 +33,10 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     {
         ArrayList<Selector> selectors = new ArrayList<Selector>();
         selectors.add(TypeCoordinator.newSelector(type, count));
+
         ArrayList<Part> entries = null;
         try {
-            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.ZERO, transaction);
+            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -78,25 +81,32 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         }
     }
 
+    private void internalAddToStock(ContainerReference container, Serializable item, int index) throws ServiceException
+    {
+        Entry entry = new Entry(item, VectorCoordinator.newCoordinationData(index));
+
+        try {
+            capi.write(entry, container, Service.DEFAULT_TIMEOUT, transaction);
+
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+    }
+
     @Override
     public void addToStock(Part part) throws ServiceException
     {
-        internalAddToContainer(service.getStockContainer(), part);
+        internalAddToStock(service.getStockContainer(), part, VectorCoordinator.APPEND);
+    }
+
+    @Override
+    public void addToStockFirst(Part part) throws ServiceException {
+        internalAddToStock(service.getStockContainer(), part, 0);
     }
 
     @Override
     public ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException {
         return internalTakeFromStock(service.getStockContainer(), type, count);
-    }
-
-    @Override
-    public void addToOpenStock(Part part) throws ServiceException {
-        internalAddToContainer(service.getOpenStockContainer(), part);
-    }
-
-    @Override
-    public ArrayList<Part> takeFromOpenStock(Class<?> type, int count) throws ServiceException {
-        return internalTakeFromStock(service.getOpenStockContainer(), type, count);
     }
 
     @Override

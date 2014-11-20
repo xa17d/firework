@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**

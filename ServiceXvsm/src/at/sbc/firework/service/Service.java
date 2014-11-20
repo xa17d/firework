@@ -24,10 +24,9 @@ public class Service implements IService {
 
 
     private URI spaceUri = URI.create("xvsm://localhost:9876");
-    public static final long DEFAULT_TIMEOUT = 5000;
+    public static final long DEFAULT_TIMEOUT = 10000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
-    private static final String CONTAINER_NAME_OPENSTOCK = "openStock";
     private static final String CONTAINER_NAME_QUALITYCHECKQUEUE= "qualityCheckQueue";
     private static final String CONTAINER_NAME_PACKINGQUEUE= "packingQueue";
     private static final String CONTAINER_NAME_GARBAGE= "garbage";
@@ -35,7 +34,6 @@ public class Service implements IService {
     private static final String CONTAINER_NAME_IDCOUNTER = "idCounter";
     private static final String IDCOUNTER_KEY = "idCounter";
     private ContainerReference stockContainer;
-    private ContainerReference openStockContainer;
     private ContainerReference qualityCheckQueueContainer;
     private ContainerReference packingQueueContainer;
     private ContainerReference garbageContainer;
@@ -66,7 +64,6 @@ public class Service implements IService {
         // Container erstella
         try {
             stockContainer = FindOrCreateStockContainer(CONTAINER_NAME_STOCK);
-            openStockContainer = FindOrCreateStockContainer(CONTAINER_NAME_OPENSTOCK);
             qualityCheckQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
             packingQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
             garbageContainer = FindOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
@@ -77,7 +74,6 @@ public class Service implements IService {
             NotificationManager notificationManager = new NotificationManager(core);
             try {
                 notificationManager.createNotification(stockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-                notificationManager.createNotification(openStockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
                 notificationManager.createNotification(qualityCheckQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
                 notificationManager.createNotification(packingQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
                 notificationManager.createNotification(garbageContainer, notificationListener, Operation.TAKE, Operation.WRITE);
@@ -100,7 +96,7 @@ public class Service implements IService {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
             obligatoryCoords.add(new TypeCoordinator());
-            obligatoryCoords.add(new FifoCoordinator());
+            obligatoryCoords.add(new VectorCoordinator());
 
             ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
 
@@ -166,7 +162,6 @@ public class Service implements IService {
     public URI getSpaceUri() { return spaceUri; }
 
     public ContainerReference getStockContainer() { return stockContainer; }
-    public ContainerReference getOpenStockContainer() { return openStockContainer; }
     public ContainerReference getQualityCheckQueueContainer() { return qualityCheckQueueContainer; }
     public ContainerReference getPackingQueueContainer() { return packingQueueContainer; }
     public ContainerReference getGarbageContainer() { return garbageContainer; }
@@ -183,12 +178,7 @@ public class Service implements IService {
 
     @Override
     public ArrayList<Part> listStock() throws ServiceException {
-
-        ArrayList<Part> result = new ArrayList<Part>();
-        result.addAll(this.<Part>listContainer(getOpenStockContainer()));
-        result.addAll(this.<Part>listContainer(getStockContainer()));
-
-        return result;
+        return listStockContainer(getStockContainer());
     }
 
     @Override
@@ -276,6 +266,20 @@ public class Service implements IService {
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
             selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
+            result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return result;
+    }
+
+    public <T extends Serializable> ArrayList<T> listStockContainer(ContainerReference container) throws ServiceException {
+        ArrayList<T> result;
+
+        try {
+            ArrayList<Selector> selectors = new ArrayList<Selector>();
+            selectors.add(VectorCoordinator.newSelector(0, MzsConstants.Selecting.COUNT_ALL));
             result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);

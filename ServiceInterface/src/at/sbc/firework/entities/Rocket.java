@@ -1,6 +1,8 @@
 package at.sbc.firework.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by daniel on 17.11.2014.
@@ -33,8 +35,20 @@ public class Rocket implements Serializable {
     }
 
     public int getPropellingChargeAmount() {
+        return Rocket.getPropellingChargeAmount(propellingCharge);
+    }
+
+    public static int getPropellingChargeAmount(PropellingCharge[] propellingChargeList) {
         int amount = 0;
-        for (PropellingCharge c : propellingCharge) {
+        for (PropellingCharge c : propellingChargeList) {
+            amount += c.getAmount();
+        }
+        return  amount;
+    }
+
+    public static int getPropellingChargeAmount(ArrayList<PropellingCharge> propellingChargeList) {
+        int amount = 0;
+        for (PropellingCharge c : propellingChargeList) {
             amount += c.getAmount();
         }
         return  amount;
