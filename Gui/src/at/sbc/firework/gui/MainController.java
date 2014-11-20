@@ -1,5 +1,6 @@
 package at.sbc.firework.gui;
 
+import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
@@ -71,34 +72,14 @@ public class MainController {
         int amount = 0;
         try {
             amount = Integer.parseInt(tfAmount.getText());
-        }
-        catch (NumberFormatException e) {
-            traceList.add(e.getMessage());
-        }
 
-        try {
-            long supplierId = service.getNewId();
+            Thread thread = new Thread(new Supplier(service, selectedItem, amount));
+            thread.start();
 
-            IServiceTransaction t = service.startTransaction();
-
-            if(selectedItem == EnumParts.CASING)
-                for(int i = 0; i < amount; i++)
-                    t.addToStock(new Casing(supplierId, service.getNewId()));
-            if(selectedItem == EnumParts.EFFECT_CHARGE)
-                for(int i = 0; i < amount; i++)
-                    t.addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false));
-            if(selectedItem == EnumParts.PROPELLING_CHARGE)
-                for(int i = 0; i < amount; i++)
-                    t.addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));
-            if(selectedItem == EnumParts.STICK)
-                for(int i = 0; i < amount; i++)
-                    t.addToStock(new Stick(supplierId, service.getNewId()));
-
-            t.commit();
             traceList.add("added new part: " + amount + "x  " + selectedItem);
         }
-        catch (ServiceException e) {
-            traceList.add(e.getMessage());
+        catch (NumberFormatException e) {
+            traceList.add("please type in a correct number for amount");
         }
     }
 
