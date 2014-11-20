@@ -1,5 +1,6 @@
 package at.sbc.firework.gui;
 
+import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
@@ -12,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Lucas on 17.11.2014.
@@ -70,38 +72,14 @@ public class MainController {
         int amount = 0;
         try {
             amount = Integer.parseInt(tfAmount.getText());
+
+            Thread thread = new Thread(new Supplier(service, selectedItem, amount));
+            thread.start();
+
+            traceList.add("added new part: " + amount + "x  " + selectedItem);
         }
         catch (NumberFormatException e) {
-            traceList.add(e.getMessage());
-        }
-
-        try {
-            long supplierId = service.getNewId();
-
-            IServiceTransaction t = service.startTransaction();
-
-            Part part = null;
-            if(selectedItem == EnumParts.CASING)
-                part = new Casing(supplierId, service.getNewId());
-            if(selectedItem == EnumParts.EFFECT_CHARGE)
-                part = new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false);
-            if(selectedItem == EnumParts.PROPELLING_CHARGE)
-                part = new PropellingChargePackage(supplierId, service.getNewId(), 500);
-            if(selectedItem == EnumParts.STICK)
-                part = new Stick(supplierId, service.getNewId());
-
-            if(part != null) {
-                t.addToStock(part);
-                t.commit();
-                traceList.add("added new part: " + part.toString() + " || amount: " + amount);
-            }
-            else {
-                t.rollback();
-                traceList.add("no item selected - transaction rollback");
-            }
-        }
-        catch (ServiceException e) {
-            traceList.add(e.getMessage());
+            traceList.add("please type in a correct number for amount");
         }
     }
 

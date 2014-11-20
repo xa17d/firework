@@ -5,7 +5,7 @@ package at.sbc.firework.entities;
  */
 public enum EnumParts {
 
-    CASING(0, "Chasing"), EFFECT_CHARGE(1, "Effect Charge"), PROPELLING_CHARGE(2, "Propelling Charge"), STICK(3, "Stick");
+    CASING(0, "Casing"), EFFECT_CHARGE(1, "Effect Charge"), PROPELLING_CHARGE(2, "Propelling Charge"), STICK(3, "Stick");
 
     private int id;
     private String name;
