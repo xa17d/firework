@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Lucas on 17.11.2014.
@@ -80,25 +81,21 @@ public class MainController {
 
             IServiceTransaction t = service.startTransaction();
 
-            Part part = null;
             if(selectedItem == EnumParts.CASING)
-                part = new Casing(supplierId, service.getNewId());
+                for(int i = 0; i < amount; i++)
+                    t.addToStock(new Casing(supplierId, service.getNewId()));
             if(selectedItem == EnumParts.EFFECT_CHARGE)
-                part = new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false);
+                for(int i = 0; i < amount; i++)
+                    t.addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false));
             if(selectedItem == EnumParts.PROPELLING_CHARGE)
-                part = new PropellingChargePackage(supplierId, service.getNewId(), 500);
+                for(int i = 0; i < amount; i++)
+                    t.addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));
             if(selectedItem == EnumParts.STICK)
-                part = new Stick(supplierId, service.getNewId());
+                for(int i = 0; i < amount; i++)
+                    t.addToStock(new Stick(supplierId, service.getNewId()));
 
-            if(part != null) {
-                t.addToStock(part);
-                t.commit();
-                traceList.add("added new part: " + part.toString() + " || amount: " + amount);
-            }
-            else {
-                t.rollback();
-                traceList.add("no item selected - transaction rollback");
-            }
+            t.commit();
+            traceList.add("added new part: " + amount + "x  " + selectedItem);
         }
         catch (ServiceException e) {
             traceList.add(e.getMessage());
