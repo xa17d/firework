@@ -3,10 +3,7 @@ package at.sbc.firework.service;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
-import org.mozartspaces.capi3.FifoCoordinator;
-import org.mozartspaces.capi3.Selector;
-import org.mozartspaces.capi3.TypeCoordinator;
-import org.mozartspaces.capi3.VectorCoordinator;
+import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
 import java.io.Serializable;
@@ -31,13 +28,27 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     private ArrayList<Part> internalTakeFromStock(ContainerReference container, Class<?> type, int count) throws ServiceException
     {
+        // TODO: des isch no ned ganz sauber
+
         ArrayList<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(VectorCoordinator.newSelector(0, count));
         selectors.add(TypeCoordinator.newSelector(type, count));
 
         ArrayList<Part> entries = null;
         try {
-            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
-        } catch (MzsCoreException e) {
+            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+
+            selectors = new ArrayList<Selector>();
+            selectors.add(TypeCoordinator.newSelector(type, count));
+
+            try {
+                entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
+            } catch (MzsCoreException e1) {
+                throw new XvsmException(e1);
+            }
+        }
+        catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
 

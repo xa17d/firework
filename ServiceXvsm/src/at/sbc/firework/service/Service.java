@@ -95,8 +95,8 @@ public class Service implements IService {
         } catch (MzsCoreException e) {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            obligatoryCoords.add(new TypeCoordinator());
             obligatoryCoords.add(new VectorCoordinator());
+            obligatoryCoords.add(new TypeCoordinator());
 
             ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
 

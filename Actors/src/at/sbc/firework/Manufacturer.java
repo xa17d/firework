@@ -62,7 +62,7 @@ public class Manufacturer extends Actor {
             int amount = Utils.randomInt(115, 145);
             int amountRemaining = amount;
 
-            while (Rocket.getPropellingChargeAmount(propellingCharge) != amount)
+            while (amountRemaining > 0)
             {
                 ArrayList<?> result = t.takeFromStock(PropellingChargePackage.class, 1);
                 if (!result.isEmpty()) {
@@ -73,6 +73,10 @@ public class Manufacturer extends Actor {
                     propellingCharge.add(charge);
 
                     amountRemaining -= charge.getAmount();
+
+                    if (!p.isEmpty()) {
+                        t.addToStockFirst(p);
+                    }
                 }
             }
 
