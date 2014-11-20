@@ -1,10 +1,9 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.Part;
-import at.sbc.firework.daos.Rocket;
-import at.sbc.firework.daos.RocketPackage5;
+import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.entities.RocketPackage5;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**

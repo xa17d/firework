@@ -1,8 +1,8 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.Part;
-import at.sbc.firework.daos.Rocket;
-import at.sbc.firework.daos.RocketPackage5;
+import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.entities.RocketPackage5;
 
 import java.util.ArrayList;
 
@@ -22,6 +22,8 @@ public interface IService {
     ArrayList<Rocket> listPackingQueue() throws ServiceException;
     ArrayList<Rocket> listGarbage() throws ServiceException;
     ArrayList<RocketPackage5> listDistributionStock() throws ServiceException;
+
+    void addChangeListener(IDataChangedListener listener);
 
     long getNewId() throws ServiceException;
 }

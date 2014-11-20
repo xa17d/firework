@@ -1,21 +1,17 @@
 package at.sbc.firework.gui;
 
-import at.sbc.firework.daos.*;
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.TransformationList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Lucas on 17.11.2014.
@@ -76,7 +72,7 @@ public class MainController {
             amount = Integer.parseInt(tfAmount.getText());
         }
         catch (NumberFormatException e) {
-            trace.add(e.getMessage());
+            traceList.add(e.getMessage());
         }
 
         try {
@@ -95,15 +91,15 @@ public class MainController {
             if(part != null) {
                 t.addToStock(part);
                 t.commit();
-                trace.add("added new part: " + part.toString() + " || amount: " + amount);
+                traceList.add("added new part: " + part.toString() + " || amount: " + amount);
             }
             else {
                 t.rollback();
-                trace.add("no item selected - transaction rollback");
+                traceList.add("no item selected - transaction rollback");
             }
         }
         catch (ServiceException e) {
-            trace.add(e.getMessage());
+            traceList.add(e.getMessage());
         }
     }
 

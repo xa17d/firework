@@ -1,8 +1,8 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.Part;
-import at.sbc.firework.daos.Rocket;
-import at.sbc.firework.daos.RocketPackage5;
+import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.entities.RocketPackage5;
 
 import java.util.ArrayList;
 
@@ -48,6 +48,11 @@ public class Service implements IService {
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
         return null;
+    }
+
+    @Override
+    public void addChangeListener(IDataChangedListener listener) {
+
     }
 
     @Override

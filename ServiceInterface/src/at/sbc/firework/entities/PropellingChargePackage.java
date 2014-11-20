@@ -1,4 +1,4 @@
-package at.sbc.firework.daos;
+package at.sbc.firework.entities;
 
 /**
  * Created by daniel on 14.11.2014.

@@ -1,4 +1,4 @@
-package at.sbc.firework.daos;
+package at.sbc.firework.entities;
 
 import java.io.Serializable;
 

@@ -1,10 +1,14 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.daos.Part;
-import at.sbc.firework.daos.Rocket;
-import at.sbc.firework.daos.RocketPackage5;
+import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.entities.RocketPackage5;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
+import org.mozartspaces.notifications.Notification;
+import org.mozartspaces.notifications.NotificationListener;
+import org.mozartspaces.notifications.NotificationManager;
+import org.mozartspaces.notifications.Operation;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -37,6 +41,16 @@ public class Service implements IService {
     private ContainerReference garbageContainer;
     private ContainerReference distributionStockContainer;
     private ContainerReference idCounterContainer;
+    private IDataChangedListener changedListener;
+
+    private NotificationListener notificationListener = new NotificationListener() {
+        @Override
+        public void entryOperationFinished(Notification notification, Operation operation, List<? extends Serializable> list) {
+            if (changedListener != null) {
+                changedListener.dataChanged();
+            }
+        }
+    };
 
     @Override
     public void start() throws ServiceException {
@@ -57,7 +71,21 @@ public class Service implements IService {
             packingQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
             garbageContainer = FindOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
             distributionStockContainer = FindOrCreateQueueContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
+
             idCounterContainer = FindOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
+
+            NotificationManager notificationManager = new NotificationManager(core);
+            try {
+                notificationManager.createNotification(stockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+                notificationManager.createNotification(openStockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+                notificationManager.createNotification(qualityCheckQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+                notificationManager.createNotification(packingQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+                notificationManager.createNotification(garbageContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+                notificationManager.createNotification(distributionStockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
+
+            } catch (InterruptedException e) {
+                throw new ServiceException(e);
+            }
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -181,6 +209,11 @@ public class Service implements IService {
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
         return listContainer(getDistributionStockContainer());
+    }
+
+    @Override
+    public void addChangeListener(IDataChangedListener listener) {
+        this.changedListener = listener;
     }
 
     @Override

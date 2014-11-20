@@ -1,9 +1,7 @@
 package at.sbc.firework.gui;
 
-import at.sbc.firework.daos.*;
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.*;
-
-import java.util.ArrayList;
 
 /**
  * Created by daniel on 14.11.2014.
