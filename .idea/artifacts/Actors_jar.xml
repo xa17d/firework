@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Actors:jar">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="Actors.jar">
+      <element id="module-output" name="Actors" />
+      <element id="module-output" name="ServiceInterface" />
+    </root>
+  </artifact>
+</component>

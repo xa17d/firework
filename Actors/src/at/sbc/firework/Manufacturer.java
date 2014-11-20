@@ -52,6 +52,8 @@ public class Manufacturer extends Actor {
 
             EffectCharge[] effectCharges = (EffectCharge[])Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
 
+            //TODO abcheckn ob scho gnuag effectCharges do sen, sos flügt nähmlich immer a timeout exception
+
             // PropellingCharge hola
 
             ArrayList<PropellingCharge> propellingCharge = new ArrayList<PropellingCharge>();

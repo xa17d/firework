@@ -33,6 +33,6 @@ public class PropellingChargePackage extends Part {
 
     @Override
     public String toString() {
-        return "PropellingChargePackage (" + getId() + ", content: " + getContent() + ")";
+        return "PropellingChargePackage (" + getId() + " | Content: " + getContent() + ")";
     }
 }

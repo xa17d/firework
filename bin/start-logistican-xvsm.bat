@@ -1,1 +1,1 @@
-java -cp Actors.jar;ServiceInterface.jar;ServiceXvsm.jar at.sbc.firework.Logistican
+java -cp Actors.jar;ServiceInterface.jar;ServiceXvsm.jar at.sbc.firework.Logistician

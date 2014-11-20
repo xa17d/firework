@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="javafx" name="JavaFXApp">
+  <artifact type="javafx" name="Gui">
     <output-path>$PROJECT_DIR$/build/libs</output-path>
     <properties id="javafx-properties">
       <options>

@@ -20,6 +20,6 @@ public class EffectCharge extends Part {
 
     @Override
     public String toString() {
-        return "EffectCharge (" + getId() + ", " + (isDamaged() ? "damaged" : "ok") + ")";
+        return "EffectCharge (" + getId() + " | " + (isDamaged() ? "damaged" : "ok") + ")";
     }
 }

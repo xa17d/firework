@@ -1,5 +1,6 @@
 package at.sbc.firework;
 
+import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
@@ -34,7 +35,7 @@ public class Supplier implements Runnable {
                     t.addToStock(new Casing(supplierId, service.getNewId()));
             if(selectedItem == EnumParts.EFFECT_CHARGE)
                 for(int i = 0; i < amount; i++)
-                    t.addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.25 ? true : false));
+                    t.addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.33 ? true : false));
             if(selectedItem == EnumParts.PROPELLING_CHARGE)
                 for(int i = 0; i < amount; i++)
                     t.addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));
@@ -42,12 +43,7 @@ public class Supplier implements Runnable {
                 for(int i = 0; i < amount; i++)
                     t.addToStock(new Stick(supplierId, service.getNewId()));
 
-            long sleepTime = Math.round(Math.random() * 1000 * 15) + 5000;     //TODO change to 1-2sec delay (random * 1000 + 1)
-            try {
-                Thread.sleep(sleepTime);
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
+            Utils.sleep(1000, 2000);
 
             t.commit();
 

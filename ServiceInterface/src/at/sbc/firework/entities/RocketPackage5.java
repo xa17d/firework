@@ -24,4 +24,21 @@ public class RocketPackage5 implements Serializable {
     }
 
     public Rocket[] getContent() { return content; }
+    public long getId() { return id; }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("RocketPackage (" +  getId() + "Logistican: " + logisticianId + ")");
+
+        int i = 0;
+        for(Rocket r : getContent()) {
+            i++;
+            sb.append("\nRocket " + i + " :");
+            sb.append(r.toString());
+        }
+
+        return sb.toString();
+    }
 }

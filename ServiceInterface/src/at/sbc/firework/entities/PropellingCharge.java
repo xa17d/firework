@@ -20,4 +20,9 @@ public class PropellingCharge implements Serializable {
 
     public int getAmount() { return amount; }
     public PropellingChargePackage getPackage() { return sourcePackage; }
+
+    @Override
+    public String toString() {
+        return "PropellingCharge (Source-Package: " + getPackage().getId() + " | Amount: " + getAmount() + ")";
+    }
 }
