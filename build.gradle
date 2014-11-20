@@ -64,16 +64,15 @@ project(':ServiceAlt') {
     }
 }
 
-project(':Gui') {
+project(':Actors') {
 
     dependencies {
         compile project(':ServiceInterface')
-        compile project(':ServiceXvsm')
     }
 
     jar {
         manifest {
-            attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
+            //attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
         }
     }
 
@@ -84,15 +83,17 @@ project(':Gui') {
     }
 }
 
-project(':Actors') {
+project(':Gui') {
 
     dependencies {
         compile project(':ServiceInterface')
+        compile project(':ServiceXvsm')
+        compile project(':Actors')
     }
 
     jar {
         manifest {
-            //attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
+            attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
         }
     }
 

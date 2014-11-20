@@ -24,8 +24,8 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     public ServiceTransactionXvsm(Service service) throws MzsCoreException {
         this.service = service;
         this.capi = service.getCapi();
-        //this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
-        this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
+        this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
+        //this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
     }
 
 

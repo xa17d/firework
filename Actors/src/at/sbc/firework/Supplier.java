@@ -42,7 +42,7 @@ public class Supplier implements Runnable {
                 for(int i = 0; i < amount; i++)
                     t.addToStock(new Stick(supplierId, service.getNewId()));
 
-            long sleepTime = Math.round(Math.random() * 1000 * 15) + 5;     //TODO change to 1-2sec delay (random * 1000 + 1)
+            long sleepTime = Math.round(Math.random() * 1000 * 15) + 5000;     //TODO change to 1-2sec delay (random * 1000 + 1)
             try {
                 Thread.sleep(sleepTime);
             } catch(InterruptedException ex) {
