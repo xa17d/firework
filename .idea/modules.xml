@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Actors/Actors.iml" filepath="$PROJECT_DIR$/Actors/Actors.iml" />
       <module fileurl="file://$PROJECT_DIR$/Gui/Gui.iml" filepath="$PROJECT_DIR$/Gui/Gui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerAlt/ServerAlt.iml" filepath="$PROJECT_DIR$/ServerAlt/ServerAlt.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceAlt/ServiceAlt.iml" filepath="$PROJECT_DIR$/ServiceAlt/ServiceAlt.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceInterface/ServiceInterface.iml" filepath="$PROJECT_DIR$/ServiceInterface/ServiceInterface.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceXvsm/ServiceXvsm.iml" filepath="$PROJECT_DIR$/ServiceXvsm/ServiceXvsm.iml" />

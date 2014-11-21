@@ -64,6 +64,20 @@ project(':ServiceAlt') {
     }
 }
 
+project(':ServerAlt') {
+
+    dependencies {
+        compile project(':ServiceInterface')
+        compile project(':ServiceAlt')
+    }
+
+    jar {
+        manifest {
+            attributes 'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
+        }
+    }
+}
+
 project(':Actors') {
 
     dependencies {

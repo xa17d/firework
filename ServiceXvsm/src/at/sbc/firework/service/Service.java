@@ -280,7 +280,7 @@ public class Service implements IService {
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
 
-            Query query = new Query();
+            Query query = new Query().sortup(Property.forName("id"));
             selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
             result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
