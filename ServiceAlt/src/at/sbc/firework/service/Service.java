@@ -51,7 +51,7 @@ public class Service implements IService {
     }
 
     @Override
-    public void addChangeListener(IDataChangedListener listener) {
+    public void setChangeListener(IDataChangedListener listener) {
 
     }
 

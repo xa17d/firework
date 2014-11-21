@@ -1,6 +1,5 @@
-package at.sbc.firework.serveralt.containers;
+package at.sbc.firework.service.alt.containers;
 
-import at.sbc.firework.entities.PropellingChargePackage;
 import at.sbc.firework.service.IDataChangedListener;
 
 import java.util.ArrayList;

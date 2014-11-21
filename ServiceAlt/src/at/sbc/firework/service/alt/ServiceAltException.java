@@ -1,4 +1,4 @@
-package at.sbc.firework.serveralt;
+package at.sbc.firework.service.alt;
 
 import at.sbc.firework.service.ServiceException;
 

@@ -1,4 +1,4 @@
-package at.sbc.firework.serveralt.containers;
+package at.sbc.firework.service.alt.containers;
 
 import at.sbc.firework.entities.PropellingChargePackage;
 

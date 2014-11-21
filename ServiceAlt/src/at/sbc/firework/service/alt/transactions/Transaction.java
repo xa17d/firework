@@ -1,21 +1,22 @@
-package at.sbc.firework.serveralt.transactions;
+package at.sbc.firework.service.alt.transactions;
 
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.PropellingChargePackage;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.serveralt.ClientService;
-import at.sbc.firework.serveralt.ServiceAltException;
-import at.sbc.firework.serveralt.containers.*;
+import at.sbc.firework.service.alt.ClientService;
+import at.sbc.firework.service.alt.ServiceAltException;
+import at.sbc.firework.service.alt.containers.*;
 import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.service.alt.IServiceTransactionRmi;
 
 import java.util.ArrayList;
 
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Transaction implements IServiceTransaction {
+public class Transaction implements IServiceTransaction, IServiceTransactionRmi {
 
     public Transaction(ClientService clientService) {
         this.service = clientService;

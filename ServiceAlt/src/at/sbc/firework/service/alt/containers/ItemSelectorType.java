@@ -1,4 +1,4 @@
-package at.sbc.firework.serveralt.containers;
+package at.sbc.firework.service.alt.containers;
 
 /**
  * Created by daniel on 21.11.2014.

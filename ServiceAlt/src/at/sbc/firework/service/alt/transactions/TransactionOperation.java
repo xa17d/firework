@@ -1,6 +1,6 @@
-package at.sbc.firework.serveralt.transactions;
+package at.sbc.firework.service.alt.transactions;
 
-import at.sbc.firework.serveralt.containers.Container;
+import at.sbc.firework.service.alt.containers.Container;
 
 /**
  * Created by daniel on 21.11.2014.

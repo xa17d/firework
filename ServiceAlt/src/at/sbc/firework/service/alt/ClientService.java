@@ -1,9 +1,9 @@
-package at.sbc.firework.serveralt;
+package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.serveralt.transactions.Transaction;
+import at.sbc.firework.service.alt.transactions.Transaction;
 import at.sbc.firework.service.IDataChangedListener;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class ClientService implements IService {
+public class ClientService implements IService, IServiceRmi {
 
     public ClientService(Server server)
     {
@@ -89,7 +89,7 @@ public class ClientService implements IService {
 
     private IDataChangedListener dataChangedListener;
     @Override
-    public void addChangeListener(IDataChangedListener listener) {
+    public void setChangeListener(IDataChangedListener listener) {
         this.dataChangedListener = listener;
     }
 

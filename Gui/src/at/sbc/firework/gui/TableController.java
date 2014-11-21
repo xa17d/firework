@@ -12,7 +12,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Lucas on 17.11.2014.
@@ -66,7 +65,7 @@ public class TableController implements IDataChangedListener {
     public void setService(IService service) {
 
         this.service = service;
-        service.addChangeListener(this);
+        service.setChangeListener(this);
         dataChanged();
     }
 
