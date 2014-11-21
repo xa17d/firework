@@ -93,7 +93,7 @@ project(':Gui') {
 
     jar {
         manifest {
-            attributes 'Main-Class': 'at.sbc.firework.gui.HelloGui'
+            attributes 'Main-Class': 'at.sbc.firework.gui.Main'
         }
     }
 

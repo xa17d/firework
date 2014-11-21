@@ -1,6 +1,7 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.PropellingChargePackage;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
 import org.mozartspaces.capi3.*;
@@ -31,22 +32,16 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         // TODO: des isch no ned ganz sauber
 
         ArrayList<Selector> selectors = new ArrayList<Selector>();
-        selectors.add(VectorCoordinator.newSelector(0, count));
         selectors.add(TypeCoordinator.newSelector(type, count));
 
         ArrayList<Part> entries = null;
         try {
-            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
         } catch (CountNotMetException e) {
 
             selectors = new ArrayList<Selector>();
             selectors.add(TypeCoordinator.newSelector(type, count));
 
-            try {
-                entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
-            } catch (MzsCoreException e1) {
-                throw new XvsmException(e1);
-            }
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -92,32 +87,34 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         }
     }
 
-    private void internalAddToStock(ContainerReference container, Serializable item, int index) throws ServiceException
-    {
-        Entry entry = new Entry(item, VectorCoordinator.newCoordinationData(index));
-
-        try {
-            capi.write(entry, container, Service.DEFAULT_TIMEOUT, transaction);
-
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
-    }
-
     @Override
     public void addToStock(Part part) throws ServiceException
     {
-        internalAddToStock(service.getStockContainer(), part, VectorCoordinator.APPEND);
-    }
-
-    @Override
-    public void addToStockFirst(Part part) throws ServiceException {
-        internalAddToStock(service.getStockContainer(), part, 0);
+        internalAddToContainer(service.getStockContainer(), part);
     }
 
     @Override
     public ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException {
         return internalTakeFromStock(service.getStockContainer(), type, count);
+    }
+
+    @Override
+    public PropellingChargePackage takePropellingChargePackageFromStock() throws ServiceException {
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+        Query query = new Query().sortup(Property.forClass(PropellingChargePackage.class, "content")).cnt(1);
+
+        selectors.add(QueryCoordinator.newSelector(query, 1));
+
+        ArrayList<PropellingChargePackage> entries = null;
+        try {
+            entries = capi.take(service.getStockContainer(), selectors, Service.DEFAULT_TIMEOUT, transaction);
+        }
+        catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries.get(0);
     }
 
     @Override

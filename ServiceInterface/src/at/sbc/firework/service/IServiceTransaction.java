@@ -1,6 +1,7 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Part;
+import at.sbc.firework.entities.PropellingChargePackage;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
 
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 public interface IServiceTransaction {
 
     void addToStock(Part part) throws ServiceException;
-    void addToStockFirst(Part part) throws ServiceException;
     ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException;
+    PropellingChargePackage takePropellingChargePackageFromStock() throws ServiceException;
 
     void addToQualityCheckQueue(Rocket rocket) throws ServiceException;
     Rocket takeFromQualityCheckQueue() throws ServiceException;

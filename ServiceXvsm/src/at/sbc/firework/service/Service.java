@@ -95,8 +95,8 @@ public class Service implements IService {
         } catch (MzsCoreException e) {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            obligatoryCoords.add(new VectorCoordinator());
             obligatoryCoords.add(new TypeCoordinator());
+            obligatoryCoords.add(new QueryCoordinator());
 
             ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
 
@@ -279,7 +279,9 @@ public class Service implements IService {
 
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
-            selectors.add(VectorCoordinator.newSelector(0, MzsConstants.Selecting.COUNT_ALL));
+
+            Query query = new Query();
+            selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
             result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);

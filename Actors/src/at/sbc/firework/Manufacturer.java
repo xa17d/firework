@@ -64,19 +64,15 @@ public class Manufacturer extends Actor {
 
             while (amountRemaining > 0)
             {
-                ArrayList<?> result = t.takeFromStock(PropellingChargePackage.class, 1);
-                if (!result.isEmpty()) {
+                PropellingChargePackage p = t.takePropellingChargePackageFromStock();
 
-                    PropellingChargePackage p = (PropellingChargePackage)result.get(0);
+                PropellingCharge charge = p.takeOut(amountRemaining);
+                propellingCharge.add(charge);
 
-                    PropellingCharge charge = p.takeOut(amountRemaining);
-                    propellingCharge.add(charge);
+                amountRemaining -= charge.getAmount();
 
-                    amountRemaining -= charge.getAmount();
-
-                    if (!p.isEmpty()) {
-                        t.addToStockFirst(p);
-                    }
+                if (!p.isEmpty()) {
+                    t.addToStock(p);
                 }
             }
 
