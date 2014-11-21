@@ -1,6 +1,7 @@
 package at.sbc.firework.serveralt.containers;
 
 import at.sbc.firework.entities.PropellingChargePackage;
+import at.sbc.firework.service.IDataChangedListener;
 
 import java.util.ArrayList;
 
@@ -45,10 +46,17 @@ public class Container {
 
     private void changed()
     {
-
+        if (dataChangedListener != null) {
+            dataChangedListener.dataChanged();
+        }
     }
 
     public void waitForChange(int timeout) {
 
+    }
+
+    private IDataChangedListener dataChangedListener = null;
+    public void setDataChangedListener(IDataChangedListener listener) {
+        this.dataChangedListener = listener;
     }
 }

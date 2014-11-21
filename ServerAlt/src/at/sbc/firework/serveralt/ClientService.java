@@ -87,9 +87,16 @@ public class ClientService implements IService {
         return getServer().getDistributionStockContainer().list();
     }
 
+    private IDataChangedListener dataChangedListener;
     @Override
     public void addChangeListener(IDataChangedListener listener) {
+        this.dataChangedListener = listener;
+    }
 
+    public void dataChanged() {
+        if (dataChangedListener != null) {
+            dataChangedListener.dataChanged();
+        }
     }
 
     @Override

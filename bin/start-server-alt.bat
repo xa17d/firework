@@ -1,0 +1,1 @@
+java -cp ServerAlt.jar;ServiceInterface.jar;ServiceAlt.jar at.sbc.firework.serveralt.Main
