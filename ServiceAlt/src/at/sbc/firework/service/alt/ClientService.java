@@ -38,12 +38,12 @@ public class ClientService implements IService, IServiceRmi {
 
     @Override
     public void start() throws ServiceException {
-
+        //TODO
     }
 
     @Override
     public void stop() throws ServiceException {
-
+        //TODO
     }
 
     @Override
