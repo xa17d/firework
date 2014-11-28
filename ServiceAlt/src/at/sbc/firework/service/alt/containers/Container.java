@@ -2,12 +2,12 @@ package at.sbc.firework.service.alt.containers;
 
 import at.sbc.firework.service.IDataChangedListener;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by daniel on 21.11.2014.
  */
+
 public class Container {
 
     private ArrayList<Object> items = new ArrayList<Object>();

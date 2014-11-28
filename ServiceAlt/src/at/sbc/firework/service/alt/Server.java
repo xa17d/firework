@@ -62,7 +62,6 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
         distributionStockContainer.setDataChangedListener(this);
     }
 
-
     @Override
     public IServiceRmi getService() throws RemoteException {
         System.out.println("Client connected...");

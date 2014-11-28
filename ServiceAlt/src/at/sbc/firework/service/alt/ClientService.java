@@ -10,14 +10,16 @@ import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import at.sbc.firework.service.alt.Server;
 
 /**
  * Created by daniel on 21.11.2014.
  */
-public class ClientService implements IServiceRmi {
+public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
-    public ClientService(Server server)
+    public ClientService(Server server) throws RemoteException
     {
         this.server = server;
     }
@@ -39,18 +41,26 @@ public class ClientService implements IServiceRmi {
 
     @Override
     public void start() throws ServiceException {
+        System.out.print("client start");
         //TODO
     }
 
     @Override
     public void stop() throws ServiceException {
+        System.out.print("client stop");
         //TODO
     }
 
     @Override
     public IServiceTransactionRmi startTransaction() throws ServiceException {
+        System.out.print("start transaction");
         synchronized (transactions) {
-            Transaction t = new Transaction(this);
+            Transaction t = null;
+            try {
+                t = new Transaction(this);
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            }
             transactions.add(t);
             return t;
         }

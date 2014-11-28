@@ -12,14 +12,16 @@ import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.alt.IServiceTransactionRmi;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Transaction implements IServiceTransaction, IServiceTransactionRmi {
+public class Transaction extends UnicastRemoteObject implements IServiceTransaction, IServiceTransactionRmi {
 
-    public Transaction(ClientService clientService) {
+    public Transaction(ClientService clientService) throws RemoteException {
         this.service = clientService;
         this.active = true;
     }

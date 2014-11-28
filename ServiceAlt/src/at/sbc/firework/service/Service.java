@@ -112,8 +112,12 @@ public class Service implements IService {
 
     @Override
     public void setChangeListener(IDataChangedListener listener) {
-        this.listener = new RemoteEventListener(listener);
-        remoteService.setChangeListener(this.listener);
+        try {
+            this.listener = new RemoteEventListener(listener);
+            remoteService.setChangeListener(this.listener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
