@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.PropellingChargePackage;
 import at.sbc.firework.entities.Rocket;
@@ -122,8 +123,8 @@ public class Transaction implements IServiceTransaction, IServiceTransactionRmi 
     }
 
     @Override
-    public void addToDistributionStock(RocketPackage5 rocket) throws ServiceException {
-        containerAdd(service.getServer().getDistributionStockContainer(), rocket);
+    public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
+        containerAdd(service.getServer().getDistributionStockContainer(), rocketPackage);
     }
 
     @Override

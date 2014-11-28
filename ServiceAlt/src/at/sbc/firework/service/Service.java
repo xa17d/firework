@@ -3,11 +3,10 @@ package at.sbc.firework.service;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.service.alt.ClientService;
-import at.sbc.firework.service.alt.Server;
-import at.sbc.firework.service.alt.ServiceAltException;
+import at.sbc.firework.service.alt.*;
 
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
@@ -18,8 +17,8 @@ public class Service implements IService {
     private static final String HOST = "localhost";
     private static final int PORT = 9876;
 
-    private Server server;
-    private ClientService clientService;
+    private IServerRmi server;
+    private IServiceRmi remoteService;
 
     @Override
     public void start() throws ServiceException {
@@ -31,8 +30,11 @@ public class Service implements IService {
             if(System.getSecurityManager() == null)
                 System.setSecurityManager(new SecurityManager());
 
-            server = (Server) Naming.lookup("rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
-            clientService = new ClientService(server);
+            System.out.println("Lookup RMI...");
+            server = (IServerRmi) Naming.lookup("rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
+
+            System.out.println("Get Remote Service...");
+            remoteService = server.getService();
 
             System.out.println("connected to server: " + "rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
 
@@ -43,54 +45,84 @@ public class Service implements IService {
 
     @Override
     public void stop() throws ServiceException {
-        if(server != null)
-            server.disconnectClient(clientService);
+        if(remoteService != null) {
+            try {
+                remoteService.cancel();
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            }
+        }
     }
 
     @Override
     public IServiceTransaction startTransaction() throws ServiceException {
-        return getClientService().startTransaction();
+        try {
+            return new ServiceAltTransaction(remoteService.startTransaction());
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<Part> listStock() throws ServiceException {
-        return getClientService().listStock();
+        try {
+            return remoteService.listStock();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<Rocket> listQualityCheckQueue() throws ServiceException {
-        return getClientService().listQualityCheckQueue();
+        try {
+            return remoteService.listQualityCheckQueue();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<Rocket> listPackingQueue() throws ServiceException {
-        return getClientService().listPackingQueue();
+        try {
+            return remoteService.listPackingQueue();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<Rocket> listGarbage() throws ServiceException {
-        return getClientService().listGarbage();
+        try {
+            return remoteService.listGarbage();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
-        return getClientService().listDistributionStock();
+        try {
+            return remoteService.listDistributionStock();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
+
+    private RemoteEventListener listener;
 
     @Override
     public void setChangeListener(IDataChangedListener listener) {
-        getClientService().setChangeListener(listener);
+        this.listener = new RemoteEventListener(listener);
+        remoteService.setChangeListener(this.listener);
     }
 
     @Override
     public long getNewId() throws ServiceException {
-        return getClientService().getNewId();
+        try {
+            return remoteService.getNewId();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
-    private ClientService getClientService() /* throws ServiceException */ {
-        //if(clientService == null)
-        //    throw new ServiceAltException("no client service existing");
-
-        return clientService;
-    }
 }

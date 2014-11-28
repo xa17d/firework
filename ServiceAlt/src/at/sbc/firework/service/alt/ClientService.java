@@ -9,12 +9,13 @@ import at.sbc.firework.service.IService;
 import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
  * Created by daniel on 21.11.2014.
  */
-public class ClientService implements IService, IServiceRmi {
+public class ClientService implements IServiceRmi {
 
     public ClientService(Server server)
     {
@@ -47,7 +48,7 @@ public class ClientService implements IService, IServiceRmi {
     }
 
     @Override
-    public IServiceTransaction startTransaction() throws ServiceException {
+    public IServiceTransactionRmi startTransaction() throws ServiceException {
         synchronized (transactions) {
             Transaction t = new Transaction(this);
             transactions.add(t);
@@ -87,15 +88,19 @@ public class ClientService implements IService, IServiceRmi {
         return getServer().getDistributionStockContainer().list();
     }
 
-    private IDataChangedListener dataChangedListener;
+    private IRemoteEventListener listener;
     @Override
-    public void setChangeListener(IDataChangedListener listener) {
-        this.dataChangedListener = listener;
+    public void setChangeListener(IRemoteEventListener listener) {
+        this.listener = listener;
     }
 
-    public void dataChanged() {
-        if (dataChangedListener != null) {
-            dataChangedListener.dataChanged();
+    public void dataChanged() throws ServiceException{
+        if (listener != null) {
+            try {
+                listener.invoke();
+            } catch (RemoteException e) {
+                throw new ServiceException(e);
+            }
         }
     }
 

@@ -3,11 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Actors/Actors.iml" filepath="$PROJECT_DIR$/Actors/Actors.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Firework.iml" filepath="$PROJECT_DIR$/Firework.iml" />
       <module fileurl="file://$PROJECT_DIR$/Gui/Gui.iml" filepath="$PROJECT_DIR$/Gui/Gui.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceAlt/ServiceAlt.iml" filepath="$PROJECT_DIR$/ServiceAlt/ServiceAlt.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceInterface/ServiceInterface.iml" filepath="$PROJECT_DIR$/ServiceInterface/ServiceInterface.iml" />
       <module fileurl="file://$PROJECT_DIR$/ServiceXvsm/ServiceXvsm.iml" filepath="$PROJECT_DIR$/ServiceXvsm/ServiceXvsm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/firework.iml" filepath="$PROJECT_DIR$/firework.iml" />
     </modules>
   </component>
 </project>

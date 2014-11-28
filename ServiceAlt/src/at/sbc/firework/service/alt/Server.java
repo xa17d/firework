@@ -7,12 +7,13 @@ import at.sbc.firework.service.ServiceException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Server implements IDataChangedListener, IServerRmi {
+public class Server extends UnicastRemoteObject implements IDataChangedListener, IServerRmi {
 
     public static final String SERVER_NAME = "ServerObjectRmiName";
 
@@ -53,7 +54,7 @@ public class Server implements IDataChangedListener, IServerRmi {
         }
     }
 
-    public Server() {
+    public Server() throws RemoteException {
         stockContainer.setDataChangedListener(this);
         qualityCheckQueueContainer.setDataChangedListener(this);
         packingQueueContainer.setDataChangedListener(this);
@@ -64,6 +65,7 @@ public class Server implements IDataChangedListener, IServerRmi {
 
     @Override
     public IServiceRmi getService() throws RemoteException {
+        System.out.println("Client connected...");
         ClientService clientService = new ClientService(this);
         addClient(clientService);
         return clientService;
@@ -73,7 +75,11 @@ public class Server implements IDataChangedListener, IServerRmi {
     public void dataChanged() {
         synchronized (clients) {
             for (ClientService client : clients) {
-                client.dataChanged();
+                try {
+                    client.dataChanged();
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -84,11 +90,14 @@ public class Server implements IDataChangedListener, IServerRmi {
         }
     }
 
-    public void disconnectClient(ClientService client) {
+    public void disconnectClient(IServiceRmi client) {
+        System.out.println("Client disconnect...");
         synchronized (clients) {
             try {
                 client.cancel();
             } catch (ServiceException e) {
+                e.printStackTrace();
+            } catch (RemoteException e) {
                 e.printStackTrace();
             }
             clients.remove(client);

@@ -26,7 +26,7 @@ public interface IServiceTransaction {
 
     void addToGarbage(Rocket rocket) throws ServiceException;
 
-    void addToDistributionStock(RocketPackage5 rocket) throws ServiceException;
+    void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException;
 
     void commit() throws ServiceException;
     void rollback() throws ServiceException;

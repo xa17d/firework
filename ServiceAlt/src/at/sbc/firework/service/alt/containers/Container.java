@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Container implements Serializable {
+public class Container {
 
     private ArrayList<Object> items = new ArrayList<Object>();
 
