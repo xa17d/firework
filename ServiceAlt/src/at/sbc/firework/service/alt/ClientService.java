@@ -12,6 +12,8 @@ import at.sbc.firework.service.ServiceException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
+
 import at.sbc.firework.service.alt.Server;
 
 /**
@@ -23,6 +25,7 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     {
         Log("Client connected");
         this.server = server;
+        this.lastPing = new Date();
     }
 
     public void Log(String msg) {
@@ -35,15 +38,26 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
     private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
+    private Date lastPing;
+
+    public Date getLastPing() { return lastPing; }
+
+    @Override
+    public void ping() throws RemoteException {
+        lastPing = new Date();
+    }
+
     public void cancel() throws ServiceException{
         Log("Client disconnected");
 
         synchronized (transactions)
         {
-            for (Transaction t: transactions) {
-                t.rollback();
+            while (!transactions.isEmpty()) {
+                transactions.get(0).rollback();
             }
         }
+
+        server.disconnectClient(this);
     }
 
     @Override

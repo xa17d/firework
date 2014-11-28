@@ -19,6 +19,7 @@ public class Service implements IService {
 
     private IServerRmi server;
     private IServiceRmi remoteService;
+    private Pinger pinger;
 
     @Override
     public void start() throws ServiceException {
@@ -38,6 +39,9 @@ public class Service implements IService {
 
             System.out.println("connected to server: " + "rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
 
+            pinger = new Pinger(remoteService);
+            pinger.start();
+
         } catch (Exception e) {
             throw new ServiceException(e);
         }
@@ -45,6 +49,10 @@ public class Service implements IService {
 
     @Override
     public void stop() throws ServiceException {
+        if (pinger != null) {
+            pinger.interrupt();
+        }
+
         if(remoteService != null) {
             try {
                 remoteService.cancel();

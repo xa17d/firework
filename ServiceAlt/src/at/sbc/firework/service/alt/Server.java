@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by daniel on 21.11.2014.
@@ -51,7 +52,22 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
 
         while (true) {
 
+            // Disconnect dead clients
+            // Wenn sich an client sit 5sec numm mittels ping gmolda hat, würd er
+            // automatisch disconnected.
+
+            server.findDeadClients();
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    public static long getTimeDifferenceInMsec(Date a, Date b) {
+        return b.getTime() - a.getTime();
     }
 
     public Server() throws RemoteException {
@@ -60,6 +76,26 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
         packingQueueContainer.setDataChangedListener(this);
         garbageContainer.setDataChangedListener(this);
         distributionStockContainer.setDataChangedListener(this);
+    }
+
+    private void findDeadClients() {
+        ArrayList<ClientService> deadClients = new ArrayList<ClientService>();
+
+        synchronized (clients) {
+
+            Date now = new Date();
+
+            for (ClientService client : clients) {
+                if (getTimeDifferenceInMsec(client.getLastPing(), now) > 5000) {
+                    deadClients.add(client);
+                }
+            }
+        }
+
+        for (ClientService client : deadClients) {
+            System.out.println("! dead client C#"+client.hashCode());
+            disconnectClient(client);
+        }
     }
 
     @Override
@@ -89,16 +125,17 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
     }
 
     public void disconnectClient(IServiceRmi client) {
-        System.out.println("Client disconnect...");
         synchronized (clients) {
-            try {
-                client.cancel();
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            } catch (RemoteException e) {
-                e.printStackTrace();
+
+            if (clients.remove(client)) {
+                try {
+                    client.cancel();
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
-            clients.remove(client);
         }
     }
 

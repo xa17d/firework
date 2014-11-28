@@ -32,4 +32,6 @@ public interface IServiceRmi extends Remote {
     void setChangeListener(IRemoteEventListener listener) throws RemoteException;
 
     long getNewId() throws ServiceException, RemoteException;
+
+    void ping() throws RemoteException;
 }

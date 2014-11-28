@@ -24,6 +24,7 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
     public Transaction(ClientService clientService) throws RemoteException {
         this.service = clientService;
         this.active = true;
+        Log("transaction start");
     }
 
     private void Log(String msg) {
