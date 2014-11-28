@@ -26,6 +26,10 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
         this.active = true;
     }
 
+    private void Log(String msg) {
+        service.Log("T#"+hashCode()+": "+msg);
+    }
+
     private ClientService service;
 
     private boolean active;
@@ -71,11 +75,13 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
 
     @Override
     public void addToStock(Part part) throws ServiceException {
+        Log("addToStock "+part);
         containerAdd(service.getServer().getStockContainer(), part);
     }
 
     @Override
     public ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException {
+        Log("takeFromStock "+type.toString()+" count: "+count);
         ArrayList<Part> result = new ArrayList<Part>();
 
         for (int i = 0; i<count; i++) {
@@ -88,6 +94,7 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
 
     @Override
     public PropellingChargePackage takePropellingChargePackageFromStock() throws ServiceException {
+        Log("takePropellingChargePackageFromStock");
 
         return (PropellingChargePackage)containerTake(
                 service.getServer().getStockContainer(),
@@ -97,23 +104,30 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
 
     @Override
     public void addToQualityCheckQueue(Rocket rocket) throws ServiceException {
+        Log("addToQualityCheckQueue "+rocket);
         containerAdd(service.getServer().getQualityCheckQueueContainer(), rocket);
     }
 
     @Override
     public Rocket takeFromQualityCheckQueue() throws ServiceException {
+        Log("takeFromQualityCheckQueue");
+
         return (Rocket)containerTake(
-                service.getServer().getStockContainer(),
+                service.getServer().getQualityCheckQueueContainer(),
                 new ItemSelectorFirst());
     }
 
     @Override
     public void addToPackingQueue(Rocket rocket) throws ServiceException {
+        Log("addToPackingQueue "+rocket);
+
         containerAdd(service.getServer().getPackingQueueContainer(), rocket);
     }
 
     @Override
     public Rocket takeFromPackingQueue() throws ServiceException {
+        Log("takeFromPackingQueue");
+
         return (Rocket)containerTake(
                 service.getServer().getPackingQueueContainer(),
                 new ItemSelectorFirst());
@@ -121,16 +135,21 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
 
     @Override
     public void addToGarbage(Rocket rocket) throws ServiceException {
+        Log("addToGarbage "+rocket);
+
         containerAdd(service.getServer().getGarbageContainer(), rocket);
     }
 
     @Override
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
+        Log("addToDistributionStock "+rocketPackage);
+
         containerAdd(service.getServer().getDistributionStockContainer(), rocketPackage);
     }
 
     @Override
     public void commit() throws ServiceException {
+        Log("commit");
         active = false;
 
         synchronized (operations) {
@@ -144,6 +163,7 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
 
     @Override
     public void rollback() throws ServiceException {
+        Log("rollback");
         active = false;
 
         synchronized (operations) {

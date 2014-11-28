@@ -64,7 +64,6 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
 
     @Override
     public IServiceRmi getService() throws RemoteException {
-        System.out.println("Client connected...");
         ClientService clientService = new ClientService(this);
         addClient(clientService);
         return clientService;

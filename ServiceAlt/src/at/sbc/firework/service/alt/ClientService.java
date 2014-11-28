@@ -21,7 +21,12 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
     public ClientService(Server server) throws RemoteException
     {
+        Log("Client connected");
         this.server = server;
+    }
+
+    public void Log(String msg) {
+        System.out.println("C#"+hashCode()+": "+msg);
     }
 
     private Server server;
@@ -31,6 +36,8 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
     public void cancel() throws ServiceException{
+        Log("Client disconnected");
+
         synchronized (transactions)
         {
             for (Transaction t: transactions) {
@@ -41,19 +48,18 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
     @Override
     public void start() throws ServiceException {
-        System.out.print("client start");
+        Log("Client Start");
         //TODO
     }
 
     @Override
     public void stop() throws ServiceException {
-        System.out.print("client stop");
+        Log("Client Stop");
         //TODO
     }
 
     @Override
     public IServiceTransactionRmi startTransaction() throws ServiceException {
-        System.out.print("start transaction");
         synchronized (transactions) {
             Transaction t = null;
             try {
