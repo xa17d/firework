@@ -23,6 +23,17 @@ public class Actor {
         System.out.println(name + " #" + id);
     }
 
+    public void work() {
+
+    }
+
+    public void workLoop() {
+        while (true) {
+            work();
+            System.out.println("--------------");
+        }
+    }
+
     public void dispose()
     {
         if (service != null)

@@ -20,7 +20,7 @@ public class Logistician extends Actor {
 
         Logistician l = new Logistician(args);
 
-        l.work();
+        l.workLoop();
 
         l.dispose();
 
@@ -31,6 +31,7 @@ public class Logistician extends Actor {
         super("Logistician", args);
     }
 
+    @Override
     public void work() {
 
         IServiceTransaction t = null;

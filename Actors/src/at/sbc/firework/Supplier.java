@@ -28,28 +28,29 @@ public class Supplier implements Runnable {
         try {
             long supplierId = service.getNewId();
 
-            IServiceTransaction t = service.startTransaction();
-
             if(selectedItem == EnumParts.CASING)
                 for(int i = 0; i < amount; i++)
-                    t.addToStock(new Casing(supplierId, service.getNewId()));
+                    addToStock(new Casing(supplierId, service.getNewId()));
             if(selectedItem == EnumParts.EFFECT_CHARGE)
                 for(int i = 0; i < amount; i++)
-                    t.addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.33 ? true : false));
+                    addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.33 ? true : false));
             if(selectedItem == EnumParts.PROPELLING_CHARGE)
                 for(int i = 0; i < amount; i++)
-                    t.addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));
+                    addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));
             if(selectedItem == EnumParts.STICK)
                 for(int i = 0; i < amount; i++)
-                    t.addToStock(new Stick(supplierId, service.getNewId()));
-
-            Utils.sleep(1000, 2000);
-
-            t.commit();
+                    addToStock(new Stick(supplierId, service.getNewId()));
 
         }
         catch (ServiceException e) {
             e.printStackTrace();
         }
+    }
+
+    private void addToStock(Part part) throws ServiceException {
+        IServiceTransaction t = service.startTransaction();
+        t.addToStock(part);
+        Utils.sleep(1000, 2000);
+        t.commit();
     }
 }

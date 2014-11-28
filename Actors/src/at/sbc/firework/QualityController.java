@@ -16,7 +16,7 @@ public class QualityController extends Actor {
 
         QualityController qc = new QualityController(args);
 
-        qc.work();
+        qc.workLoop();
 
         qc.dispose();
 
@@ -27,6 +27,7 @@ public class QualityController extends Actor {
         super("QualityController", args);
     }
 
+    @Override
     public void work() {
 
         IServiceTransaction t = null;

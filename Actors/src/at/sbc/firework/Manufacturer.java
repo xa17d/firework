@@ -21,7 +21,7 @@ public class Manufacturer extends Actor {
 
         Manufacturer m = new Manufacturer(args);
 
-        m.work();
+        m.workLoop();
 
         m.dispose();
 
@@ -32,6 +32,7 @@ public class Manufacturer extends Actor {
         super("Manufacturer", args);
     }
 
+    @Override
     public void work()
     {
         IServiceTransaction t = null;
@@ -48,13 +49,16 @@ public class Manufacturer extends Actor {
             Casing casing = (Casing) t.takeFromStock(Casing.class, 1).get(0);
             System.out.println(casing.toString());
 
-            System.out.print("Getting EffectCharges...\t");
-
+            System.out.println("Getting EffectCharges...\t");
             EffectCharge[] effectCharges = (EffectCharge[])Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
 
-            //TODO abcheckn ob scho gnuag effectCharges do sen, sos flügt nähmlich immer a timeout exception
+            System.out.println("\t"+effectCharges[0].toString());
+            System.out.println("\t"+effectCharges[1].toString());
+            System.out.println("\t"+effectCharges[2].toString());
 
             // PropellingCharge hola
+
+            System.out.print("Getting PropellingCharge...");
 
             ArrayList<PropellingCharge> propellingCharge = new ArrayList<PropellingCharge>();
 
@@ -62,12 +66,16 @@ public class Manufacturer extends Actor {
             int amount = Utils.randomInt(115, 145);
             int amountRemaining = amount;
 
+            System.out.println(amount+"g");
+
             while (amountRemaining > 0)
             {
                 PropellingChargePackage p = t.takePropellingChargePackageFromStock();
 
                 PropellingCharge charge = p.takeOut(amountRemaining);
                 propellingCharge.add(charge);
+
+                System.out.println("\ttook " + charge.getAmount() + "g from " + p.toString());
 
                 amountRemaining -= charge.getAmount();
 
@@ -77,6 +85,8 @@ public class Manufacturer extends Actor {
             }
 
             // Rocket zemmbaua
+
+            System.out.print("Building new Rocket...\t");
 
             long rocketId = service.getNewId();
 
@@ -93,6 +103,8 @@ public class Manufacturer extends Actor {
             // Commit
 
             t.commit();
+
+            System.out.println(rocket.toString());
         }
         catch (ServiceException e)
         {
