@@ -102,7 +102,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     public PropellingChargePackage takePropellingChargePackageFromStock() throws ServiceException {
         ArrayList<Selector> selectors = new ArrayList<Selector>();
 
-        Query query = new Query().sortup(Property.forClass(PropellingChargePackage.class, "content")).cnt(1);
+        Query query = new Query().filter(Property.forClass(PropellingChargePackage.class, "content").exists()).sortup(Property.forClass(PropellingChargePackage.class, "content")).cnt(1);
 
         selectors.add(QueryCoordinator.newSelector(query, 1));
 
