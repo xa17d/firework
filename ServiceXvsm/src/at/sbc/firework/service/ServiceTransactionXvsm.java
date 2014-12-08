@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 14.11.2014.
  */
-public class ServiceTransactionXvsm implements IServiceTransaction {
+public class ServiceTransactionXvsm implements IServiceTransaction, IDataChangedListener {
 
     private Capi capi;
     private TransactionReference transaction;
@@ -24,6 +24,8 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         this.capi = service.getCapi();
         this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
         //this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
+
+        this.service.addChangeListener(this);
     }
 
 
@@ -124,7 +126,12 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     @Override
     public Rocket takeFromQualityCheckQueue() throws ServiceException {
-        return take1FromQueue(service.getQualityCheckQueueContainer());
+        try {
+            return take1FromQueue(service.getQualityCheckQueueContainer());
+        } catch(ServiceException e) {
+            waitForChange(10000);
+            return takeFromQualityCheckQueue();
+        }
     }
 
     @Override
@@ -134,7 +141,12 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
     @Override
     public Rocket takeFromPackingQueue() throws ServiceException {
-        return take1FromQueue(service.getPackingQueueContainer());
+        try {
+            return take1FromQueue(service.getPackingQueueContainer());
+        } catch(ServiceException e) {
+            waitForChange(1000);
+            return takeFromPackingQueue();
+        }
     }
 
     @Override
@@ -145,6 +157,19 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     @Override
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
         internalAddToContainer(service.getDistributionStockContainer(), rocketPackage);
+    }
+
+    @Override
+    public synchronized void dataChanged() {
+        notify();
+    }
+
+    private synchronized void waitForChange(long timeout) {
+        try {
+            wait(timeout);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -86,8 +86,4 @@ public class MainController {
     public void setService(IService service) {
         this.service = service;
     }
-
-    public void updateLayout() {
-        //TODO
-    }
 }

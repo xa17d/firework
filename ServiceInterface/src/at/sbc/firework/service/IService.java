@@ -23,7 +23,7 @@ public interface IService {
     ArrayList<Rocket> listGarbage() throws ServiceException;
     ArrayList<RocketPackage5> listDistributionStock() throws ServiceException;
 
-    void setChangeListener(IDataChangedListener listener);
+    void addChangeListener(IDataChangedListener listener);
 
     long getNewId() throws ServiceException;
 }

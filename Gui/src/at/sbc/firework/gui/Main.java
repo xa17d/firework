@@ -55,7 +55,6 @@ public class Main extends Application {
 
             MainController controller = loader.getController();
             controller.setService(service);
-            controller.updateLayout();
 
         } catch(IOException e) {
             e.printStackTrace();
@@ -75,7 +74,6 @@ public class Main extends Application {
 
             TableController controller = loader.getController();
             controller.setService(service);
-            controller.updateLayout();
 
         } catch(IOException e) {
             e.printStackTrace();

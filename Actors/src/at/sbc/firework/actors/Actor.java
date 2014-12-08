@@ -7,7 +7,9 @@ import at.sbc.firework.service.ServiceFactory;
 /**
  * Created by daniel on 20.11.2014.
  */
-public class Actor {
+public abstract class Actor {
+
+    private static final int WAITING_TIME = 500;
 
     public Actor(String name, String[] args) {
 
@@ -20,16 +22,16 @@ public class Actor {
 
         id = Utils.getIdFromArgsOrGenerate(args, service);
 
-        System.out.println(name + " #" + id);
+        System.out.println(name + " #" + id + " ready for work...");
     }
 
-    public void work() {
-
-    }
+    public abstract void work();
 
     public void workLoop() {
+
         while (true) {
             work();
+            //Utils.sleep(200,200);
             System.out.println("--------------");
         }
     }

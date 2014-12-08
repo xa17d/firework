@@ -45,15 +45,20 @@ public class Container {
         return copy;
     }
 
-    private void changed()
-    {
+    private synchronized void changed() {
         if (dataChangedListener != null) {
             dataChangedListener.dataChanged();
         }
+
+        notify();
     }
 
-    public void waitForChange(int timeout) {
-
+    public synchronized void waitForChange(int timeout) {
+        try {
+            wait(timeout);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private IDataChangedListener dataChangedListener = null;

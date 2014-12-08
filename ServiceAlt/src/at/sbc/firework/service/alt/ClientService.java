@@ -4,17 +4,12 @@ import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
 import at.sbc.firework.service.alt.transactions.Transaction;
-import at.sbc.firework.service.IDataChangedListener;
-import at.sbc.firework.service.IService;
-import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
-
-import at.sbc.firework.service.alt.Server;
 
 /**
  * Created by daniel on 21.11.2014.
@@ -118,14 +113,14 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
         return getServer().getDistributionStockContainer().list();
     }
 
-    private IRemoteEventListener listener;
+    private ArrayList<IRemoteEventListener> remoteEventListeners = new ArrayList<IRemoteEventListener>();
     @Override
-    public void setChangeListener(IRemoteEventListener listener) {
-        this.listener = listener;
+    public void addChangeListener(IRemoteEventListener listener) {
+        this.remoteEventListeners.add(listener);
     }
 
     public void dataChanged() throws ServiceException{
-        if (listener != null) {
+        for(IRemoteEventListener listener : remoteEventListeners) {
             try {
                 listener.invoke();
             } catch (RemoteException e) {

@@ -30,7 +30,7 @@ public class RocketPackage5 implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("RocketPackage (" +  getId() + "Logistican: " + logisticianId + ")");
+        sb.append("RocketPackage (" +  getId() + " | Logistican: " + logisticianId + ")");
 
         int i = 0;
         for(Rocket r : getContent()) {

@@ -39,13 +39,14 @@ public class Service implements IService {
     private ContainerReference garbageContainer;
     private ContainerReference distributionStockContainer;
     private ContainerReference idCounterContainer;
-    private IDataChangedListener changedListener;
+
+    private ArrayList<IDataChangedListener> changedListener = new ArrayList<IDataChangedListener>();
 
     private NotificationListener notificationListener = new NotificationListener() {
         @Override
         public void entryOperationFinished(Notification notification, Operation operation, List<? extends Serializable> list) {
-            if (changedListener != null) {
-                changedListener.dataChanged();
+            for(IDataChangedListener listener : changedListener) {
+                listener.dataChanged();
             }
         }
     };
@@ -202,8 +203,8 @@ public class Service implements IService {
     }
 
     @Override
-    public void setChangeListener(IDataChangedListener listener) {
-        this.changedListener = listener;
+    public void addChangeListener(IDataChangedListener listener) {
+        this.changedListener.add(listener);
     }
 
     @Override

@@ -65,12 +65,8 @@ public class TableController implements IDataChangedListener {
     public void setService(IService service) {
 
         this.service = service;
-        service.setChangeListener(this);
+        service.addChangeListener(this);
         dataChanged();
-    }
-
-    public void updateLayout() {
-        //TODO
     }
 
     @Override

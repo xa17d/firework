@@ -29,7 +29,7 @@ public interface IServiceRmi extends Remote {
     ArrayList<Rocket> listGarbage() throws ServiceException, RemoteException;
     ArrayList<RocketPackage5> listDistributionStock() throws ServiceException, RemoteException;
 
-    void setChangeListener(IRemoteEventListener listener) throws RemoteException;
+    void addChangeListener(IRemoteEventListener listener) throws RemoteException;
 
     long getNewId() throws ServiceException, RemoteException;
 

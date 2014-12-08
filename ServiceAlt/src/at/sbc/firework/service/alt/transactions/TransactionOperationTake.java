@@ -23,14 +23,13 @@ public class TransactionOperationTake extends TransactionOperation {
         Object item = null;
         Container container = getContainer();
 
-        while (transaction.isActive())
-        {
+        while (transaction.isActive()) {
             item = container.take(selector);
             if (item == null) {
                 container.waitForChange(1000);
             }
             else
-            { break; }
+                break;
         }
 
         setItem(item);

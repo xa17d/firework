@@ -13,6 +13,10 @@ import java.util.Random;
  * Created by daniel on 20.11.2014.
  */
 public class Utils {
+
+    private static final int DEFAULT_MIN_SLEEP_TIME = 400;
+    private static final int DEFAULT_MAX_SLEEP_TIME = 800;
+
     public static long getIdFromArgsOrGenerate(String[] args, IService service) {
         if (args.length > 0) {
             return Long.parseLong(args[0]);
@@ -51,5 +55,9 @@ public class Utils {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sleep() {
+        sleep(DEFAULT_MIN_SLEEP_TIME, DEFAULT_MAX_SLEEP_TIME);
     }
 }
