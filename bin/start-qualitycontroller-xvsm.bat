@@ -1,1 +1,0 @@
-java -Dlogback.configurationFile=logback.xml -cp Actors.jar;ServiceInterface.jar;ServiceXvsm.jar at.sbc.firework.QualityController

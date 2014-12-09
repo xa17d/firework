@@ -14,12 +14,20 @@ public class Supplier implements Runnable {
     private IService service;
     private EnumParts selectedItem;
     private int amount;
+    private double errorRate;
 
-    public Supplier(IService service, EnumParts selectedItem, int amount) {
+    public Supplier(IService service, EnumParts selectedItem, int amount, double errorRate) {
 
         this.service = service;
         this.selectedItem = selectedItem;
         this.amount = amount;
+
+        if(errorRate < 0)
+            this.errorRate = 0;
+        else if(errorRate > 100)
+            this.errorRate = 100;
+        else
+            this.errorRate = errorRate;
     }
 
     @Override
@@ -33,7 +41,7 @@ public class Supplier implements Runnable {
                     addToStock(new Casing(supplierId, service.getNewId()));
             if(selectedItem == EnumParts.EFFECT_CHARGE)
                 for(int i = 0; i < amount; i++)
-                    addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < 0.33 ? true : false));
+                    addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < (errorRate / 100.0)));
             if(selectedItem == EnumParts.PROPELLING_CHARGE)
                 for(int i = 0; i < amount; i++)
                     addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));

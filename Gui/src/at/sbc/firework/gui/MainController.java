@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 
+import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -33,6 +34,9 @@ public class MainController {
 
     @FXML
     private TextField tfAmount;
+
+    @FXML
+    private TextField tfErrorRate;
 
     /**
      * called on initializing the controller by fx
@@ -70,16 +74,18 @@ public class MainController {
         EnumParts selectedItem = cbSupplier.getValue();
 
         int amount = 0;
+        double errorRate = 0;
         try {
             amount = Integer.parseInt(tfAmount.getText());
+            errorRate = Double.parseDouble(tfErrorRate.getText());
 
-            Thread thread = new Thread(new Supplier(service, selectedItem, amount));
+            Thread thread = new Thread(new Supplier(service, selectedItem, amount, errorRate));
             thread.start();
 
             traceList.add("added new part: " + amount + "x  " + selectedItem);
         }
         catch (NumberFormatException e) {
-            traceList.add("please type in a correct number for amount");
+            traceList.add("please type in a correct number for:\n * amount (whole number)\n * error rate (0-100%)");
         }
     }
 
