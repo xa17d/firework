@@ -31,7 +31,6 @@ public abstract class Actor {
 
         while (true) {
             work();
-            //Utils.sleep(200,200);
             System.out.println("--------------");
         }
     }

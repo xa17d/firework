@@ -107,13 +107,17 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
 
     @Override
     public void dataChanged() {
+        ArrayList<ClientService> clientsCopy;
+
         synchronized (clients) {
-            for (ClientService client : clients) {
-                try {
-                    client.dataChanged();
-                } catch (ServiceException e) {
-                    e.printStackTrace();
-                }
+            clientsCopy = new ArrayList<ClientService>(clients);
+        }
+
+        for (ClientService client : clientsCopy) {
+            try {
+                client.dataChanged();
+            } catch (ServiceException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -72,56 +72,88 @@ public class TableController implements IDataChangedListener {
     @Override
     public void dataChanged() {
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
+        ArrayList<Part> stock = null;
+        ArrayList<Rocket> packingQueue = null;
+        ArrayList<Rocket> qualityCheckQueue = null;
+        ArrayList<RocketPackage5> distributionPackages = null;
+        ArrayList<Rocket> garbage = null;
 
-                    ArrayList<Part> stock = service.listStock();
-                    int casingCount = 0;
-                    int effectCount = 0;
-                    int propellingCount = 0;
-                    int stickCount = 0;
+        try {
+            stock = service.listStock();
+            packingQueue = service.listPackingQueue();
+            qualityCheckQueue = service.listQualityCheckQueue();
+            distributionPackages = service.listDistributionStock();
+            garbage = service.listGarbage();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
 
-                    for(Part p : stock) {
+        Platform.runLater(new UpdateTableRunnable(stock, packingQueue, qualityCheckQueue, distributionPackages, garbage));
+    }
 
-                        if(p instanceof Casing)
-                            casingCount++;
+    private class UpdateTableRunnable implements Runnable {
 
-                        if(p instanceof EffectCharge)
-                            effectCount++;
-
-                        if(p instanceof PropellingChargePackage)
-                            propellingCount++;
-
-                        if(p instanceof Stick)
-                            stickCount++;
-                    }
-
-                    lbCasingAmount.setText(String.valueOf(casingCount));
-                    lbEffectChargeAmount.setText(String.valueOf(effectCount));
-                    lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
-                    lbStickAmount.setText(String.valueOf(stickCount));
+        private ArrayList<Part> stock;
+        private ArrayList<Rocket> packingQueue;
+        private ArrayList<Rocket> qualityCheckQueue;
+        private ArrayList<RocketPackage5> distributionPackages;
+        private ArrayList<Rocket> garbage;
 
 
-                    observedStockList.clear();
-                    observedStockList.addAll(stock);
+        public UpdateTableRunnable(ArrayList<Part> stock, ArrayList<Rocket> packingQueue, ArrayList<Rocket> qualityCheckQueue, ArrayList<RocketPackage5> distributionPackages, ArrayList<Rocket> garbage) {
+            this.stock = stock;
+            this.packingQueue = packingQueue;
+            this.qualityCheckQueue = qualityCheckQueue;
+            this.distributionPackages = distributionPackages;
+            this.garbage = garbage;
+        }
 
-                    observedProducedList.clear();
-                    observedProducedList.addAll(service.listPackingQueue());
-                    observedProducedList.addAll(service.listQualityCheckQueue());
+        @Override
+        public void run() {
 
-                    observedDeliveredList.clear();
-                    observedDeliveredList.addAll(service.listDistributionStock());
+            try {
+                int casingCount = 0;
+                int effectCount = 0;
+                int propellingCount = 0;
+                int stickCount = 0;
 
-                    observedDisposedList.clear();
-                    observedDisposedList.addAll(service.listGarbage());
+                for (Part p : stock) {
 
-                } catch (ServiceException e) {
-                    e.printStackTrace();
+                    if (p instanceof Casing)
+                        casingCount++;
+
+                    if (p instanceof EffectCharge)
+                        effectCount++;
+
+                    if (p instanceof PropellingChargePackage)
+                        propellingCount++;
+
+                    if (p instanceof Stick)
+                        stickCount++;
                 }
-            }
-        });
 
+                lbCasingAmount.setText(String.valueOf(casingCount));
+                lbEffectChargeAmount.setText(String.valueOf(effectCount));
+                lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
+                lbStickAmount.setText(String.valueOf(stickCount));
+
+
+                observedStockList.clear();
+                observedStockList.addAll(stock);
+
+                observedProducedList.clear();
+                observedProducedList.addAll(service.listPackingQueue());
+                observedProducedList.addAll(service.listQualityCheckQueue());
+
+                observedDeliveredList.clear();
+                observedDeliveredList.addAll(service.listDistributionStock());
+
+                observedDisposedList.clear();
+                observedDisposedList.addAll(service.listGarbage());
+
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

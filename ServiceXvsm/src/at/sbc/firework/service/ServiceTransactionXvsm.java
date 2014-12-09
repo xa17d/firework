@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 14.11.2014.
  */
-public class ServiceTransactionXvsm implements IServiceTransaction, IDataChangedListener {
+public class ServiceTransactionXvsm implements IServiceTransaction {
 
     private Capi capi;
     private TransactionReference transaction;
@@ -24,15 +24,11 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
         this.capi = service.getCapi();
         this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
         //this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
-
-        this.service.addChangeListener(this);
     }
 
 
     private ArrayList<Part> internalTakeFromStock(ContainerReference container, Class<?> type, int count) throws ServiceException
     {
-        // TODO: des isch no ned ganz sauber
-
         ArrayList<Selector> selectors = new ArrayList<Selector>();
         selectors.add(TypeCoordinator.newSelector(type, count));
 
@@ -40,10 +36,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
         try {
             entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
         } catch (CountNotMetException e) {
-
-            selectors = new ArrayList<Selector>();
-            selectors.add(TypeCoordinator.newSelector(type, count));
-
+            throw new XvsmException(e);
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -58,7 +51,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
         selectors.add(FifoCoordinator.newSelector(count));
         ArrayList<Serializable> entries = null;
         try {
-            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.ZERO, transaction);
+            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -126,12 +119,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
 
     @Override
     public Rocket takeFromQualityCheckQueue() throws ServiceException {
-        try {
-            return take1FromQueue(service.getQualityCheckQueueContainer());
-        } catch(ServiceException e) {
-            waitForChange(10000);
-            return takeFromQualityCheckQueue();
-        }
+        return take1FromQueue(service.getQualityCheckQueueContainer());
     }
 
     @Override
@@ -141,12 +129,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
 
     @Override
     public Rocket takeFromPackingQueue() throws ServiceException {
-        try {
-            return take1FromQueue(service.getPackingQueueContainer());
-        } catch(ServiceException e) {
-            waitForChange(1000);
-            return takeFromPackingQueue();
-        }
+        return take1FromQueue(service.getPackingQueueContainer());
     }
 
     @Override
@@ -157,19 +140,6 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
     @Override
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
         internalAddToContainer(service.getDistributionStockContainer(), rocketPackage);
-    }
-
-    @Override
-    public synchronized void dataChanged() {
-        notify();
-    }
-
-    private synchronized void waitForChange(long timeout) {
-        try {
-            wait(timeout);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -189,5 +159,4 @@ public class ServiceTransactionXvsm implements IServiceTransaction, IDataChanged
             throw new XvsmException(e);
         }
     }
-
 }

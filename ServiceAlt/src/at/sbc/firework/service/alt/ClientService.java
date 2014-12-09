@@ -58,13 +58,11 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     @Override
     public void start() throws ServiceException {
         Log("Client Start");
-        //TODO
     }
 
     @Override
     public void stop() throws ServiceException {
         Log("Client Stop");
-        //TODO
     }
 
     @Override
