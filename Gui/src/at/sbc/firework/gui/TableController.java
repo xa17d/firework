@@ -111,49 +111,44 @@ public class TableController implements IDataChangedListener {
         @Override
         public void run() {
 
-            try {
-                int casingCount = 0;
-                int effectCount = 0;
-                int propellingCount = 0;
-                int stickCount = 0;
+            int casingCount = 0;
+            int effectCount = 0;
+            int propellingCount = 0;
+            int stickCount = 0;
 
-                for (Part p : stock) {
+            for (Part p : stock) {
 
-                    if (p instanceof Casing)
-                        casingCount++;
+                if (p instanceof Casing)
+                    casingCount++;
 
-                    if (p instanceof EffectCharge)
-                        effectCount++;
+                if (p instanceof EffectCharge)
+                    effectCount++;
 
-                    if (p instanceof PropellingChargePackage)
-                        propellingCount++;
+                if (p instanceof PropellingChargePackage)
+                    propellingCount++;
 
-                    if (p instanceof Stick)
-                        stickCount++;
-                }
-
-                lbCasingAmount.setText(String.valueOf(casingCount));
-                lbEffectChargeAmount.setText(String.valueOf(effectCount));
-                lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
-                lbStickAmount.setText(String.valueOf(stickCount));
-
-
-                observedStockList.clear();
-                observedStockList.addAll(stock);
-
-                observedProducedList.clear();
-                observedProducedList.addAll(service.listPackingQueue());
-                observedProducedList.addAll(service.listQualityCheckQueue());
-
-                observedDeliveredList.clear();
-                observedDeliveredList.addAll(service.listDistributionStock());
-
-                observedDisposedList.clear();
-                observedDisposedList.addAll(service.listGarbage());
-
-            } catch (ServiceException e) {
-                e.printStackTrace();
+                if (p instanceof Stick)
+                    stickCount++;
             }
+
+            lbCasingAmount.setText(String.valueOf(casingCount));
+            lbEffectChargeAmount.setText(String.valueOf(effectCount));
+            lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
+            lbStickAmount.setText(String.valueOf(stickCount));
+
+
+            observedStockList.clear();
+            observedStockList.addAll(stock);
+
+            observedProducedList.clear();
+            observedProducedList.addAll(packingQueue);
+            observedProducedList.addAll(qualityCheckQueue);
+
+            observedDeliveredList.clear();
+            observedDeliveredList.addAll(distributionPackages);
+
+            observedDisposedList.clear();
+            observedDisposedList.addAll(garbage);
         }
     }
 }
