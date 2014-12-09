@@ -64,13 +64,13 @@ public class Service implements IService {
 
         // Container erstella
         try {
-            stockContainer = FindOrCreateStockContainer(CONTAINER_NAME_STOCK);
-            qualityCheckQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
-            packingQueueContainer = FindOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
-            garbageContainer = FindOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
-            distributionStockContainer = FindOrCreateQueueContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
+            stockContainer = findOrCreateStockContainer(CONTAINER_NAME_STOCK);
+            qualityCheckQueueContainer = findOrCreateQueueContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
+            packingQueueContainer = findOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
+            garbageContainer = findOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
+            distributionStockContainer = findOrCreateQueueContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
 
-            idCounterContainer = FindOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
+            idCounterContainer = findOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
 
             NotificationManager notificationManager = new NotificationManager(core);
             try {
@@ -88,7 +88,7 @@ public class Service implements IService {
         }
     }
 
-    private ContainerReference FindOrCreateStockContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateStockContainer(String name) throws MzsCoreException {
         ContainerReference container;
 
         try {
@@ -107,7 +107,7 @@ public class Service implements IService {
         return container;
     }
 
-    private ContainerReference FindOrCreateQueueContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateQueueContainer(String name) throws MzsCoreException {
         ContainerReference container;
 
         try {
@@ -125,7 +125,7 @@ public class Service implements IService {
         return container;
     }
 
-    private ContainerReference FindOrCreateIdCounterContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateIdCounterContainer(String name) throws MzsCoreException {
         ContainerReference container;
 
         try {

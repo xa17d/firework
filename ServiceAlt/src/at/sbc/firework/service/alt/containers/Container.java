@@ -13,52 +13,81 @@ public class Container {
 
     private ArrayList<Object> items = new ArrayList<Object>();
 
-    public synchronized Object take(ItemSelector selector) {
-        for (Object o : items) {
-            if (!selector.checkItem(o)) { break; }
+    public Object take(ItemSelector selector) {
+        boolean listChanged = false;
+        Object item;
+
+        synchronized (listLock) {
+            for (Object o : items) {
+                if (!selector.checkItem(o)) {
+                    break;
+                }
+            }
+
+            item = selector.getResult();
+            if (item != null) {
+                items.remove(item);
+                listChanged = true;
+            }
         }
 
-        Object item = selector.getResult();
-        if (item != null) {
-            items.remove(item);
+        if (listChanged) {
             changed();
         }
 
         return item;
     }
 
-    public synchronized void add(Object item) {
-        items.add(item);
+    public void add(Object item) {
+        synchronized (listLock) {
+            items.add(item);
+        }
+
         changed();
     }
 
-    public synchronized void addFirst(Object item) {
-        items.add(0, item);
+    public void addFirst(Object item) {
+        synchronized (listLock) {
+            items.add(0, item);
+        }
         changed();
     }
 
-    public synchronized <T> ArrayList<T> list() {
-        ArrayList<T> copy = new ArrayList<T>(items.size());
-        for (Object o : items) {
-            copy.add((T)o);
+    public <T> ArrayList<T> list() {
+        ArrayList<T> copy;
+        synchronized (listLock) {
+            copy = new ArrayList<T>(items.size());
+            for (Object o : items) {
+                copy.add((T) o);
+            }
         }
         return copy;
     }
 
-    private synchronized void changed() {
+    private Object listLock = new Object();
+    private Object changeLock = new Object();
+
+    private void changed() {
         if (dataChangedListener != null) {
             dataChangedListener.dataChanged();
         }
+        synchronized (changeLock) {
+            changeLock.notifyAll();
+        }
 
-        notify();
+        System.out.println("done");
     }
 
-    public synchronized void waitForChange(int timeout) {
-        try {
-            wait(timeout);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void waitForChange(int timeout) {
+        synchronized (changeLock)
+        {
+            try {
+                changeLock.wait(timeout);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     private IDataChangedListener dataChangedListener = null;

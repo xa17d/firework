@@ -46,7 +46,7 @@ public class Main extends Application {
             loader.setLocation(getClass().getResource("main_frame.fxml"));
 
             rootLayout = (BorderPane) loader.load();
-            //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));              //TODO firework icon
+            //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
             primaryStage.setTitle("Firework");
 
             Scene rootScene = new Scene(rootLayout);

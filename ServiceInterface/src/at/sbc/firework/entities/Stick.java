@@ -14,6 +14,6 @@ public class Stick extends Part {
 
     @Override
     public String toString() {
-        return "Stick (" + getId() + ")";
+        return "Stick (" + getId() + " | Supplier: " + getSupplierId() + ")";
     }
 }

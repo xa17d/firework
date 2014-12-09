@@ -14,6 +14,6 @@ public class Casing extends Part {
 
     @Override
     public String toString() {
-        return "Casing (" + getId() + ")";
+        return "Casing (" + getId() + " | Supplier: " + getSupplierId() + ")";
     }
 }

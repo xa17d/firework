@@ -20,9 +20,9 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="tfAmount" alignment="CENTER_RIGHT" prefWidth="60.0">
+                        <TextField fx:id="tfAmount" alignment="CENTER_RIGHT" prefWidth="60.0" text="1">
                             <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                <Insets bottom="5.0" left="12.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </TextField>
                     </children>
@@ -30,6 +30,28 @@
                         <Insets left="10.0" right="10.0" />
                     </VBox.margin>
                 </HBox>
+            <HBox>
+               <children>
+                  <Label text="Error Rate:">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="tfErrorRate" alignment="CENTER_RIGHT" prefWidth="60.0" text="25">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Label text="\%">
+                     <HBox.margin>
+                        <Insets bottom="5.0" right="5.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </HBox>
                 <Button fx:id="btSupplier" mnemonicParsing="false" onAction="#createSupplier" text="Create Supplier">
                     <VBox.margin>
                         <Insets left="10.0" right="10.0" top="15.0" />
