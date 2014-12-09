@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Created by daniel on 28.11.2014.
+ * Bruchts damit mr Listener uf da jeweils andra Sita ufruafa können.
  */
 public interface IRemoteEventListener extends Remote {
     void invoke() throws RemoteException;

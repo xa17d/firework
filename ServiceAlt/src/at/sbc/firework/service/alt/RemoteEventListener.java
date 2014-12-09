@@ -7,7 +7,7 @@ import java.rmi.server.RemoteObject;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Created by daniel on 28.11.2014.
+ * Implementation vo nam IRemoteEventListener.
  */
 public class RemoteEventListener extends UnicastRemoteObject implements IRemoteEventListener {
 

@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 28.11.2014.
+ * Wrapper fürd RMI Transaction
  */
 public class ServiceAltTransaction implements IServiceTransaction {
 

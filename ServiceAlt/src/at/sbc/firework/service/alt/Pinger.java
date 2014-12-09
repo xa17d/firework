@@ -3,7 +3,7 @@ package at.sbc.firework.service.alt;
 import java.rmi.RemoteException;
 
 /**
- * Created by daniel on 28.11.2014.
+ * An Pinger pingt in nam extra Thread jede Sekund der Service ufm Serva a, damit er woas dass der Client no leabt.
  */
 public class Pinger extends Thread {
 

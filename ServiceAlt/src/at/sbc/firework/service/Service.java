@@ -10,7 +10,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 17.11.2014.
+ * Wrapper fürn RMI Service
  */
 public class Service implements IService {
 

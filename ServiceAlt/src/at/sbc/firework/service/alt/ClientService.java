@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by daniel on 21.11.2014.
+ * Isch der Service für an Client. Jeder Client kriagt oa Instanz vo dera Class.
  */
 public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
@@ -58,13 +58,11 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     @Override
     public void start() throws ServiceException {
         Log("Client Start");
-        //TODO
     }
 
     @Override
     public void stop() throws ServiceException {
         Log("Client Stop");
-        //TODO
     }
 
     @Override

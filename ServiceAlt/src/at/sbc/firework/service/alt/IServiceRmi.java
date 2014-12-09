@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 21.11.2014.
+ * Service Interface fürs RMI
  */
 public interface IServiceRmi extends Remote {
     void cancel() throws ServiceException, RemoteException;

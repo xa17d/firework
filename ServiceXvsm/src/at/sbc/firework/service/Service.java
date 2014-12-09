@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by daniel on 14.11.2014.
+ * XVSM Service bütat Zugriff ufn Space und ma kann Transaktiona erstella
  */
 public class Service implements IService {
 

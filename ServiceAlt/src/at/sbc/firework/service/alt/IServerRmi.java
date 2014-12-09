@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Created by daniel on 21.11.2014.
+ * Interface fürs Servcer Object des über RMI ufgruafa wird
  */
 public interface IServerRmi extends Remote {
     IServiceRmi getService() throws RemoteException;

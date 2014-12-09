@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
- * Created by daniel on 21.11.2014.
+ * Transaction Interfce fürs RMI
  */
 public interface IServiceTransactionRmi extends Remote {
 
