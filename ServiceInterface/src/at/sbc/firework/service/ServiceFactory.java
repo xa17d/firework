@@ -9,9 +9,14 @@ public class ServiceFactory {
         // prevent public constructor
     }
 
+    private static IService service = null;
+
     public static IService getService() {
         try {
-            return (IService) Class.forName("at.sbc.firework.service.Service").newInstance();
+            if (service == null) {
+                service = (IService) Class.forName("at.sbc.firework.service.Service").newInstance();
+            }
+            return service;
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

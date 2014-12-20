@@ -1,4 +1,4 @@
-package at.sbc.firework.gui;
+package at.sbc.firework.gui.factory;
 
 import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.*;

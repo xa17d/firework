@@ -1,5 +1,7 @@
-package at.sbc.firework.gui;
+package at.sbc.firework.gui.factory;
 
+import at.sbc.firework.gui.factory.MainController;
+import at.sbc.firework.gui.factory.TableController;
 import at.sbc.firework.service.IService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
