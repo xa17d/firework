@@ -4,6 +4,7 @@ import at.sbc.firework.actors.Actor;
 import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.EffectCharge;
 import at.sbc.firework.entities.PropellingCharge;
+import at.sbc.firework.entities.Quality;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.service.IDataChangedListener;
 import at.sbc.firework.service.IServiceTransaction;
@@ -52,14 +53,13 @@ public class QualityController extends Actor {
                 propellingChargeCount += p.getAmount();
             }
 
-            //dr quality typ speichert noch sine id
-            rocket.setQualityControllerId(id);
 
-            //in richtiga space haua
+            //dr quality typ bewertet d Qualität speichert noch sine id
+            // TODO: d Qualität wirklich bewerta lo, i han jetzt mol einfach uf ClassA gstellt wenn se ned damaged isch
             if (damagedCount <= 1 && propellingChargeCount >= 120)
-                rocket.setDamaged(false);
+                rocket.setQuality(id, Quality.ClassA);
             else
-                rocket.setDamaged(true);
+                rocket.setQuality(id, Quality.Damaged);
 
             System.out.println(rocket.toString());
 

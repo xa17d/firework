@@ -90,7 +90,8 @@ public class Manufacturer extends Actor {
 
             long rocketId = service.getNewId();
 
-            Rocket rocket = new Rocket(id, rocketId, stick, casing, effectCharges, Utils.listToArrayP(propellingCharge));
+            // TODO: Wenns für an Auftrag isch muss denn spöter die OrderPosition statt null gsetzt wöras
+            Rocket rocket = new Rocket(id, rocketId, null, stick, casing, effectCharges, Utils.listToArrayP(propellingCharge));
 
             // Ind QualityCheckQueue
 

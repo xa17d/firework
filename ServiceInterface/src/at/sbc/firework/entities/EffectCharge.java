@@ -8,15 +8,18 @@ public class EffectCharge extends Part {
     private static final long serialVersionUID = 4L;
 
     private boolean damaged;
+    private Color color;
 
-    public EffectCharge(long supplierId, long id, boolean damaged)
+    public EffectCharge(long supplierId, long id, boolean damaged, Color color)
     {
         super(supplierId, id);
 
         this.damaged = damaged;
+        this.color = color;
     }
 
     public boolean isDamaged() { return damaged; }
+    public Color getColor() { return color; }
 
     @Override
     public String toString() {

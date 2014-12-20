@@ -41,7 +41,8 @@ public class Supplier implements Runnable {
                     addToStock(new Casing(supplierId, service.getNewId()));
             if(selectedItem == EnumParts.EFFECT_CHARGE)
                 for(int i = 0; i < amount; i++)
-                    addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < (errorRate / 100.0)));
+                    // TODO: d Farb vom User uswähla lo
+                    addToStock(new EffectCharge(supplierId, service.getNewId(), Math.random() < (errorRate / 100.0), Color.Blue));
             if(selectedItem == EnumParts.PROPELLING_CHARGE)
                 for(int i = 0; i < amount; i++)
                     addToStock(new PropellingChargePackage(supplierId, service.getNewId(), 500));

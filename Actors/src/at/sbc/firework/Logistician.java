@@ -2,10 +2,7 @@ package at.sbc.firework;
 
 import at.sbc.firework.actors.Actor;
 import at.sbc.firework.actors.Utils;
-import at.sbc.firework.entities.EffectCharge;
-import at.sbc.firework.entities.PropellingCharge;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IDataChangedListener;
 import at.sbc.firework.service.IServiceTransaction;
 import at.sbc.firework.service.ServiceException;
@@ -46,7 +43,7 @@ public class Logistician extends Actor {
                 System.out.println("getting next rocket...");
                 Rocket rocket = t.takeFromPackingQueue();
 
-                if (rocket.isDamaged()) {
+                if (rocket.getQuality() == Quality.Damaged) {
                     System.out.println("putting rocket (" + rocket.getId() + ") to garbage");
                     t.addToGarbage(rocket);
                 }

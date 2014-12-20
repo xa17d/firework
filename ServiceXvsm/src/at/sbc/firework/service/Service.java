@@ -24,7 +24,7 @@ public class Service implements IService {
 
 
     private URI spaceUri = URI.create("xvsm://localhost:9876");
-    public static final long DEFAULT_TIMEOUT = MzsConstants.RequestTimeout.INFINITE;
+    public static final long DEFAULT_TIMEOUT = 5000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
     private static final String CONTAINER_NAME_QUALITYCHECKQUEUE= "qualityCheckQueue";
