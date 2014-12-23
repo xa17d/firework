@@ -171,7 +171,7 @@ public class FactoryService implements IFactoryService {
     @Override
     public IFactoryTransaction startTransaction() throws ServiceException {
         try {
-            return new ServiceTransactionXvsm(this);
+            return new FactoryTransactionXvsm(this);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }

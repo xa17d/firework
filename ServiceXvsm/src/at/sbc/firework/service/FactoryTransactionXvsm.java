@@ -10,13 +10,13 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 14.11.2014.
  */
-public class ServiceTransactionXvsm implements IFactoryTransaction {
+public class FactoryTransactionXvsm implements IFactoryTransaction {
 
     private Capi capi;
     private TransactionReference transaction;
     private FactoryService service;
 
-    public ServiceTransactionXvsm(FactoryService service) throws MzsCoreException {
+    public FactoryTransactionXvsm(FactoryService service) throws MzsCoreException {
         this.service = service;
         this.capi = service.getCapi();
         this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
