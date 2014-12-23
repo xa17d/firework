@@ -8,4 +8,8 @@ public class ServiceException extends Exception {
     {
         super(innerException);
     }
+    public ServiceException(String message)
+    {
+        super(message);
+    }
 }

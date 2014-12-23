@@ -1,6 +1,6 @@
 package at.sbc.firework.service.alt.containers;
 
-import at.sbc.firework.service.IDataChangedListener;
+import at.sbc.firework.service.INotification;
 
 import java.util.ArrayList;
 
@@ -90,8 +90,8 @@ public class Container {
 
     }
 
-    private IDataChangedListener dataChangedListener = null;
-    public void setDataChangedListener(IDataChangedListener listener) {
+    private INotification dataChangedListener = null;
+    public void setDataChangedListener(INotification listener) {
         this.dataChangedListener = listener;
     }
 }

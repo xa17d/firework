@@ -4,6 +4,7 @@ import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.utils.NotificationMode;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 import org.mozartspaces.notifications.Notification;
@@ -40,12 +41,12 @@ public class FactoryService implements IFactoryService {
     private ContainerReference distributionStockContainer;
     private ContainerReference idCounterContainer;
 
-    private ArrayList<IDataChangedListener> changedListener = new ArrayList<IDataChangedListener>();
+    private ArrayList<INotification> changedListener = new ArrayList<INotification>();
 
     private NotificationListener notificationListener = new NotificationListener() {
         @Override
         public void entryOperationFinished(Notification notification, Operation operation, List<? extends Serializable> list) {
-            for(IDataChangedListener listener : changedListener) {
+            for(INotification listener : changedListener) {
                 listener.dataChanged();
             }
         }
@@ -203,11 +204,6 @@ public class FactoryService implements IFactoryService {
     }
 
     @Override
-    public void addChangeListener(IDataChangedListener listener) {
-        this.changedListener.add(listener);
-    }
-
-    @Override
     public long getNewId() throws ServiceException {
 
         long id;
@@ -307,5 +303,11 @@ public class FactoryService implements IFactoryService {
     public int getOrderRocketCount(long orderId) throws ServiceException {
         // TODO: implement
         return 0;
+    }
+
+    @Override
+    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
+        // TODO: implement correctly
+        this.changedListener.add(notification);
     }
 }

@@ -1,9 +1,8 @@
 package at.sbc.firework.service.alt;
 
-import at.sbc.firework.service.IDataChangedListener;
+import at.sbc.firework.service.INotification;
 
 import java.rmi.RemoteException;
-import java.rmi.server.RemoteObject;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -11,11 +10,11 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class RemoteEventListener extends UnicastRemoteObject implements IRemoteEventListener {
 
-    public RemoteEventListener(IDataChangedListener listener) throws RemoteException {
+    public RemoteEventListener(INotification listener) throws RemoteException {
         this.listener = listener;
     }
 
-    private IDataChangedListener listener;
+    private INotification listener;
 
     @Override
     public void invoke() {

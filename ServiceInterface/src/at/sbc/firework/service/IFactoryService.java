@@ -4,6 +4,7 @@ import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public interface IFactoryService {
     ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException;
     int getOrderRocketCount(long orderId) throws ServiceException;
 
-    void addChangeListener(IDataChangedListener listener);
+    void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException;
 
     long getNewId() throws ServiceException;
 }

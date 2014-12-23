@@ -1,7 +1,7 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.service.alt.containers.Container;
-import at.sbc.firework.service.IDataChangedListener;
+import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.RemoteException;
@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Server extends UnicastRemoteObject implements IDataChangedListener, IServerRmi {
+public class Server extends UnicastRemoteObject implements INotification, IServerRmi {
 
     public static final String SERVER_NAME = "ServerObjectRmiName";
 

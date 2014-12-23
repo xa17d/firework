@@ -5,6 +5,7 @@ import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
 import at.sbc.firework.service.alt.*;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -145,9 +146,10 @@ public class FactoryService implements IFactoryService {
     }
 
     @Override
-    public void addChangeListener(IDataChangedListener listener) {
+    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
+        // TODO: implement correctly
         try {
-            RemoteEventListener remoteListener = new RemoteEventListener(listener);
+            RemoteEventListener remoteListener = new RemoteEventListener(notification);
             remoteService.addChangeListener(remoteListener);
         } catch (RemoteException e) {
             e.printStackTrace();

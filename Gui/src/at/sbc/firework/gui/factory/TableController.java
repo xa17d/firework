@@ -1,9 +1,11 @@
 package at.sbc.firework.gui.factory;
 
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.IDataChangedListener;
+import at.sbc.firework.service.ContainerOperation;
+import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.utils.NotificationMode;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by Lucas on 17.11.2014.
  */
-public class TableController implements IDataChangedListener {
+public class TableController implements INotification {
 
     private IFactoryService service;
 
@@ -65,7 +67,11 @@ public class TableController implements IDataChangedListener {
     public void setService(IFactoryService service) {
 
         this.service = service;
-        service.addChangeListener(this);
+        try {
+            service.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
         dataChanged();
     }
 

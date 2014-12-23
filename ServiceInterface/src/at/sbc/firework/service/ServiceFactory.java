@@ -34,11 +34,11 @@ public class ServiceFactory {
 
     public static ICustomerService getCustomer(String address) {
         // TODO: implement
-        throw new NotImplementedException();
+        return null;
     }
 
     public static ICustomerService createCustomer(String address) {
         // TODO: implement
-        throw new NotImplementedException();
+        return null;
     }
 }
