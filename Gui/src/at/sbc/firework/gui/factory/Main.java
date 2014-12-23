@@ -1,8 +1,6 @@
 package at.sbc.firework.gui.factory;
 
-import at.sbc.firework.gui.factory.MainController;
-import at.sbc.firework.gui.factory.TableController;
-import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
 import javafx.application.Application;
@@ -23,7 +21,7 @@ public class Main extends Application {
     private BorderPane rootLayout;
     private GridPane tableLayout;
 
-    private IService service;
+    private IFactoryService service;
 
     @Override
     public void start(Stage primaryStage) {
@@ -31,7 +29,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         try {
-            service = ServiceFactory.getService();
+            service = ServiceFactory.getFactory();
             service.start();
         }
         catch (ServiceException e) {

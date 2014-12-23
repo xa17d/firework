@@ -1,5 +1,6 @@
 package at.sbc.firework.service;
 
+import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
@@ -12,13 +13,13 @@ import java.util.ArrayList;
 /**
  * Wrapper fürn RMI Service
  */
-public class Service implements IService {
+public class FactoryService implements IFactoryService {
 
     private static final String HOST = "localhost";
     private static final int PORT = 9876;
 
     private IServerRmi server;
-    private IServiceRmi remoteService;
+    private IFactoryServiceRmi remoteService;
     private Pinger pinger;
 
     @Override
@@ -63,7 +64,7 @@ public class Service implements IService {
     }
 
     @Override
-    public IServiceTransaction startTransaction() throws ServiceException {
+    public IFactoryTransaction startTransaction() throws ServiceException {
         try {
             return new ServiceAltTransaction(remoteService.startTransaction());
         } catch (RemoteException e) {
@@ -111,6 +112,33 @@ public class Service implements IService {
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
         try {
             return remoteService.listDistributionStock();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public ArrayList<Order> listOrders() throws ServiceException {
+        try {
+            return remoteService.listOrders();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException {
+        try {
+            return remoteService.listOrderRockets(orderId);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public int getOrderRocketCount(long orderId) throws ServiceException {
+        try {
+            return remoteService.getOrderRocketCount(orderId);
         } catch (RemoteException e) {
             throw new ServiceException(e);
         }

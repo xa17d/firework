@@ -1,14 +1,11 @@
 package at.sbc.firework;
 
 import at.sbc.firework.actors.Actor;
-import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.IDataChangedListener;
-import at.sbc.firework.service.IServiceTransaction;
+import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.ServiceException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by daniel on 17.11.2014.
@@ -31,7 +28,7 @@ public class Logistician extends Actor {
     @Override
     public void work() {
 
-        IServiceTransaction t = null;
+        IFactoryTransaction t = null;
 
         try {
             t = service.startTransaction();

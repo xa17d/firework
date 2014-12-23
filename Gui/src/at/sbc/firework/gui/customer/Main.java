@@ -1,16 +1,13 @@
 package at.sbc.firework.gui.customer;
 
-import at.sbc.firework.Customer;
 import at.sbc.firework.gui.factory.MainController;
-import at.sbc.firework.gui.factory.TableController;
-import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,7 +19,7 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    private IService service;
+    private IFactoryService service;
 
     @Override
     public void start(Stage primaryStage) {
@@ -30,7 +27,7 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         try {
-            service = ServiceFactory.getService();
+            service = ServiceFactory.getFactory();
             service.start();
         }
         catch (ServiceException e) {

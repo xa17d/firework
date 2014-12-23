@@ -1,9 +1,6 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.entities.PropellingChargePackage;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.entities.*;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
@@ -13,13 +10,13 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 14.11.2014.
  */
-public class ServiceTransactionXvsm implements IServiceTransaction {
+public class ServiceTransactionXvsm implements IFactoryTransaction {
 
     private Capi capi;
     private TransactionReference transaction;
-    private Service service;
+    private FactoryService service;
 
-    public ServiceTransactionXvsm(Service service) throws MzsCoreException {
+    public ServiceTransactionXvsm(FactoryService service) throws MzsCoreException {
         this.service = service;
         this.capi = service.getCapi();
         this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
@@ -34,7 +31,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
         ArrayList<Part> entries = null;
         try {
-            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(container, selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
         } catch (CountNotMetException e) {
             throw new XvsmException(e);
         }
@@ -51,7 +48,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         selectors.add(FifoCoordinator.newSelector(count));
         ArrayList<Serializable> entries = null;
         try {
-            entries = capi.take(container, selectors, Service.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(container, selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -75,7 +72,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
         Entry entry = new Entry(item);
 
         try {
-            capi.write(entry, container, Service.DEFAULT_TIMEOUT, transaction);
+            capi.write(entry, container, FactoryService.DEFAULT_TIMEOUT, transaction);
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -103,7 +100,7 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
 
         ArrayList<PropellingChargePackage> entries = null;
         try {
-            entries = capi.take(service.getStockContainer(), selectors, Service.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(service.getStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -140,6 +137,28 @@ public class ServiceTransactionXvsm implements IServiceTransaction {
     @Override
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
         internalAddToContainer(service.getDistributionStockContainer(), rocketPackage);
+    }
+
+    @Override
+    public void addOrder(Order order) throws ServiceException {
+        // TODO: implement
+    }
+
+    @Override
+    public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
+        // TODO: implement
+    }
+
+    @Override
+    public OrderPosition takeOrderPosition() throws ServiceException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException {
+        // TODO: implement
+        return null;
     }
 
     @Override

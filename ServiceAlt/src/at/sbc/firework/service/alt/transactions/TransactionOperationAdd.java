@@ -7,7 +7,7 @@ import at.sbc.firework.service.alt.containers.Container;
  */
 public class TransactionOperationAdd extends TransactionOperation {
 
-    public TransactionOperationAdd(Transaction transaction, Container container, Object item) {
+    public TransactionOperationAdd(FactoryTransaction transaction, Container container, Object item) {
         super(container);
         setItem(item);
     }

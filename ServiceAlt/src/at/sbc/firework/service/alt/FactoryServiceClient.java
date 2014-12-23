@@ -1,9 +1,10 @@
 package at.sbc.firework.service.alt;
 
+import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.service.alt.transactions.Transaction;
+import at.sbc.firework.service.alt.transactions.FactoryTransaction;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.RemoteException;
@@ -14,9 +15,9 @@ import java.util.Date;
 /**
  * Isch der Service für an Client. Jeder Client kriagt oa Instanz vo dera Class.
  */
-public class ClientService extends UnicastRemoteObject implements IServiceRmi {
+public class FactoryServiceClient extends UnicastRemoteObject implements IFactoryServiceRmi {
 
-    public ClientService(Server server) throws RemoteException
+    public FactoryServiceClient(Server server) throws RemoteException
     {
         Log("Client connected");
         this.server = server;
@@ -31,7 +32,7 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
 
     public Server getServer() { return server; }
 
-    private ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    private ArrayList<FactoryTransaction> transactions = new ArrayList<FactoryTransaction>();
 
     private Date lastPing;
 
@@ -66,11 +67,11 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     }
 
     @Override
-    public IServiceTransactionRmi startTransaction() throws ServiceException {
+    public IFactoryTransactionRmi startTransaction() throws ServiceException {
         synchronized (transactions) {
-            Transaction t = null;
+            FactoryTransaction t = null;
             try {
-                t = new Transaction(this);
+                t = new FactoryTransaction(this);
             } catch (RemoteException e) {
                 throw new ServiceException(e);
             }
@@ -79,7 +80,7 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
         }
     }
 
-    public void endTransaction(Transaction t) {
+    public void endTransaction(FactoryTransaction t) {
         synchronized (transactions)
         {
             transactions.remove(t);
@@ -109,6 +110,24 @@ public class ClientService extends UnicastRemoteObject implements IServiceRmi {
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
         return getServer().getDistributionStockContainer().list();
+    }
+
+    @Override
+    public ArrayList<Order> listOrders() throws ServiceException, RemoteException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException, RemoteException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public int getOrderRocketCount(long orderId) throws ServiceException, RemoteException {
+        // TODO: implement
+        return 0;
     }
 
     private ArrayList<IRemoteEventListener> remoteEventListeners = new ArrayList<IRemoteEventListener>();

@@ -2,7 +2,7 @@ package at.sbc.firework.gui.factory;
 
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IDataChangedListener;
-import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class TableController implements IDataChangedListener {
 
-    private IService service;
+    private IFactoryService service;
 
     @FXML
     private ListView<Part> lvStock;
@@ -62,7 +62,7 @@ public class TableController implements IDataChangedListener {
         lvDisposed.setItems(observedDisposedList);
     }
 
-    public void setService(IService service) {
+    public void setService(IFactoryService service) {
 
         this.service = service;
         service.addChangeListener(this);

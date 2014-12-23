@@ -79,41 +79,41 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
     }
 
     private void findDeadClients() {
-        ArrayList<ClientService> deadClients = new ArrayList<ClientService>();
+        ArrayList<FactoryServiceClient> deadClients = new ArrayList<FactoryServiceClient>();
 
         synchronized (clients) {
 
             Date now = new Date();
 
-            for (ClientService client : clients) {
+            for (FactoryServiceClient client : clients) {
                 if (getTimeDifferenceInMsec(client.getLastPing(), now) > 5000) {
                     deadClients.add(client);
                 }
             }
         }
 
-        for (ClientService client : deadClients) {
+        for (FactoryServiceClient client : deadClients) {
             System.out.println("! dead client C#"+client.hashCode());
             disconnectClient(client);
         }
     }
 
     @Override
-    public IServiceRmi getService() throws RemoteException {
-        ClientService clientService = new ClientService(this);
+    public IFactoryServiceRmi getService() throws RemoteException {
+        FactoryServiceClient clientService = new FactoryServiceClient(this);
         addClient(clientService);
         return clientService;
     }
 
     @Override
     public void dataChanged() {
-        ArrayList<ClientService> clientsCopy;
+        ArrayList<FactoryServiceClient> clientsCopy;
 
         synchronized (clients) {
-            clientsCopy = new ArrayList<ClientService>(clients);
+            clientsCopy = new ArrayList<FactoryServiceClient>(clients);
         }
 
-        for (ClientService client : clientsCopy) {
+        for (FactoryServiceClient client : clientsCopy) {
             try {
                 client.dataChanged();
             } catch (ServiceException e) {
@@ -122,13 +122,13 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
         }
     }
 
-    private void addClient(ClientService client) {
+    private void addClient(FactoryServiceClient client) {
         synchronized (clients) {
             clients.add(client);
         }
     }
 
-    public void disconnectClient(IServiceRmi client) {
+    public void disconnectClient(IFactoryServiceRmi client) {
         synchronized (clients) {
 
             if (clients.remove(client)) {
@@ -160,6 +160,6 @@ public class Server extends UnicastRemoteObject implements IDataChangedListener,
         return idCounter++;
     }
 
-    private ArrayList<ClientService> clients = new ArrayList<ClientService>();
+    private ArrayList<FactoryServiceClient> clients = new ArrayList<FactoryServiceClient>();
 
 }

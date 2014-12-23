@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
  */
 public class Pinger extends Thread {
 
-    public Pinger(IServiceRmi serviceRmi) {
+    public Pinger(IFactoryServiceRmi serviceRmi) {
 
         this.serviceRmi = serviceRmi;
     }
@@ -25,5 +25,5 @@ public class Pinger extends Thread {
         }
     }
 
-    private IServiceRmi serviceRmi;
+    private IFactoryServiceRmi serviceRmi;
 }

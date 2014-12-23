@@ -2,9 +2,7 @@ package at.sbc.firework.gui.factory;
 
 import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.IService;
-import at.sbc.firework.service.IServiceTransaction;
-import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.service.IFactoryService;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
@@ -12,16 +10,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Created by Lucas on 17.11.2014.
  */
 public class MainController {
 
-    private IService service;
+    private IFactoryService service;
 
     @FXML
     private ChoiceBox<EnumParts> cbSupplier;
@@ -89,7 +85,7 @@ public class MainController {
         }
     }
 
-    public void setService(IService service) {
+    public void setService(IFactoryService service) {
         this.service = service;
     }
 }

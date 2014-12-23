@@ -1,5 +1,6 @@
 package at.sbc.firework.service;
 
+import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
@@ -18,10 +19,9 @@ import java.util.List;
 /**
  * XVSM Service bütat Zugriff ufn Space und ma kann Transaktiona erstella
  */
-public class Service implements IService {
+public class FactoryService implements IFactoryService {
 
     private Capi capi;
-
 
     private URI spaceUri = URI.create("xvsm://localhost:9876");
     public static final long DEFAULT_TIMEOUT = 5000;
@@ -169,7 +169,7 @@ public class Service implements IService {
     public ContainerReference getDistributionStockContainer() { return distributionStockContainer; }
 
     @Override
-    public IServiceTransaction startTransaction() throws ServiceException {
+    public IFactoryTransaction startTransaction() throws ServiceException {
         try {
             return new ServiceTransactionXvsm(this);
         } catch (MzsCoreException e) {
@@ -267,7 +267,7 @@ public class Service implements IService {
         try {
             ArrayList<Selector> selectors = new ArrayList<Selector>();
             selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
+            result = capi.read(container, selectors, FactoryService.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -283,11 +283,29 @@ public class Service implements IService {
 
             Query query = new Query().sortup(Property.forName("id"));
             selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(container, selectors, Service.DEFAULT_TIMEOUT, null);
+            result = capi.read(container, selectors, FactoryService.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
 
         return result;
+    }
+
+    @Override
+    public ArrayList<Order> listOrders() throws ServiceException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public int getOrderRocketCount(long orderId) throws ServiceException {
+        // TODO: implement
+        return 0;
     }
 }

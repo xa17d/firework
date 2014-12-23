@@ -2,10 +2,9 @@ package at.sbc.firework.actors;
 
 import at.sbc.firework.entities.EffectCharge;
 import at.sbc.firework.entities.PropellingCharge;
-import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -17,7 +16,7 @@ public class Utils {
     private static final int DEFAULT_MIN_SLEEP_TIME = 400;
     private static final int DEFAULT_MAX_SLEEP_TIME = 800;
 
-    public static long getIdFromArgsOrGenerate(String[] args, IService service) {
+    public static long getIdFromArgsOrGenerate(String[] args, IFactoryService service) {
         if (args.length > 0) {
             return Long.parseLong(args[0]);
         }

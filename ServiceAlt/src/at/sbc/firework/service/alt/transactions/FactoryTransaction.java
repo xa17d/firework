@@ -1,16 +1,13 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.alt.containers.Container;
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.entities.PropellingChargePackage;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.service.alt.ClientService;
+import at.sbc.firework.service.alt.FactoryServiceClient;
 import at.sbc.firework.service.alt.ServiceAltException;
 import at.sbc.firework.service.alt.containers.*;
-import at.sbc.firework.service.IServiceTransaction;
+import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.ServiceException;
-import at.sbc.firework.service.alt.IServiceTransactionRmi;
+import at.sbc.firework.service.alt.IFactoryTransactionRmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,9 +16,9 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Transaction extends UnicastRemoteObject implements IServiceTransaction, IServiceTransactionRmi {
+public class FactoryTransaction extends UnicastRemoteObject implements IFactoryTransaction, IFactoryTransactionRmi {
 
-    public Transaction(ClientService clientService) throws RemoteException {
+    public FactoryTransaction(FactoryServiceClient clientService) throws RemoteException {
         this.service = clientService;
         this.active = true;
         Log("transaction start");
@@ -31,7 +28,7 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
         service.Log("T#"+hashCode()+": "+msg);
     }
 
-    private ClientService service;
+    private FactoryServiceClient service;
 
     private boolean active;
     public boolean isActive() { return active; }
@@ -146,6 +143,28 @@ public class Transaction extends UnicastRemoteObject implements IServiceTransact
         Log("addToDistributionStock "+rocketPackage);
 
         containerAdd(service.getServer().getDistributionStockContainer(), rocketPackage);
+    }
+
+    @Override
+    public void addOrder(Order order) throws ServiceException {
+        // TODO: implement
+    }
+
+    @Override
+    public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
+        // TODO: implement
+    }
+
+    @Override
+    public OrderPosition takeOrderPosition() throws ServiceException {
+        // TODO: implement
+        return null;
+    }
+
+    @Override
+    public EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException {
+        // TODO: implement
+        return null;
     }
 
     @Override

@@ -2,8 +2,8 @@ package at.sbc.firework;
 
 import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.IService;
-import at.sbc.firework.service.IServiceTransaction;
+import at.sbc.firework.service.IFactoryService;
+import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.ServiceException;
 
 /**
@@ -11,12 +11,12 @@ import at.sbc.firework.service.ServiceException;
  */
 public class Supplier implements Runnable {
 
-    private IService service;
+    private IFactoryService service;
     private EnumParts selectedItem;
     private int amount;
     private double errorRate;
 
-    public Supplier(IService service, EnumParts selectedItem, int amount, double errorRate) {
+    public Supplier(IFactoryService service, EnumParts selectedItem, int amount, double errorRate) {
 
         this.service = service;
         this.selectedItem = selectedItem;
@@ -57,7 +57,7 @@ public class Supplier implements Runnable {
     }
 
     private void addToStock(Part part) throws ServiceException {
-        IServiceTransaction t = service.startTransaction();
+        IFactoryTransaction t = service.startTransaction();
         t.addToStock(part);
         Utils.sleep(1000, 2000);
         t.commit();

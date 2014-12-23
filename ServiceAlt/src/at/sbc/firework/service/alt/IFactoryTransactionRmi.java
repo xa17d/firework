@@ -1,10 +1,6 @@
 package at.sbc.firework.service.alt;
 
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.entities.PropellingChargePackage;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.service.IServiceTransaction;
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.Remote;
@@ -14,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Transaction Interfce fürs RMI
  */
-public interface IServiceTransactionRmi extends Remote {
+public interface IFactoryTransactionRmi extends Remote {
 
     void addToStock(Part part) throws ServiceException, RemoteException;
     ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException, RemoteException;
@@ -29,6 +25,11 @@ public interface IServiceTransactionRmi extends Remote {
     void addToGarbage(Rocket rocket) throws ServiceException, RemoteException;
 
     void addToDistributionStock(RocketPackage5 rocket) throws ServiceException, RemoteException;
+
+    void addOrder(Order order) throws ServiceException, RemoteException;
+    void addOrderPosition(OrderPosition orderPosition) throws ServiceException, RemoteException;
+    OrderPosition takeOrderPosition() throws ServiceException, RemoteException;
+    EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException, RemoteException;
 
     void commit() throws ServiceException, RemoteException;
     void rollback() throws ServiceException, RemoteException;

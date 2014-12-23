@@ -8,13 +8,13 @@ import at.sbc.firework.service.alt.containers.ItemSelector;
  */
 public class TransactionOperationTake extends TransactionOperation {
 
-    public TransactionOperationTake(Transaction transaction, Container container, ItemSelector selector) {
+    public TransactionOperationTake(FactoryTransaction transaction, Container container, ItemSelector selector) {
         super(container);
         this.transaction = transaction;
         this.selector = selector;
     }
 
-    private Transaction transaction;
+    private FactoryTransaction transaction;
     private ItemSelector selector;
 
     @Override

@@ -1,10 +1,7 @@
 package at.sbc.firework.service;
 
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.entities.PropellingChargePackage;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
-import at.sbc.firework.service.alt.IServiceTransactionRmi;
+import at.sbc.firework.entities.*;
+import at.sbc.firework.service.alt.IFactoryTransactionRmi;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -12,13 +9,13 @@ import java.util.ArrayList;
 /**
  * Wrapper fürd RMI Transaction
  */
-public class ServiceAltTransaction implements IServiceTransaction {
+public class ServiceAltTransaction implements IFactoryTransaction {
 
-    public ServiceAltTransaction(IServiceTransactionRmi remoteTransaction) {
+    public ServiceAltTransaction(IFactoryTransactionRmi remoteTransaction) {
         this.remoteTransaction = remoteTransaction;
     }
 
-    private IServiceTransactionRmi remoteTransaction;
+    private IFactoryTransactionRmi remoteTransaction;
 
     @Override
     public void addToStock(Part part) throws ServiceException {
@@ -96,6 +93,42 @@ public class ServiceAltTransaction implements IServiceTransaction {
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
         try {
             remoteTransaction.addToDistributionStock(rocketPackage);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void addOrder(Order order) throws ServiceException {
+        try {
+            remoteTransaction.addOrder(order);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
+        try {
+            remoteTransaction.addOrderPosition(orderPosition);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public OrderPosition takeOrderPosition() throws ServiceException {
+        try {
+            return remoteTransaction.takeOrderPosition();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException {
+        try {
+            return remoteTransaction.takeEffectChargeFromStock(color);
         } catch (RemoteException e) {
             throw new ServiceException(e);
         }

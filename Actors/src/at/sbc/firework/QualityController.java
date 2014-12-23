@@ -1,13 +1,11 @@
 package at.sbc.firework;
 
 import at.sbc.firework.actors.Actor;
-import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.EffectCharge;
 import at.sbc.firework.entities.PropellingCharge;
 import at.sbc.firework.entities.Quality;
 import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.service.IDataChangedListener;
-import at.sbc.firework.service.IServiceTransaction;
+import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.ServiceException;
 
 /**
@@ -31,7 +29,7 @@ public class QualityController extends Actor {
     @Override
     public void work() {
 
-        IServiceTransaction t = null;
+        IFactoryTransaction t = null;
 
         try {
             t = service.startTransaction();

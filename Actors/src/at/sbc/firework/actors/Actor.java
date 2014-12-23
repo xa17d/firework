@@ -1,6 +1,6 @@
 package at.sbc.firework.actors;
 
-import at.sbc.firework.service.IService;
+import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
 
@@ -13,7 +13,7 @@ public abstract class Actor {
 
     public Actor(String name, String[] args) {
 
-        service = ServiceFactory.getService();
+        service = ServiceFactory.getFactory();
         try {
             service.start();
         } catch (ServiceException e) {
@@ -49,6 +49,6 @@ public abstract class Actor {
     }
 
     protected long id;
-    protected IService service;
+    protected IFactoryService service;
 
 }
