@@ -20,7 +20,7 @@ import java.util.Date;
  */
 public class FactoryServiceClient extends UnicastRemoteObject implements IFactoryServiceRmi {
 
-    public FactoryServiceClient(Server server) throws RemoteException
+    public FactoryServiceClient(FactoryServer server) throws RemoteException
     {
         Log("Client connected");
         this.server = server;
@@ -31,9 +31,9 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
         System.out.println("C#"+hashCode()+": "+msg);
     }
 
-    private Server server;
+    private FactoryServer server;
 
-    public Server getServer() { return server; }
+    public FactoryServer getServer() { return server; }
 
     private ArrayList<FactoryTransaction> transactions = new ArrayList<FactoryTransaction>();
 

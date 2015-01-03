@@ -168,6 +168,11 @@ public class FactoryTransaction extends UnicastRemoteObject implements IFactoryT
     }
 
     @Override
+    public void addRocketToOrder(Rocket rocket) throws ServiceException {
+        // TODO: implement
+    }
+
+    @Override
     public void commit() throws ServiceException {
         Log("commit");
         active = false;

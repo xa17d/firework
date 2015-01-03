@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class Server extends UnicastRemoteObject implements INotification, IServerRmi {
+public class FactoryServer extends UnicastRemoteObject implements INotification, IFactoryServerRmi {
 
     public static final String SERVER_NAME = "ServerObjectRmiName";
 
@@ -30,7 +30,7 @@ public class Server extends UnicastRemoteObject implements INotification, IServe
         System.setProperty("java.security.policy","file:./firework.policy");
 
         int port = (args.length > 0) ? Integer.parseInt(args[0]) : 9876;
-        Server server = new Server();
+        FactoryServer server = new FactoryServer();
 
         if(System.getSecurityManager() == null)
             System.setSecurityManager(new SecurityManager());
@@ -70,7 +70,7 @@ public class Server extends UnicastRemoteObject implements INotification, IServe
         return b.getTime() - a.getTime();
     }
 
-    public Server() throws RemoteException {
+    public FactoryServer() throws RemoteException {
         stockContainer.setDataChangedListener(this);
         qualityCheckQueueContainer.setDataChangedListener(this);
         packingQueueContainer.setDataChangedListener(this);

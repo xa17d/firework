@@ -19,7 +19,7 @@ public class FactoryService implements IFactoryService {
     private static final String HOST = "localhost";
     private static final int PORT = 9876;
 
-    private IServerRmi server;
+    private IFactoryServerRmi server;
     private IFactoryServiceRmi remoteService;
     private Pinger pinger;
 
@@ -34,12 +34,12 @@ public class FactoryService implements IFactoryService {
                 System.setSecurityManager(new SecurityManager());
 
             System.out.println("Lookup RMI...");
-            server = (IServerRmi) Naming.lookup("rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
+            server = (IFactoryServerRmi) Naming.lookup("rmi://" + HOST + ":" + PORT + "/" + FactoryServer.SERVER_NAME);
 
             System.out.println("Get Remote Service...");
             remoteService = server.getService();
 
-            System.out.println("connected to server: " + "rmi://" + HOST + ":" + PORT + "/" + Server.SERVER_NAME);
+            System.out.println("connected to server: " + "rmi://" + HOST + ":" + PORT + "/" + FactoryServer.SERVER_NAME);
 
             pinger = new Pinger(remoteService);
             pinger.start();
@@ -150,7 +150,8 @@ public class FactoryService implements IFactoryService {
         // TODO: implement correctly
         try {
             RemoteEventListener remoteListener = new RemoteEventListener(notification);
-            remoteService.addChangeListener(remoteListener);
+            // TODO: register notification
+            // remoteService.registerNotification(...);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
