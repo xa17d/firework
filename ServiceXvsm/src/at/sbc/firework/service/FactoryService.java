@@ -15,7 +15,9 @@ import org.mozartspaces.notifications.Operation;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * XVSM Service bütat Zugriff ufn Space und ma kann Transaktiona erstella
@@ -32,6 +34,8 @@ public class FactoryService implements IFactoryService {
     private static final String CONTAINER_NAME_PACKINGQUEUE= "packingQueue";
     private static final String CONTAINER_NAME_GARBAGE= "garbage";
     private static final String CONTAINER_NAME_DISTRIBUTIONSTOCK = "distributionStock";
+    private static final String CONTAINER_NAME_ORDERS = "orders";
+    private static final String CONTAINER_NAME_ORDERSTOCK = "orderStock";
     private static final String CONTAINER_NAME_IDCOUNTER = "idCounter";
     private static final String IDCOUNTER_KEY = "idCounter";
     private ContainerReference stockContainer;
@@ -39,18 +43,10 @@ public class FactoryService implements IFactoryService {
     private ContainerReference packingQueueContainer;
     private ContainerReference garbageContainer;
     private ContainerReference distributionStockContainer;
+    private ContainerReference ordersContainer;
+    private ContainerReference orderStockContainer;
     private ContainerReference idCounterContainer;
-
-    private ArrayList<INotification> changedListener = new ArrayList<INotification>();
-
-    private NotificationListener notificationListener = new NotificationListener() {
-        @Override
-        public void entryOperationFinished(Notification notification, Operation operation, List<? extends Serializable> list) {
-            for(INotification listener : changedListener) {
-                listener.dataChanged();
-            }
-        }
-    };
+    private ContainerReference[] allContainers;
 
     @Override
     public void start() throws ServiceException {
@@ -65,31 +61,32 @@ public class FactoryService implements IFactoryService {
 
         // Container erstella
         try {
-            stockContainer = findOrCreateStockContainer(CONTAINER_NAME_STOCK);
-            qualityCheckQueueContainer = findOrCreateQueueContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
-            packingQueueContainer = findOrCreateQueueContainer(CONTAINER_NAME_PACKINGQUEUE);
-            garbageContainer = findOrCreateQueueContainer(CONTAINER_NAME_GARBAGE);
-            distributionStockContainer = findOrCreateQueueContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
+            stockContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_STOCK);
+            qualityCheckQueueContainer = findOrCreateFifoContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
+            packingQueueContainer = findOrCreateFifoContainer(CONTAINER_NAME_PACKINGQUEUE);
+            garbageContainer = findOrCreateFifoContainer(CONTAINER_NAME_GARBAGE);
+            distributionStockContainer = findOrCreateFifoContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
+            ordersContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_ORDERS);
+            orderStockContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_ORDERSTOCK);
+
+            allContainers = new ContainerReference[] {
+                    stockContainer,
+                    qualityCheckQueueContainer,
+                    packingQueueContainer,
+                    garbageContainer,
+                    distributionStockContainer,
+                    ordersContainer,
+                    orderStockContainer
+            };
 
             idCounterContainer = findOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
 
-            NotificationManager notificationManager = new NotificationManager(core);
-            try {
-                notificationManager.createNotification(stockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-                notificationManager.createNotification(qualityCheckQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-                notificationManager.createNotification(packingQueueContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-                notificationManager.createNotification(garbageContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-                notificationManager.createNotification(distributionStockContainer, notificationListener, Operation.TAKE, Operation.WRITE);
-
-            } catch (InterruptedException e) {
-                throw new ServiceException(e);
-            }
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
     }
 
-    private ContainerReference findOrCreateStockContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateQueryTypeContainer(String name) throws MzsCoreException {
         ContainerReference container;
 
         try {
@@ -108,7 +105,7 @@ public class FactoryService implements IFactoryService {
         return container;
     }
 
-    private ContainerReference findOrCreateQueueContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateFifoContainer(String name) throws MzsCoreException {
         ContainerReference container;
 
         try {
@@ -307,7 +304,21 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
-        // TODO: implement correctly
-        this.changedListener.add(notification);
+
+        boolean all = (containerId == "*");
+
+        for (ContainerReference container : allContainers) {
+            if (all || (container.getId() == containerId)) {
+                try {
+
+                    XvsmNotificationListener listener = new XvsmNotificationListener(getCapi().getCore(), notification, container, operation, mode);
+
+                } catch (InterruptedException e) {
+                    throw new ServiceException(e);
+                } catch (MzsCoreException e) {
+                    throw new ServiceException(e);
+                }
+            }
+        }
     }
 }
