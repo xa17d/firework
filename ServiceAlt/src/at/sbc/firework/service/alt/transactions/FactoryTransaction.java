@@ -156,7 +156,7 @@ public class FactoryTransaction extends UnicastRemoteObject implements IFactoryT
     }
 
     @Override
-    public OrderPosition takeOrderPosition() throws ServiceException {
+    public OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException {
         // TODO: implement
         return null;
     }

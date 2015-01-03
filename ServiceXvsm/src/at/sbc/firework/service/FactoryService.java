@@ -36,6 +36,7 @@ public class FactoryService implements IFactoryService {
     private static final String CONTAINER_NAME_DISTRIBUTIONSTOCK = "distributionStock";
     private static final String CONTAINER_NAME_ORDERS = "orders";
     private static final String CONTAINER_NAME_ORDERSTOCK = "orderStock";
+    private static final String CONTAINER_NAME_ORDERPOSITIONS = "orderPositions";
     private static final String CONTAINER_NAME_IDCOUNTER = "idCounter";
     private static final String IDCOUNTER_KEY = "idCounter";
     private ContainerReference stockContainer;
@@ -45,6 +46,7 @@ public class FactoryService implements IFactoryService {
     private ContainerReference distributionStockContainer;
     private ContainerReference ordersContainer;
     private ContainerReference orderStockContainer;
+    private ContainerReference orderPositionsContainer;
     private ContainerReference idCounterContainer;
     private ContainerReference[] allContainers;
 
@@ -61,13 +63,14 @@ public class FactoryService implements IFactoryService {
 
         // Container erstella
         try {
-            stockContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_STOCK);
-            qualityCheckQueueContainer = findOrCreateFifoContainer(CONTAINER_NAME_QUALITYCHECKQUEUE);
-            packingQueueContainer = findOrCreateFifoContainer(CONTAINER_NAME_PACKINGQUEUE);
-            garbageContainer = findOrCreateFifoContainer(CONTAINER_NAME_GARBAGE);
-            distributionStockContainer = findOrCreateFifoContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK);
-            ordersContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_ORDERS);
-            orderStockContainer = findOrCreateQueryTypeContainer(CONTAINER_NAME_ORDERSTOCK);
+            stockContainer = findOrCreateContainer(CONTAINER_NAME_STOCK, false, true, true, false);
+            qualityCheckQueueContainer = findOrCreateContainer(CONTAINER_NAME_QUALITYCHECKQUEUE, true, false, false, false);
+            packingQueueContainer = findOrCreateContainer(CONTAINER_NAME_PACKINGQUEUE, true, false, false, false);
+            garbageContainer = findOrCreateContainer(CONTAINER_NAME_GARBAGE, true, false, false, false);
+            distributionStockContainer = findOrCreateContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK, true, false, false, false);
+            ordersContainer = findOrCreateContainer(CONTAINER_NAME_ORDERS, false, false, true, false);
+            orderStockContainer = findOrCreateContainer(CONTAINER_NAME_ORDERSTOCK, false, false, true, false);
+            orderPositionsContainer = findOrCreateContainer(CONTAINER_NAME_ORDERPOSITIONS, false, false, true, false);
 
             allContainers = new ContainerReference[] {
                     stockContainer,
@@ -76,17 +79,18 @@ public class FactoryService implements IFactoryService {
                     garbageContainer,
                     distributionStockContainer,
                     ordersContainer,
-                    orderStockContainer
+                    orderStockContainer,
+                    orderPositionsContainer
             };
 
-            idCounterContainer = findOrCreateIdCounterContainer(CONTAINER_NAME_IDCOUNTER);
+            idCounterContainer = findOrCreateContainer(CONTAINER_NAME_IDCOUNTER, false, false, false, true);
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
     }
 
-    private ContainerReference findOrCreateQueryTypeContainer(String name) throws MzsCoreException {
+    private ContainerReference findOrCreateContainer(String name, boolean fifo, boolean type, boolean query, boolean key) throws MzsCoreException {
         ContainerReference container;
 
         try {
@@ -94,44 +98,10 @@ public class FactoryService implements IFactoryService {
         } catch (MzsCoreException e) {
             System.out.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            obligatoryCoords.add(new TypeCoordinator());
-            obligatoryCoords.add(new QueryCoordinator());
-
-            ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
-
-            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, optionalCoords, null);
-        }
-
-        return container;
-    }
-
-    private ContainerReference findOrCreateFifoContainer(String name) throws MzsCoreException {
-        ContainerReference container;
-
-        try {
-            container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
-        } catch (MzsCoreException e) {
-            System.out.println(name + " not found and will be created.");
-            ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            obligatoryCoords.add(new FifoCoordinator());
-
-            ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
-
-            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, optionalCoords, null);
-        }
-
-        return container;
-    }
-
-    private ContainerReference findOrCreateIdCounterContainer(String name) throws MzsCoreException {
-        ContainerReference container;
-
-        try {
-            container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
-        } catch (MzsCoreException e) {
-            System.out.println(name + " not found and will be created.");
-            ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            obligatoryCoords.add(new KeyCoordinator());
+            if (fifo) { obligatoryCoords.add(new FifoCoordinator()); }
+            if (type) { obligatoryCoords.add(new TypeCoordinator()); }
+            if (query) { obligatoryCoords.add(new QueryCoordinator()); }
+            if (key) { obligatoryCoords.add(new KeyCoordinator()); }
 
             ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
 
@@ -165,6 +135,9 @@ public class FactoryService implements IFactoryService {
     public ContainerReference getPackingQueueContainer() { return packingQueueContainer; }
     public ContainerReference getGarbageContainer() { return garbageContainer; }
     public ContainerReference getDistributionStockContainer() { return distributionStockContainer; }
+    public ContainerReference getOrdersContainer() { return ordersContainer; }
+    public ContainerReference getOrderPositionsContainer() { return orderPositionsContainer; }
+    public ContainerReference getOrderStockContainer() { return orderStockContainer; }
 
     @Override
     public IFactoryTransaction startTransaction() throws ServiceException {
@@ -321,5 +294,5 @@ public class FactoryService implements IFactoryService {
             }
         }
     }
-    
+
 }

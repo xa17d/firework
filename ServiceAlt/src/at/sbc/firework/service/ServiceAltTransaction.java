@@ -117,9 +117,9 @@ public class ServiceAltTransaction implements IFactoryTransaction {
     }
 
     @Override
-    public OrderPosition takeOrderPosition() throws ServiceException {
+    public OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException {
         try {
-            return remoteTransaction.takeOrderPosition();
+            return remoteTransaction.takeOrderPosition(excludeIds);
         } catch (RemoteException e) {
             throw new ServiceException(e);
         }

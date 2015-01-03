@@ -141,29 +141,66 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
     @Override
     public void addOrder(Order order) throws ServiceException {
-        // TODO: implement
+        internalAddToContainer(service.getOrdersContainer(), order);
     }
 
     @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
-        // TODO: implement
+        internalAddToContainer(service.getOrderPositionsContainer(), orderPosition);
     }
 
     @Override
-    public OrderPosition takeOrderPosition() throws ServiceException {
-        // TODO: implement
-        return null;
+    public OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException {
+
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+        Query query = new Query();
+
+        // Exclude Ids
+        for (Long id : excludeIds) {
+            query = query.filter(Property.forName("orderId").notEqualTo(id));
+        }
+
+        // Count = 1
+        query = query.cnt(1);
+
+
+        selectors.add(QueryCoordinator.newSelector(query, 1));
+
+        ArrayList<OrderPosition> entries = null;
+        try {
+            entries = capi.take(service.getOrderPositionsContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+        }
+        catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries.get(0);
     }
 
     @Override
     public EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException {
-        // TODO: implement
-        return null;
+
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+        Query query = new Query().filter(Property.forClass(EffectCharge.class, "color").exists()).filter(Property.forName("color").equalTo(color)).cnt(1);
+
+        selectors.add(QueryCoordinator.newSelector(query, 1));
+
+        ArrayList<EffectCharge> entries = null;
+        try {
+            entries = capi.take(service.getStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+        }
+        catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries.get(0);
     }
 
     @Override
-    public void addRocketToOrder(Rocket rocket) {
-        // TODO: implement
+    public void addRocketToOrder(Rocket rocket) throws ServiceException{
+        internalAddToContainer(service.getOrderStockContainer(), rocket);
     }
 
     @Override

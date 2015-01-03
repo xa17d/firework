@@ -1,9 +1,14 @@
 package at.sbc.firework.entities;
 
+import java.io.Serializable;
+
 /**
  * A Bestellung vo nam Auftraggeber
  */
-public class Order {
+public class Order implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     public Order(long id, int count, Color[] colors, String addressShipping, String addressFactory) {
         this.id = id;
         this.count = count;
