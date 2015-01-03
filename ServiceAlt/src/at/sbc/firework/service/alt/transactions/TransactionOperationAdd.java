@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.alt.containers.Container;
 
 /**
@@ -20,6 +21,7 @@ public class TransactionOperationAdd extends TransactionOperation {
     @Override
     public void commit() {
         getContainer().add(getItem());
+        getContainer().change(ContainerOperation.Add);
     }
 
     @Override

@@ -282,10 +282,10 @@ public class FactoryService implements IFactoryService {
     @Override
     public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
 
-        boolean all = (containerId == "*");
+        boolean all = ("*".equals(containerId));
 
         for (ContainerReference container : allContainers) {
-            if (all || (container.getId() == containerId)) {
+            if (all || (container.getId().equals(containerId))) {
                 try {
 
                     XvsmNotificationListener listener = new XvsmNotificationListener(getCapi().getCore(), notification, container, operation, mode);

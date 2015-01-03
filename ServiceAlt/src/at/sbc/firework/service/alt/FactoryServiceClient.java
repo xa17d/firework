@@ -137,12 +137,13 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
 
     @Override
     public void registerNotification(IRemoteEventListener notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
-        boolean all = (containerId == "*");
+        boolean all = ("*".equals(containerId));
 
         for (Container container : getServer().getContainers()) {
-            if (all || (container.getId() == containerId)) {
+            if (all || (container.getId().equals(containerId))) {
                 AltNotification listener = new AltNotification(notification, operation, mode);
                 container.registerNotification(listener);
+                Log("registerNotification "+operation+"@"+container.getId()+"#"+mode);
             }
         }
     }

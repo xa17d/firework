@@ -2,9 +2,6 @@ package at.sbc.firework.service.alt.containers;
 
 import at.sbc.firework.service.AltNotification;
 import at.sbc.firework.service.ContainerOperation;
-import at.sbc.firework.service.INotification;
-import at.sbc.firework.utils.Notification;
-import at.sbc.firework.utils.NotificationMode;
 
 import java.util.ArrayList;
 
@@ -44,7 +41,7 @@ public class Container {
         }
 
         if (listChanged) {
-            changed(ContainerOperation.Take);
+            internChange(ContainerOperation.Take);
         }
 
         return item;
@@ -55,14 +52,14 @@ public class Container {
             items.add(item);
         }
 
-        changed(ContainerOperation.Add);
+        internChange(ContainerOperation.Add);
     }
 
     public void addFirst(Object item) {
         synchronized (listLock) {
             items.add(0, item);
         }
-        changed(ContainerOperation.Add);
+        internChange(ContainerOperation.Add);
     }
 
     public <T> ArrayList<T> list() {
@@ -85,7 +82,9 @@ public class Container {
         }
     }
 
-    private void changed(ContainerOperation performedOperation) {
+    public void internChange(ContainerOperation performedOperation) { }
+
+    public void change(ContainerOperation performedOperation) {
         ArrayList<AltNotification> ns;
 
         // copy notifications

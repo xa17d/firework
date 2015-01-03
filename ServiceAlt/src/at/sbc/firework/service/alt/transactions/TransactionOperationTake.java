@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.containers.ItemSelector;
@@ -36,7 +37,7 @@ public class TransactionOperationTake extends TransactionOperation {
 
     @Override
     public void commit() {
-
+        getContainer().change(ContainerOperation.Take);
     }
 
     @Override
