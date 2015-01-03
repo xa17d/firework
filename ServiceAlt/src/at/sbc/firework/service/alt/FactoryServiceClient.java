@@ -4,8 +4,11 @@ import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.service.ContainerOperation;
+import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.alt.transactions.FactoryTransaction;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -130,11 +133,13 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
         return 0;
     }
 
-    private ArrayList<IRemoteEventListener> remoteEventListeners = new ArrayList<IRemoteEventListener>();
     @Override
-    public void addChangeListener(IRemoteEventListener listener) {
-        this.remoteEventListeners.add(listener);
+    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
+        // TODO: implement correctly
+        this.remoteEventListeners.add(new RemoteEventListener(notification));
     }
+
+    private ArrayList<IRemoteEventListener> remoteEventListeners = new ArrayList<IRemoteEventListener>();
 
     public void dataChanged() throws ServiceException{
         for(IRemoteEventListener listener : remoteEventListeners) {

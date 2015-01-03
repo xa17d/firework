@@ -162,6 +162,11 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
     }
 
     @Override
+    public void addRocketToOrder(Rocket rocket) {
+        // TODO: implement
+    }
+
+    @Override
     public void commit() throws ServiceException {
         try {
             capi.commitTransaction(transaction);

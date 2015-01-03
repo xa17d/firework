@@ -30,15 +30,39 @@ public class ServiceFactory {
         return null;
     }
 
-    private static ICustomerService customerService = null;
-
     public static ICustomerService getCustomer(String address) {
-        // TODO: implement
+        try {
+            ICustomerService customerService = (ICustomerService) Class.forName("at.sbc.firework.service.CustomerService").newInstance();
+            customerService.startGet(address);
+            return customerService;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
     public static ICustomerService createCustomer(String address) {
-        // TODO: implement
+        try {
+            ICustomerService customerService = (ICustomerService) Class.forName("at.sbc.firework.service.CustomerService").newInstance();
+            customerService.startCreate(address);
+            return customerService;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 }

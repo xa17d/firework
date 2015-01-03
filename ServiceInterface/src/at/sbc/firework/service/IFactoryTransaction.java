@@ -30,6 +30,8 @@ public interface IFactoryTransaction {
     OrderPosition takeOrderPosition() throws ServiceException;
     EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException;
 
+    void addRocketToOrder(Rocket rocket) throws ServiceException;
+
     void commit() throws ServiceException;
     void rollback() throws ServiceException;
 }

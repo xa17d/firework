@@ -135,6 +135,11 @@ public class ServiceAltTransaction implements IFactoryTransaction {
     }
 
     @Override
+    public void addRocketToOrder(Rocket rocket) {
+        // TODO: implement
+    }
+
+    @Override
     public void commit() throws ServiceException {
         try {
             remoteTransaction.commit();

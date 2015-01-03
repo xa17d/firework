@@ -4,7 +4,10 @@ import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.service.ContainerOperation;
+import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -31,7 +34,7 @@ public interface IFactoryServiceRmi extends Remote {
     ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException, RemoteException;
     int getOrderRocketCount(long orderId) throws ServiceException, RemoteException;
 
-    void addChangeListener(IRemoteEventListener listener) throws RemoteException;
+    void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException;
 
     long getNewId() throws ServiceException, RemoteException;
 
