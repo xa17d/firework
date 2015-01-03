@@ -1,6 +1,10 @@
 package at.sbc.firework.service.alt.containers;
 
+import at.sbc.firework.service.AltNotification;
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.INotification;
+import at.sbc.firework.utils.Notification;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.util.ArrayList;
 
@@ -11,7 +15,15 @@ import java.util.ArrayList;
 
 public class Container {
 
+    public Container(String id) {
+        this.id = id;
+    }
+
+    private String id;
+    public String getId() { return id; }
+
     private ArrayList<Object> items = new ArrayList<Object>();
+    private ArrayList<AltNotification> notifications = new ArrayList<AltNotification>();
 
     public Object take(ItemSelector selector) {
         boolean listChanged = false;
@@ -32,7 +44,7 @@ public class Container {
         }
 
         if (listChanged) {
-            changed();
+            changed(ContainerOperation.Take);
         }
 
         return item;
@@ -43,14 +55,14 @@ public class Container {
             items.add(item);
         }
 
-        changed();
+        changed(ContainerOperation.Add);
     }
 
     public void addFirst(Object item) {
         synchronized (listLock) {
             items.add(0, item);
         }
-        changed();
+        changed(ContainerOperation.Add);
     }
 
     public <T> ArrayList<T> list() {
@@ -65,33 +77,34 @@ public class Container {
     }
 
     private Object listLock = new Object();
-    private Object changeLock = new Object();
+    private Object notificationsLock = new Object();
 
-    private void changed() {
-        if (dataChangedListener != null) {
-            dataChangedListener.dataChanged();
+    public void registerNotification(AltNotification notification) {
+        synchronized (notificationsLock) {
+            notifications.add(notification);
         }
-        synchronized (changeLock) {
-            changeLock.notifyAll();
-        }
-
-        System.out.println("done");
     }
 
-    public void waitForChange(int timeout) {
-        synchronized (changeLock)
-        {
-            try {
-                changeLock.wait(timeout);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    private void changed(ContainerOperation performedOperation) {
+        ArrayList<AltNotification> ns;
+
+        // copy notifications
+        synchronized (notificationsLock) {
+            ns = new ArrayList<AltNotification>(notifications);
+        }
+
+        // invoke notifications
+        for (AltNotification n : ns) {
+            n.dataChanged(performedOperation);
+        }
+
+        // delete onetime notifications
+        synchronized (notificationsLock) {
+            for (AltNotification n : ns) {
+                if (n.isDone()) {
+                    notifications.remove(n);
+                }
             }
         }
-
-    }
-
-    private INotification dataChangedListener = null;
-    public void setDataChangedListener(INotification listener) {
-        this.dataChangedListener = listener;
     }
 }

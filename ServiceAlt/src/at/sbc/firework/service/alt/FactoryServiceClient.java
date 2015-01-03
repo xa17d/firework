@@ -4,8 +4,10 @@ import at.sbc.firework.entities.Order;
 import at.sbc.firework.entities.Part;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.service.AltNotification;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.INotification;
+import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.transactions.FactoryTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.utils.NotificationMode;
@@ -134,19 +136,13 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
     }
 
     @Override
-    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
-        // TODO: implement correctly
-        this.remoteEventListeners.add(new RemoteEventListener(notification));
-    }
+    public void registerNotification(IRemoteEventListener notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
+        boolean all = (containerId == "*");
 
-    private ArrayList<IRemoteEventListener> remoteEventListeners = new ArrayList<IRemoteEventListener>();
-
-    public void dataChanged() throws ServiceException{
-        for(IRemoteEventListener listener : remoteEventListeners) {
-            try {
-                listener.invoke();
-            } catch (RemoteException e) {
-                throw new ServiceException(e);
+        for (Container container : getServer().getContainers()) {
+            if (all || (container.getId() == containerId)) {
+                AltNotification listener = new AltNotification(notification, operation, mode);
+                container.registerNotification(listener);
             }
         }
     }

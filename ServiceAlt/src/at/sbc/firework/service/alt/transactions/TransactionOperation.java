@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.alt.containers.Container;
 
 /**
@@ -19,7 +20,7 @@ public abstract class TransactionOperation {
 
     public Object getItem() { return item; }
 
-    public abstract void instant();
+    public abstract void instant() throws NotAvailableException;
 
     public abstract void commit();
 

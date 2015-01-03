@@ -34,7 +34,7 @@ public interface IFactoryServiceRmi extends Remote {
     ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException, RemoteException;
     int getOrderRocketCount(long orderId) throws ServiceException, RemoteException;
 
-    void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException;
+    void registerNotification(IRemoteEventListener notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException;
 
     long getNewId() throws ServiceException, RemoteException;
 

@@ -14,7 +14,7 @@ import java.util.Date;
 /**
  * Created by daniel on 21.11.2014.
  */
-public class FactoryServer extends UnicastRemoteObject implements INotification, IFactoryServerRmi {
+public class FactoryServer extends UnicastRemoteObject implements IFactoryServerRmi {
 
     public static final String SERVER_NAME = "ServerObjectRmiName";
 
@@ -71,11 +71,7 @@ public class FactoryServer extends UnicastRemoteObject implements INotification,
     }
 
     public FactoryServer() throws RemoteException {
-        stockContainer.setDataChangedListener(this);
-        qualityCheckQueueContainer.setDataChangedListener(this);
-        packingQueueContainer.setDataChangedListener(this);
-        garbageContainer.setDataChangedListener(this);
-        distributionStockContainer.setDataChangedListener(this);
+
     }
 
     private void findDeadClients() {
@@ -105,23 +101,6 @@ public class FactoryServer extends UnicastRemoteObject implements INotification,
         return clientService;
     }
 
-    @Override
-    public void dataChanged() {
-        ArrayList<FactoryServiceClient> clientsCopy;
-
-        synchronized (clients) {
-            clientsCopy = new ArrayList<FactoryServiceClient>(clients);
-        }
-
-        for (FactoryServiceClient client : clientsCopy) {
-            try {
-                client.dataChanged();
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void addClient(FactoryServiceClient client) {
         synchronized (clients) {
             clients.add(client);
@@ -143,17 +122,36 @@ public class FactoryServer extends UnicastRemoteObject implements INotification,
         }
     }
 
-    private Container stockContainer = new Container();
-    private Container qualityCheckQueueContainer = new Container();
-    private Container packingQueueContainer = new Container();
-    private Container garbageContainer = new Container();
-    private Container distributionStockContainer = new Container();
+    private Container stockContainer = new Container("stock");
+    private Container qualityCheckQueueContainer = new Container("qualityCheckQueue");
+    private Container packingQueueContainer = new Container("packingQueue");
+    private Container garbageContainer = new Container("garbageQueue");
+    private Container distributionStockContainer = new Container("distributionStock");
+    private Container ordersContainer = new Container("ordersContainer");
+    private Container orderPositionsContainer = new Container("orderPositionsContainer");
+    private Container orderStockContainer = new Container("orderStockContainer");
 
     public Container getStockContainer() { return stockContainer; }
     public Container getQualityCheckQueueContainer() { return qualityCheckQueueContainer; }
     public Container getPackingQueueContainer() { return packingQueueContainer; }
     public Container getGarbageContainer() { return garbageContainer; }
     public Container getDistributionStockContainer() { return distributionStockContainer; }
+    public Container getOrdersContainer() { return ordersContainer; }
+    public Container getOrderPositionsContainer() { return orderPositionsContainer; }
+    public Container getOrderStockContainer() { return orderStockContainer; }
+
+    public Container[] getContainers() {
+        return new Container[] {
+            stockContainer,
+            qualityCheckQueueContainer,
+            packingQueueContainer,
+            garbageContainer,
+            distributionStockContainer,
+            ordersContainer,
+            orderPositionsContainer,
+            orderStockContainer
+        };
+    }
 
     private long idCounter = 0;
     public synchronized long getNewId() {

@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt.transactions;
 
+import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.containers.ItemSelector;
 
@@ -18,18 +19,16 @@ public class TransactionOperationTake extends TransactionOperation {
     private ItemSelector selector;
 
     @Override
-    public void instant() {
+    public void instant() throws NotAvailableException {
 
         Object item = null;
         Container container = getContainer();
 
-        while (transaction.isActive()) {
+        if (transaction.isActive()) {
             item = container.take(selector);
             if (item == null) {
-                container.waitForChange(1000);
+                throw new NotAvailableException(container.getId(), null);
             }
-            else
-                break;
         }
 
         setItem(item);

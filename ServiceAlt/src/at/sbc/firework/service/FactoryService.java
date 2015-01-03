@@ -150,8 +150,7 @@ public class FactoryService implements IFactoryService {
         // TODO: implement correctly
         try {
             RemoteEventListener remoteListener = new RemoteEventListener(notification);
-            // TODO: register notification
-            // remoteService.registerNotification(...);
+            remoteService.registerNotification(remoteListener, containerId, operation, mode);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
