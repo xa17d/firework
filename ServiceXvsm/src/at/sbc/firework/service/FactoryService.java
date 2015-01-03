@@ -7,17 +7,11 @@ import at.sbc.firework.entities.RocketPackage5;
 import at.sbc.firework.utils.NotificationMode;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
-import org.mozartspaces.notifications.Notification;
-import org.mozartspaces.notifications.NotificationListener;
-import org.mozartspaces.notifications.NotificationManager;
-import org.mozartspaces.notifications.Operation;
 
 import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * XVSM Service bütat Zugriff ufn Space und ma kann Transaktiona erstella
@@ -150,27 +144,27 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public ArrayList<Part> listStock() throws ServiceException {
-        return listStockContainer(getStockContainer());
+        return listQueryContainer(getStockContainer());
     }
 
     @Override
     public ArrayList<Rocket> listQualityCheckQueue() throws ServiceException {
-        return listContainer(getQualityCheckQueueContainer());
+        return listFifoContainer(getQualityCheckQueueContainer());
     }
 
     @Override
     public ArrayList<Rocket> listPackingQueue() throws ServiceException {
-        return listContainer(getPackingQueueContainer());
+        return listFifoContainer(getPackingQueueContainer());
     }
 
     @Override
     public ArrayList<Rocket> listGarbage() throws ServiceException {
-        return listContainer(getGarbageContainer());
+        return listFifoContainer(getGarbageContainer());
     }
 
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
-        return listContainer(getDistributionStockContainer());
+        return listFifoContainer(getDistributionStockContainer());
     }
 
     @Override
@@ -227,7 +221,7 @@ public class FactoryService implements IFactoryService {
         return id;
     }
 
-    public <T extends Serializable> ArrayList<T> listContainer(ContainerReference container) throws ServiceException {
+    public <T extends Serializable> ArrayList<T> listFifoContainer(ContainerReference container) throws ServiceException {
         ArrayList<T> result;
 
         try {
@@ -241,7 +235,7 @@ public class FactoryService implements IFactoryService {
         return result;
     }
 
-    public <T extends Serializable> ArrayList<T> listStockContainer(ContainerReference container) throws ServiceException {
+    public <T extends Serializable> ArrayList<T> listQueryContainer(ContainerReference container) throws ServiceException {
         ArrayList<T> result;
 
         try {
@@ -259,20 +253,30 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public ArrayList<Order> listOrders() throws ServiceException {
-        // TODO: implement
-        return null;
+        return listQueryContainer(getOrdersContainer());
     }
 
     @Override
     public ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException {
-        // TODO: implement
-        return null;
+        ArrayList<Rocket> result;
+
+        try {
+            ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+            Query query = new Query().filter(Property.forName("orderId").equalTo(orderId)).sortup(Property.forName("id"));
+            selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
+            result = capi.read(getOrderStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, null);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return result;
     }
 
     @Override
     public int getOrderRocketCount(long orderId) throws ServiceException {
-        // TODO: implement
-        return 0;
+        // TODO: make more efficient
+        return listOrderRockets(orderId).size();
     }
 
     @Override

@@ -22,6 +22,9 @@ public class Rocket implements Serializable {
     private PropellingCharge[] propellingCharge;
     private OrderPosition orderPosition;
 
+    // damit i des mit nam Query coordinator direkt abfroga kann
+    private long orderId = -1;
+
     public Rocket(long manufacturerId, long id, OrderPosition orderPosition, Stick stick, Casing casing, EffectCharge[] effectCharges, PropellingCharge[] propellingCharge)
     {
         if (effectCharges.length != 3) {
@@ -35,6 +38,8 @@ public class Rocket implements Serializable {
         this.casing = casing;
         this.effectCharges = effectCharges;
         this.propellingCharge = propellingCharge;
+
+        if (orderPosition != null) { this.orderId = orderPosition.getOrderId(); }
     }
 
     public int getPropellingChargeAmount() {
