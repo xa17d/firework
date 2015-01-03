@@ -28,6 +28,8 @@ public class Main extends Application {
 
         this.primaryStage = primaryStage;
 
+        System.out.println("init service...");
+
         try {
             service = ServiceFactory.getFactory();
             service.start();
@@ -36,24 +38,34 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
+        System.out.println("init layout...");
         initLayout();
     }
 
     private void initLayout() {
 
         try {
+            System.out.println(" - loader");
             FXMLLoader loader = new FXMLLoader();
+            System.out.println(" - setLocation");
             loader.setLocation(getClass().getResource("main_frame.fxml"));
 
+            System.out.println(" - load");
             rootLayout = (BorderPane) loader.load();
             //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
+            System.out.println(" - title");
             primaryStage.setTitle("Firework");
 
+            System.out.println(" - new scene");
             Scene rootScene = new Scene(rootLayout);
+            System.out.println(" - set scene");
             primaryStage.setScene(rootScene);
+            System.out.println(" - show");
             primaryStage.show();
 
+            System.out.println(" - get main controller");
             MainController controller = loader.getController();
+            System.out.println(" - set service");
             controller.setService(service);
 
         } catch(IOException e) {

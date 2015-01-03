@@ -4,7 +4,9 @@ import at.sbc.firework.actors.Actor;
 import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IFactoryTransaction;
+import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.utils.Notification;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,9 @@ public class Manufacturer extends Actor {
     @Override
     public void work()
     {
+        // falls vorher ned gnuag töal do gsi sind, warta bis sich do was gändert hat
+        waitForNotification();
+
         IFactoryTransaction t = null;
         try {
             t = service.startTransaction();
@@ -45,11 +50,11 @@ public class Manufacturer extends Actor {
             System.out.println(casing.toString());
 
             System.out.println("Getting EffectCharges...\t");
-            EffectCharge[] effectCharges = (EffectCharge[])Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
+            EffectCharge[] effectCharges = (EffectCharge[]) Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
 
-            System.out.println("\t"+effectCharges[0].toString());
-            System.out.println("\t"+effectCharges[1].toString());
-            System.out.println("\t"+effectCharges[2].toString());
+            System.out.println("\t" + effectCharges[0].toString());
+            System.out.println("\t" + effectCharges[1].toString());
+            System.out.println("\t" + effectCharges[2].toString());
 
             // PropellingCharge hola
 
@@ -61,10 +66,9 @@ public class Manufacturer extends Actor {
             int amount = Utils.randomInt(115, 145);
             int amountRemaining = amount;
 
-            System.out.println(amount+"g");
+            System.out.println(amount + "g");
 
-            while (amountRemaining > 0)
-            {
+            while (amountRemaining > 0) {
                 PropellingChargePackage p = t.takePropellingChargePackageFromStock();
 
                 PropellingCharge charge = p.takeOut(amountRemaining);
@@ -102,18 +106,15 @@ public class Manufacturer extends Actor {
 
             System.out.println(rocket.toString());
         }
+        catch (NotAvailableException e) {
+            System.out.println("not available");
+            registerNotification(e);
+            tryRollback(t);
+        }
         catch (ServiceException e)
         {
             e.printStackTrace();
-
-            if (t!=null)
-            {
-                try {
-                    t.rollback();
-                } catch (ServiceException e1) {
-                    e1.printStackTrace();
-                }
-            }
+            tryRollback(t);
         }
     }
 

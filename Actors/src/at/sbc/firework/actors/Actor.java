@@ -1,8 +1,8 @@
 package at.sbc.firework.actors;
 
-import at.sbc.firework.service.IFactoryService;
-import at.sbc.firework.service.ServiceException;
-import at.sbc.firework.service.ServiceFactory;
+import at.sbc.firework.service.*;
+import at.sbc.firework.utils.Notification;
+import at.sbc.firework.utils.NotificationMode;
 
 /**
  * Created by daniel on 20.11.2014.
@@ -26,6 +26,45 @@ public abstract class Actor {
     }
 
     public abstract void work();
+
+    protected void registerNotification(NotAvailableException e) {
+        try {
+            registerNotification(new Notification(
+                    service,
+                    e.getContainerId(),
+                    ContainerOperation.Add,
+                    NotificationMode.Once
+            ));
+        } catch (ServiceException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    protected void registerNotification(Notification notification) {
+        this.notification = notification;
+    }
+
+    protected void tryRollback(IFactoryTransaction t) {
+        if (t!=null)
+        {
+            try {
+                t.rollback();
+            } catch (ServiceException e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    private Notification notification = null;
+
+    protected void waitForNotification() {
+        if (notification != null) {
+            notification.waitForNotification(5000);
+
+            notification = null;
+        }
+    }
+
 
     public void workLoop() {
 

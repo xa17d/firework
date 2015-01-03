@@ -31,9 +31,9 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<Part> entries = null;
         try {
-            entries = capi.take(container, selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
         } catch (CountNotMetException e) {
-            throw new XvsmException(e);
+            throw new NotAvailableException(container.getId(), e);
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -48,7 +48,9 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
         selectors.add(FifoCoordinator.newSelector(count));
         ArrayList<Serializable> entries = null;
         try {
-            entries = capi.take(container, selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(container.getId(), e);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -100,7 +102,9 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<PropellingChargePackage> entries = null;
         try {
-            entries = capi.take(service.getStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(service.getStockContainer().getId(), e);
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -169,7 +173,9 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<OrderPosition> entries = null;
         try {
-            entries = capi.take(service.getOrderPositionsContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
+            entries = capi.take(service.getOrderPositionsContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(service.getOrderPositionsContainer().getId(), e);
         }
         catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -189,9 +195,10 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<EffectCharge> entries = null;
         try {
-            entries = capi.take(service.getStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, transaction);
-        }
-        catch (MzsCoreException e) {
+            entries = capi.take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(service.getStockContainer().getId(), e);
+        } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
 
