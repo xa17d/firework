@@ -19,7 +19,6 @@ public class CustomerTransactionXvsm implements ICustomerTransaction {
         this.transaction = utils.createTransaction();
     }
 
-
     @Override
     public void addRocket(Rocket rocket) throws ServiceException {
         utils.addToContainer(transaction, service.getStockContainer(), rocket);
