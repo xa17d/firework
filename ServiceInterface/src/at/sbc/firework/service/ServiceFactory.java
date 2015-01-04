@@ -11,13 +11,9 @@ public class ServiceFactory {
         // prevent public constructor
     }
 
-    private static IFactoryService factoryService = null;
-
     public static IFactoryService getFactory() {
         try {
-            if (factoryService == null) {
-                factoryService = (IFactoryService) Class.forName("at.sbc.firework.service.FactoryService").newInstance();
-            }
+            IFactoryService factoryService = (IFactoryService) Class.forName("at.sbc.firework.service.FactoryService").newInstance();
             return factoryService;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -30,6 +26,11 @@ public class ServiceFactory {
         return null;
     }
 
+    /**
+     * Bietet a nam Factory Mitarbeiter da Zugriff ufs lafer vo nam Customer
+     * @param address Adress vom Customer
+     * @return Customer-Service-Interface
+     */
     public static ICustomerService getCustomer(String address) {
         try {
             ICustomerService customerService = (ICustomerService) Class.forName("at.sbc.firework.service.CustomerService").newInstance();
@@ -48,10 +49,15 @@ public class ServiceFactory {
         return null;
     }
 
-    public static ICustomerService createCustomer(String address) {
+    /**
+     * Erstellt an neua Customer a nar bestimmta Adress
+     * @param address adress
+     * @return Customer-Service-Interface
+     */
+    public static ICustomerService createCustomer(long customerId) {
         try {
             ICustomerService customerService = (ICustomerService) Class.forName("at.sbc.firework.service.CustomerService").newInstance();
-            customerService.startCreate(address);
+            customerService.startCreate(customerId);
             return customerService;
         } catch (InstantiationException e) {
             e.printStackTrace();

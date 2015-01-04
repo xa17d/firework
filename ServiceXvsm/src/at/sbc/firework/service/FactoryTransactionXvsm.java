@@ -12,84 +12,25 @@ import java.util.ArrayList;
  */
 public class FactoryTransactionXvsm implements IFactoryTransaction {
 
-    private Capi capi;
+    private XvsmUtils utils;
     private TransactionReference transaction;
     private FactoryService service;
 
     public FactoryTransactionXvsm(FactoryService service) throws MzsCoreException {
         this.service = service;
-        this.capi = service.getCapi();
-        this.transaction = capi.createTransaction(MzsConstants.RequestTimeout.INFINITE, service.getSpaceUri());
-        //this.transaction = capi.createTransaction(Service.DEFAULT_TIMEOUT, service.getSpaceUri());
-    }
-
-
-    private ArrayList<Part> internalTakeFromStock(ContainerReference container, Class<?> type, int count) throws ServiceException
-    {
-        ArrayList<Selector> selectors = new ArrayList<Selector>();
-        selectors.add(TypeCoordinator.newSelector(type, count));
-
-        ArrayList<Part> entries = null;
-        try {
-            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
-        } catch (CountNotMetException e) {
-            throw new NotAvailableException(container.getId(), e);
-        }
-        catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
-
-        return entries;
-    }
-
-    private ArrayList<Serializable> internalTakeFromQueue(ContainerReference container, int count) throws ServiceException
-    {
-        ArrayList<Selector> selectors = new ArrayList<Selector>();
-        selectors.add(FifoCoordinator.newSelector(count));
-        ArrayList<Serializable> entries = null;
-        try {
-            entries = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
-        } catch (CountNotMetException e) {
-            throw new NotAvailableException(container.getId(), e);
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
-
-        return entries;
-    }
-
-    private <T> T take1FromQueue(ContainerReference container) throws ServiceException
-    {
-        ArrayList<Serializable> items = internalTakeFromQueue(container, 1);
-        if (items.isEmpty()) {
-            return null;
-        }
-        else {
-            return (T)items.get(0);
-        }
-    }
-
-    private void internalAddToContainer(ContainerReference container, Serializable item) throws ServiceException
-    {
-        Entry entry = new Entry(item);
-
-        try {
-            capi.write(entry, container, FactoryService.DEFAULT_TIMEOUT, transaction);
-
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
+        this.utils = service.getXvsmUtils();
+        this.transaction = utils.createTransaction();
     }
 
     @Override
     public void addToStock(Part part) throws ServiceException
     {
-        internalAddToContainer(service.getStockContainer(), part);
+        utils.addToContainer(transaction, service.getStockContainer(), part);
     }
 
     @Override
     public ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException {
-        return internalTakeFromStock(service.getStockContainer(), type, count);
+        return utils.takeFromStock(transaction, service.getStockContainer(), type, count);
     }
 
     @Override
@@ -102,7 +43,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<PropellingChargePackage> entries = null;
         try {
-            entries = capi.take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+            entries = utils.getCapi().take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
         } catch (CountNotMetException e) {
             throw new NotAvailableException(service.getStockContainer().getId(), e);
         }
@@ -115,42 +56,42 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
     @Override
     public void addToQualityCheckQueue(Rocket rocket) throws ServiceException {
-        internalAddToContainer(service.getQualityCheckQueueContainer(), rocket);
+        utils.addToContainer(transaction, service.getQualityCheckQueueContainer(), rocket);
     }
 
     @Override
     public Rocket takeFromQualityCheckQueue() throws ServiceException {
-        return take1FromQueue(service.getQualityCheckQueueContainer());
+        return utils.take1FromQueue(transaction, service.getQualityCheckQueueContainer());
     }
 
     @Override
     public void addToPackingQueue(Rocket rocket) throws ServiceException {
-        internalAddToContainer(service.getPackingQueueContainer(), rocket);
+        utils.addToContainer(transaction, service.getPackingQueueContainer(), rocket);
     }
 
     @Override
     public Rocket takeFromPackingQueue() throws ServiceException {
-        return take1FromQueue(service.getPackingQueueContainer());
+        return utils.take1FromQueue(transaction, service.getPackingQueueContainer());
     }
 
     @Override
     public void addToGarbage(Rocket rocket) throws ServiceException {
-        internalAddToContainer(service.getGarbageContainer(), rocket);
+        utils.addToContainer(transaction, service.getGarbageContainer(), rocket);
     }
 
     @Override
     public void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException {
-        internalAddToContainer(service.getDistributionStockContainer(), rocketPackage);
+        utils.addToContainer(transaction, service.getDistributionStockContainer(), rocketPackage);
     }
 
     @Override
     public void addOrder(Order order) throws ServiceException {
-        internalAddToContainer(service.getOrdersContainer(), order);
+        utils.addToContainer(transaction, service.getOrdersContainer(), order);
     }
 
     @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
-        internalAddToContainer(service.getOrderPositionsContainer(), orderPosition);
+        utils.addToContainer(transaction, service.getOrderPositionsContainer(), orderPosition);
     }
 
     @Override
@@ -173,7 +114,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<OrderPosition> entries = null;
         try {
-            entries = capi.take(service.getOrderPositionsContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+            entries = utils.getCapi().take(service.getOrderPositionsContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
         } catch (CountNotMetException e) {
             throw new NotAvailableException(service.getOrderPositionsContainer().getId(), e);
         }
@@ -195,7 +136,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
         ArrayList<EffectCharge> entries = null;
         try {
-            entries = capi.take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+            entries = utils.getCapi().take(service.getStockContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
         } catch (CountNotMetException e) {
             throw new NotAvailableException(service.getStockContainer().getId(), e);
         } catch (MzsCoreException e) {
@@ -207,13 +148,13 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
 
     @Override
     public void addRocketToOrder(Rocket rocket) throws ServiceException{
-        internalAddToContainer(service.getOrderStockContainer(), rocket);
+        utils.addToContainer(transaction, service.getOrderStockContainer(), rocket);
     }
 
     @Override
     public void commit() throws ServiceException {
         try {
-            capi.commitTransaction(transaction);
+            utils.getCapi().commitTransaction(transaction);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -222,7 +163,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
     @Override
     public void rollback() throws ServiceException {
         try {
-            capi.rollbackTransaction(transaction);
+            utils.getCapi().rollbackTransaction(transaction);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }

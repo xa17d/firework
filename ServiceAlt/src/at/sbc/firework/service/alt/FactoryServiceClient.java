@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 
 /**
  * Isch der Service für an Client. Jeder Client kriagt oa Instanz vo dera Class.
+ * Dia Instanz loft ufm Server, da Client kriagt zugriff ufd Methoda mittels RMI
  */
 public class FactoryServiceClient extends UnicastRemoteObject implements IFactoryServiceRmi {
 
@@ -72,7 +73,7 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
     @Override
     public IFactoryTransactionRmi startTransaction() throws ServiceException {
         synchronized (transactions) {
-            FactoryTransaction t = null;
+            FactoryTransaction t;
             try {
                 t = new FactoryTransaction(this);
             } catch (RemoteException e) {

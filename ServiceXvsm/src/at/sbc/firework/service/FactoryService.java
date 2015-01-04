@@ -19,9 +19,9 @@ import java.util.List;
 public class FactoryService implements IFactoryService {
 
     private Capi capi;
+    private XvsmUtils utils;
 
     private URI spaceUri = URI.create("xvsm://localhost:9876");
-    public static final long DEFAULT_TIMEOUT = 5000;
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
     private static final String CONTAINER_NAME_QUALITYCHECKQUEUE= "qualityCheckQueue";
@@ -54,17 +54,18 @@ public class FactoryService implements IFactoryService {
         System.out.println("Space URI: " + this.spaceUri);
 
         capi = new Capi(core);
+        utils = new XvsmUtils(capi, spaceUri);
 
         // Container erstella
         try {
-            stockContainer = findOrCreateContainer(CONTAINER_NAME_STOCK, false, true, true, false);
-            qualityCheckQueueContainer = findOrCreateContainer(CONTAINER_NAME_QUALITYCHECKQUEUE, true, false, false, false);
-            packingQueueContainer = findOrCreateContainer(CONTAINER_NAME_PACKINGQUEUE, true, false, false, false);
-            garbageContainer = findOrCreateContainer(CONTAINER_NAME_GARBAGE, true, false, false, false);
-            distributionStockContainer = findOrCreateContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK, true, false, false, false);
-            ordersContainer = findOrCreateContainer(CONTAINER_NAME_ORDERS, false, false, true, false);
-            orderStockContainer = findOrCreateContainer(CONTAINER_NAME_ORDERSTOCK, false, false, true, false);
-            orderPositionsContainer = findOrCreateContainer(CONTAINER_NAME_ORDERPOSITIONS, false, false, true, false);
+            stockContainer = utils.findOrCreateContainer(CONTAINER_NAME_STOCK, false, true, true, false);
+            qualityCheckQueueContainer = utils.findOrCreateContainer(CONTAINER_NAME_QUALITYCHECKQUEUE, true, false, false, false);
+            packingQueueContainer = utils.findOrCreateContainer(CONTAINER_NAME_PACKINGQUEUE, true, false, false, false);
+            garbageContainer = utils.findOrCreateContainer(CONTAINER_NAME_GARBAGE, true, false, false, false);
+            distributionStockContainer = utils.findOrCreateContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK, true, false, false, false);
+            ordersContainer = utils.findOrCreateContainer(CONTAINER_NAME_ORDERS, false, false, true, false);
+            orderStockContainer = utils.findOrCreateContainer(CONTAINER_NAME_ORDERSTOCK, false, false, true, false);
+            orderPositionsContainer = utils.findOrCreateContainer(CONTAINER_NAME_ORDERPOSITIONS, false, false, true, false);
 
             allContainers = new ContainerReference[] {
                     stockContainer,
@@ -77,32 +78,11 @@ public class FactoryService implements IFactoryService {
                     orderPositionsContainer
             };
 
-            idCounterContainer = findOrCreateContainer(CONTAINER_NAME_IDCOUNTER, false, false, false, true);
+            idCounterContainer = utils.findOrCreateContainer(CONTAINER_NAME_IDCOUNTER, false, false, false, true);
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
-    }
-
-    private ContainerReference findOrCreateContainer(String name, boolean fifo, boolean type, boolean query, boolean key) throws MzsCoreException {
-        ContainerReference container;
-
-        try {
-            container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
-        } catch (MzsCoreException e) {
-            System.out.println(name + " not found and will be created.");
-            ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
-            if (fifo) { obligatoryCoords.add(new FifoCoordinator()); }
-            if (type) { obligatoryCoords.add(new TypeCoordinator()); }
-            if (query) { obligatoryCoords.add(new QueryCoordinator()); }
-            if (key) { obligatoryCoords.add(new KeyCoordinator()); }
-
-            ArrayList<Coordinator> optionalCoords = new ArrayList<Coordinator>();
-
-            container = capi.createContainer(name, spaceUri, MzsConstants.Container.UNBOUNDED, obligatoryCoords, optionalCoords, null);
-        }
-
-        return container;
     }
 
     @Override
@@ -120,9 +100,7 @@ public class FactoryService implements IFactoryService {
         }
     }
 
-    public Capi getCapi() { return capi; }
-
-    public URI getSpaceUri() { return spaceUri; }
+    public XvsmUtils getXvsmUtils() { return utils; }
 
     public ContainerReference getStockContainer() { return stockContainer; }
     public ContainerReference getQualityCheckQueueContainer() { return qualityCheckQueueContainer; }
@@ -144,27 +122,27 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public ArrayList<Part> listStock() throws ServiceException {
-        return listQueryContainer(getStockContainer());
+        return utils.listQueryContainer(getStockContainer());
     }
 
     @Override
     public ArrayList<Rocket> listQualityCheckQueue() throws ServiceException {
-        return listFifoContainer(getQualityCheckQueueContainer());
+        return utils.listFifoContainer(getQualityCheckQueueContainer());
     }
 
     @Override
     public ArrayList<Rocket> listPackingQueue() throws ServiceException {
-        return listFifoContainer(getPackingQueueContainer());
+        return utils.listFifoContainer(getPackingQueueContainer());
     }
 
     @Override
     public ArrayList<Rocket> listGarbage() throws ServiceException {
-        return listFifoContainer(getGarbageContainer());
+        return utils.listFifoContainer(getGarbageContainer());
     }
 
     @Override
     public ArrayList<RocketPackage5> listDistributionStock() throws ServiceException {
-        return listFifoContainer(getDistributionStockContainer());
+        return utils.listFifoContainer(getDistributionStockContainer());
     }
 
     @Override
@@ -177,7 +155,7 @@ public class FactoryService implements IFactoryService {
         TransactionReference transaction = null;
 
         try {
-            transaction = capi.createTransaction(DEFAULT_TIMEOUT, spaceUri);
+            transaction = capi.createTransaction(XvsmUtils.DEFAULT_TIMEOUT, spaceUri);
 
             // vom Container
             ArrayList<Long> items;
@@ -201,7 +179,7 @@ public class FactoryService implements IFactoryService {
             counter = new Long(id);
 
             Entry entry = new Entry(counter, KeyCoordinator.newCoordinationData(IDCOUNTER_KEY));
-            capi.write(entry, idCounterContainer, DEFAULT_TIMEOUT, transaction);
+            capi.write(entry, idCounterContainer, XvsmUtils.DEFAULT_TIMEOUT, transaction);
 
             capi.commitTransaction(transaction);
 
@@ -221,39 +199,9 @@ public class FactoryService implements IFactoryService {
         return id;
     }
 
-    public <T extends Serializable> ArrayList<T> listFifoContainer(ContainerReference container) throws ServiceException {
-        ArrayList<T> result;
-
-        try {
-            ArrayList<Selector> selectors = new ArrayList<Selector>();
-            selectors.add(FifoCoordinator.newSelector(MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(container, selectors, FactoryService.DEFAULT_TIMEOUT, null);
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
-
-        return result;
-    }
-
-    public <T extends Serializable> ArrayList<T> listQueryContainer(ContainerReference container) throws ServiceException {
-        ArrayList<T> result;
-
-        try {
-            ArrayList<Selector> selectors = new ArrayList<Selector>();
-
-            Query query = new Query().sortup(Property.forName("id"));
-            selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(container, selectors, FactoryService.DEFAULT_TIMEOUT, null);
-        } catch (MzsCoreException e) {
-            throw new XvsmException(e);
-        }
-
-        return result;
-    }
-
     @Override
     public ArrayList<Order> listOrders() throws ServiceException {
-        return listQueryContainer(getOrdersContainer());
+        return utils.listQueryContainer(getOrdersContainer());
     }
 
     @Override
@@ -265,7 +213,7 @@ public class FactoryService implements IFactoryService {
 
             Query query = new Query().filter(Property.forName("orderId").equalTo(orderId)).sortup(Property.forName("id"));
             selectors.add(QueryCoordinator.newSelector(query, MzsConstants.Selecting.COUNT_ALL));
-            result = capi.read(getOrderStockContainer(), selectors, FactoryService.DEFAULT_TIMEOUT, null);
+            result = capi.read(getOrderStockContainer(), selectors, XvsmUtils.DEFAULT_TIMEOUT, null);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -288,7 +236,7 @@ public class FactoryService implements IFactoryService {
             if (all || (container.getId().equals(containerId))) {
                 try {
 
-                    XvsmNotificationListener listener = new XvsmNotificationListener(getCapi().getCore(), notification, container, operation, mode);
+                    XvsmNotificationListener listener = new XvsmNotificationListener(capi.getCore(), notification, container, operation, mode);
 
                 } catch (InterruptedException e) {
                     throw new ServiceException(e);
