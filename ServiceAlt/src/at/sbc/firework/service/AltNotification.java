@@ -19,7 +19,7 @@ public class AltNotification {
 
     private NotificationMode mode;
     private ContainerOperation operation;
-    private boolean done;
+    private boolean done = false;
     private IRemoteEventListener notification;
 
     public void dataChanged(ContainerOperation performedOperation) {

@@ -1,9 +1,6 @@
 package at.sbc.firework.service.alt;
 
-import at.sbc.firework.entities.Order;
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.entities.Rocket;
-import at.sbc.firework.entities.RocketPackage5;
+import at.sbc.firework.entities.*;
 import at.sbc.firework.service.AltNotification;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.INotification;
@@ -16,6 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.function.Predicate;
 
 /**
  * Isch der Service für an Client. Jeder Client kriagt oa Instanz vo dera Class.
@@ -119,20 +117,35 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
 
     @Override
     public ArrayList<Order> listOrders() throws ServiceException, RemoteException {
-        // TODO: implement
-        return null;
+        return getServer().getOrdersContainer().list();
     }
 
     @Override
-    public ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException, RemoteException {
-        // TODO: implement
-        return null;
+    public ArrayList<Rocket> listOrderRockets(final long orderId) throws ServiceException, RemoteException {
+        final ArrayList<Rocket> result = getServer().getOrderStockContainer().list();
+        result.removeIf(
+                new Predicate<Rocket>() {
+                    @Override
+                    public boolean test(Rocket rocket) {
+                        OrderPosition p = rocket.getOrderPosition();
+                        return (p != null) && (p.getOrderId() == orderId);
+                    }
+                }
+        );
+        return result;
     }
 
     @Override
     public int getOrderRocketCount(long orderId) throws ServiceException, RemoteException {
-        // TODO: implement
-        return 0;
+        final ArrayList<Rocket> list = getServer().getOrderStockContainer().list();
+        int count = 0;
+        for (Rocket rocket : list) {
+            OrderPosition p = rocket.getOrderPosition();
+            if ((p != null) && (p.getOrderId() == orderId)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
