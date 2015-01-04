@@ -1,8 +1,6 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Rocket;
-import org.mozartspaces.core.Capi;
-import org.mozartspaces.core.MzsConstants;
 import org.mozartspaces.core.MzsCoreException;
 import org.mozartspaces.core.TransactionReference;
 
@@ -24,16 +22,24 @@ public class CustomerTransactionXvsm implements ICustomerTransaction {
 
     @Override
     public void addRocket(Rocket rocket) throws ServiceException {
-
+        utils.addToContainer(transaction, service.getStockContainer(), rocket);
     }
 
     @Override
     public void commit() throws ServiceException {
-
+        try {
+            utils.getCapi().commitTransaction(transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
     }
 
     @Override
     public void rollback() throws ServiceException {
-
+        try {
+            utils.getCapi().rollbackTransaction(transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
     }
 }
