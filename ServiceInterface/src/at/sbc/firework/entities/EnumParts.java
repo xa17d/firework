@@ -35,12 +35,5 @@ public enum EnumParts {
         throw new NullPointerException("element not existing");
     }
 
-    public static int size() {
-
-        int i = 0;
-        for(EnumParts p : EnumParts.values()) {
-            i++;
-        }
-        return i;
-    }
+    public static int size() { return EnumParts.values().length; }
 }

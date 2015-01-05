@@ -85,6 +85,19 @@ project(':Actors') {
 
 project(':Gui') {
 
+    task copyTaskFacMain(type: Copy) {
+        from '../Gui/res/at/sbc/firework/gui/factory/main_frame.fxml'
+        into '../Gui/build/classes/main/at/sbc/firework/gui/factory/main_frame.fxml'
+    }
+    task copyTaskFacTable(type: Copy) {
+        from '../Gui/res/at/sbc/firework/gui/factory/table_frame.fxml'
+        into '../Gui/build/classes/main/at/sbc/firework/gui/factory/table_frame.fxml'
+    }
+    task copyTaskCusMain(type: Copy) {
+        from '../Gui/res/at/sbc/firework/gui/customer/main_frame.fxml'
+        into '../Gui/build/classes/main/at/sbc/firework/gui/customer/main_frame.fxml'
+    }
+
     dependencies {
         compile project(':ServiceInterface')
         compile project(':ServiceXvsm')

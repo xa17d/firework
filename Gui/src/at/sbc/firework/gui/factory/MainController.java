@@ -61,6 +61,17 @@ public class MainController {
         cbSupplier.setItems(supplierTypes);
         cbSupplier.setValue(EnumParts.CASING);
 
+        colorTypes = new ObservableListBase<Color>() {
+            @Override
+            public Color get(int index) {
+                return Color.getById(index);
+            }
+
+            @Override
+            public int size() {
+                return Color.size();
+            }
+        };
         cbColor.setItems(colorTypes);
         cbColor.setValue(Color.Blue);
 
