@@ -34,6 +34,10 @@ public class MainController {
     @FXML
     private TextField tfErrorRate;
 
+    @FXML
+    private ChoiceBox<Color> cbColor;
+    private ObservableList<Color> colorTypes;
+
     /**
      * called on initializing the controller by fx
      */
@@ -55,7 +59,10 @@ public class MainController {
             }
         };
         cbSupplier.setItems(supplierTypes);
-        cbSupplier.setValue(EnumParts.getById(0));
+        cbSupplier.setValue(EnumParts.CASING);
+
+        cbColor.setItems(colorTypes);
+        cbColor.setValue(Color.Blue);
 
         traceList = new ObservableListWrapper<String>(trace);
         lvTrace.setItems(traceList);
@@ -67,7 +74,8 @@ public class MainController {
     @FXML
     private void createSupplier() {
 
-        EnumParts selectedItem = cbSupplier.getValue();
+        EnumParts selectedPart = cbSupplier.getValue();
+        Color selectedColor = cbColor.getValue();
 
         int amount = 0;
         double errorRate = 0;
@@ -75,10 +83,10 @@ public class MainController {
             amount = Integer.parseInt(tfAmount.getText());
             errorRate = Double.parseDouble(tfErrorRate.getText());
 
-            Thread thread = new Thread(new Supplier(service, selectedItem, amount, errorRate));
+            Thread thread = new Thread(new Supplier(service, selectedPart, amount, errorRate, selectedColor));
             thread.start();
 
-            traceList.add("added new part: " + amount + "x  " + selectedItem);
+            traceList.add("added new part: " + amount + "x  " + selectedPart);
         }
         catch (NumberFormatException e) {
             traceList.add("please type in a correct number for:\n * amount (whole number)\n * error rate (0-100%)");
