@@ -1,12 +1,13 @@
 package at.sbc.firework.gui.customer;
 
+import at.sbc.firework.Customer;
 import at.sbc.firework.service.IFactoryService;
 import javafx.fxml.FXML;
 /**
  * Created by daniel on 20.12.2014.
  */
 public class MainController {
-    private IFactoryService service;
+    private Customer customer;
 
     /**
      * called on initializing the controller by fx
@@ -16,7 +17,7 @@ public class MainController {
 
     }
 
-    public void setService(IFactoryService service) {
-        this.service = service;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

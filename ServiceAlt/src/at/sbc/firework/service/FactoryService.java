@@ -67,7 +67,7 @@ public class FactoryService implements IFactoryService {
     @Override
     public IFactoryTransaction startTransaction() throws ServiceException {
         try {
-            return new ServiceAltTransaction(remoteService.startTransaction());
+            return new FactoryTransactionAlt(remoteService.startTransaction());
         } catch (RemoteException e) {
             throw new ServiceException(e);
         }

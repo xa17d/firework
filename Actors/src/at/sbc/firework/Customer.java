@@ -23,6 +23,8 @@ public class Customer extends Actor {
     @Override
     public void work() {}
 
+    public IFactoryService getFactoryService() { return factoryService; }
+
     /**
      * Gibt a bestellung bi da Fabrik uf
      * @param count Anzahl vo da Raketa

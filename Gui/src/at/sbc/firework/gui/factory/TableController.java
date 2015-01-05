@@ -44,7 +44,6 @@ public class TableController implements INotification {
     @FXML
     private Label lbStickAmount;
 
-
     /**
      * called on initializing the controller by fx
      */

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /**
  * Wrapper fürd RMI Transaction
  */
-public class ServiceAltTransaction implements IFactoryTransaction {
+public class FactoryTransactionAlt implements IFactoryTransaction {
 
-    public ServiceAltTransaction(IFactoryTransactionRmi remoteTransaction) {
+    public FactoryTransactionAlt(IFactoryTransactionRmi remoteTransaction) {
         this.remoteTransaction = remoteTransaction;
     }
 

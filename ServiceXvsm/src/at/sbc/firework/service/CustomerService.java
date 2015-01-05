@@ -13,11 +13,12 @@ import java.util.ArrayList;
 public class CustomerService implements ICustomerService {
 
     private void init(String address, boolean isHost) throws XvsmException {
-        MzsCore core = DefaultMzsCore.newInstance();
-        this.capi = new Capi(core);
-
         this.spaceUri = URI.create(address);
         this.isHost = true;
+
+        System.out.println("create MzsCore " + address);
+        MzsCore core = DefaultMzsCore.newInstance(spaceUri.getPort());
+        this.capi = new Capi(core);
 
         this.utils = new XvsmUtils(capi, spaceUri);
 
