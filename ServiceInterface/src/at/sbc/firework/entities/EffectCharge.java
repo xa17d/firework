@@ -23,6 +23,6 @@ public class EffectCharge extends Part {
 
     @Override
     public String toString() {
-        return "EffectCharge (" + getId() + " | Supplier: " + getSupplierId() + " | " + (isDamaged() ? "damaged" : "ok") + ")";
+        return "EffectCharge-" + getColor() + "(" + getId() + " | Supplier: " + getSupplierId() + " | " + (isDamaged() ? "damaged" : "ok") + ")";
     }
 }

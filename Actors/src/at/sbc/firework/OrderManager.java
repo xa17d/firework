@@ -25,7 +25,7 @@ public class OrderManager extends Actor {
     public void work()
     {
         // TODO:
-        // Prüfen ob Order mit status new vorhanden ist
+        // Prüfen ob order mit status new vorhanden ist
         // OrderPositions erzeugen und Status auf inProgress setzen
         // Wenn alle Raketen erzeugt sind -> ausleifern, status auf done/couldNotDeliver setzen
     }

@@ -99,5 +99,7 @@ public class Rocket implements Serializable {
 
         sb.append("\n * " + getStick());
         return sb.toString();
+
+        //TODO oftrag o noch azaega
     }
 }

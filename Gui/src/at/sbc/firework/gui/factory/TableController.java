@@ -117,7 +117,9 @@ public class TableController implements INotification {
         public void run() {
 
             int casingCount = 0;
-            int effectCount = 0;
+            int effectCountBlue = 0;
+            int effectCountGreen = 0;
+            int effectCountRed = 0;
             int propellingCount = 0;
             int stickCount = 0;
 
@@ -126,8 +128,17 @@ public class TableController implements INotification {
                 if (p instanceof Casing)
                     casingCount++;
 
-                if (p instanceof EffectCharge)
-                    effectCount++;
+                if (p instanceof EffectCharge) {
+                    EffectCharge charge = (EffectCharge) p;
+                    Color color = charge.getColor();
+
+                    if(color == Color.Blue)
+                        effectCountBlue++;
+                    else if(color == Color.Green)
+                        effectCountGreen++;
+                    else
+                        effectCountRed++;
+                }
 
                 if (p instanceof PropellingChargePackage)
                     propellingCount++;
@@ -137,7 +148,9 @@ public class TableController implements INotification {
             }
 
             lbCasingAmount.setText(String.valueOf(casingCount));
-            lbEffectChargeAmount.setText(String.valueOf(effectCount));
+            lbEffectChargeAmount.setText("B: " + String.valueOf(effectCountBlue) + " | " +
+                    "G: " + String.valueOf(effectCountGreen) + " | " +
+                    "R: " + String.valueOf(effectCountRed));
             lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
             lbStickAmount.setText(String.valueOf(stickCount));
 

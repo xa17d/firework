@@ -51,7 +51,7 @@ public class ServiceFactory {
 
     /**
      * Erstellt an neua Customer a nar bestimmta Adress
-     * @param address adress
+     * @param customerId customer id
      * @return Customer-Service-Interface
      */
     public static ICustomerService createCustomer(long customerId) {

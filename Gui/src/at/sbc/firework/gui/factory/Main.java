@@ -54,7 +54,7 @@ public class Main extends Application {
             rootLayout = (BorderPane) loader.load();
             //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
             System.out.println(" - title");
-            primaryStage.setTitle("Firework");
+            primaryStage.setTitle("Firework - Factory");
 
             System.out.println(" - new scene");
             Scene rootScene = new Scene(rootLayout);

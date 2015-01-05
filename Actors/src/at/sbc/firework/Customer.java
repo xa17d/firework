@@ -31,7 +31,7 @@ public class Customer extends Actor {
      * @param colors Farba, muss genau drü iträg ha
      * @throws ServiceException
      */
-    public void Order(int count, Color[] colors) throws ServiceException {
+    public void order(int count, Color[] colors) throws ServiceException {
         // neues Bestellungs-Objekt erzeuga
         Order order = new Order(
                 factoryService.getNewId(),
