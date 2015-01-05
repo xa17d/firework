@@ -1,5 +1,6 @@
-package at.sbc.firework.service;
+package at.sbc.firework.service.alt;
 
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.alt.IRemoteEventListener;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.utils.Notification;

@@ -1,6 +1,6 @@
 package at.sbc.firework.service.alt.containers;
 
-import at.sbc.firework.service.AltNotification;
+import at.sbc.firework.service.alt.AltNotification;
 import at.sbc.firework.service.ContainerOperation;
 
 import java.util.ArrayList;

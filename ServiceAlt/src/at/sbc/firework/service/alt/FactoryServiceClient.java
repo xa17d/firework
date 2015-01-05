@@ -1,9 +1,7 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.AltNotification;
 import at.sbc.firework.service.ContainerOperation;
-import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.transactions.FactoryTransaction;
 import at.sbc.firework.service.ServiceException;
