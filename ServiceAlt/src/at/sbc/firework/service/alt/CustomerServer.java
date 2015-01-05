@@ -5,6 +5,7 @@ import at.sbc.firework.service.ICustomerTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.alt.containers.Container;
 
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     private RmiRegistry registry;
     private String address;
 
-    public CustomerServer(long customerId) throws ServiceException {
+    public CustomerServer(long customerId) throws ServiceException, RemoteException {
         address = SERVER_NAME_PREFIX + customerId;
 
         registry = new RmiRegistry();
@@ -49,6 +50,5 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     @Override
     public ICustomerTransactionRmi startTransaction() throws ServiceException {
         throw new ServiceException("startTransaction not implemented yet");
-        return null;
     }
 }

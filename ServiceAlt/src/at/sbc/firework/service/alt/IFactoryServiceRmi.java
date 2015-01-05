@@ -39,4 +39,5 @@ public interface IFactoryServiceRmi extends Remote {
     long getNewId() throws ServiceException, RemoteException;
 
     void ping() throws RemoteException;
+
 }

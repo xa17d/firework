@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
  * Created by daniel on 05.01.2015.
  */
 public interface ICustomerTransactionRmi extends Remote {
+
     void addRocket(Rocket rocket) throws ServiceException, RemoteException;
 
     void commit() throws ServiceException, RemoteException;

@@ -4,6 +4,7 @@ import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.service.alt.*;
 
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,11 @@ public class CustomerService implements ICustomerService {
     @Override
     public void startCreate(long customerId) throws ServiceException {
 
-        remoteService = new CustomerServer(customerId);
+        try {
+            remoteService = new CustomerServer(customerId);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override

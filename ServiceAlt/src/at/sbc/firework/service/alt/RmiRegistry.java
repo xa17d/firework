@@ -12,13 +12,13 @@ import java.rmi.registry.Registry;
  * Created by daniel on 05.01.2015.
  */
 public class RmiRegistry {
-    public RmiRegistry() throws ServiceException{
+    public RmiRegistry() throws ServiceException {
         System.setProperty("java.security.policy","file:./firework.policy");
 
         if(System.getSecurityManager() == null)
             System.setSecurityManager(new SecurityManager());
 
-        int port = PORT;
+        this.port = PORT;
 
         try {
             this.registry = LocateRegistry.getRegistry(port);
@@ -35,14 +35,17 @@ public class RmiRegistry {
 
     public void bind(String name, Remote obj) throws ServiceException {
 
+        Exception exception = null;
+
         boolean bound = false;
-        for(int i = 0; !bound && i < 2; i++) {
+        for (int i = 0; !bound && i < 2; i++) {
             try {
                 registry.rebind(name, obj);
                 bound = true;
-                System.out.println("Server bound to Registry on Port: " + port);
+                System.out.println("Server bound to Registry on Port: " + port+" name: "+name);
 
             } catch (RemoteException e) {
+                exception = e;
                 try {
                     registry = LocateRegistry.createRegistry(port);
                     System.out.println("Registry started on Port: " + port);
@@ -52,6 +55,7 @@ public class RmiRegistry {
             }
         }
 
+        if (!bound) { throw new ServiceException(exception); }
     }
 
     public void unbind(String name) throws ServiceException {
