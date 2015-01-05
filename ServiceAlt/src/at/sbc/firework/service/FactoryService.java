@@ -16,9 +16,6 @@ import java.util.ArrayList;
  */
 public class FactoryService implements IFactoryService {
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 9876;
-
     private IFactoryServerRmi server;
     private IFactoryServiceRmi remoteService;
     private Pinger pinger;
@@ -34,12 +31,12 @@ public class FactoryService implements IFactoryService {
                 System.setSecurityManager(new SecurityManager());
 
             System.out.println("Lookup RMI...");
-            server = (IFactoryServerRmi) Naming.lookup("rmi://" + HOST + ":" + PORT + "/" + FactoryServer.SERVER_NAME);
+            server = (IFactoryServerRmi) Naming.lookup("rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
 
             System.out.println("Get Remote Service...");
             remoteService = server.getService();
 
-            System.out.println("connected to server: " + "rmi://" + HOST + ":" + PORT + "/" + FactoryServer.SERVER_NAME);
+            System.out.println("connected to server: " + "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
 
             pinger = new Pinger(remoteService);
             pinger.start();

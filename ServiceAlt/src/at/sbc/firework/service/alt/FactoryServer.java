@@ -16,38 +16,23 @@ import java.util.Date;
  */
 public class FactoryServer extends UnicastRemoteObject implements IFactoryServerRmi {
 
-    public static final String SERVER_NAME = "ServerObjectRmiName";
+    public static final String SERVER_NAME = "FireworkFactory";
 
     /**
      * sörfr starta und denn in dr retschistri beindn
      * (falls d retschistri noch ned existiert, macha mr a neue)
-     * @param args args[0]: port
+     * @param args args[0]: port (obsolete)
      * @throws RemoteException
      */
-    public static void main(String[] args) throws RemoteException {
+    public static void main(String[] args) throws RemoteException, ServiceException {
         System.out.println("--- Alternative Server ---");
 
-        System.setProperty("java.security.policy","file:./firework.policy");
+        RmiRegistry registry = new RmiRegistry();
 
-        int port = (args.length > 0) ? Integer.parseInt(args[0]) : 9876;
         FactoryServer server = new FactoryServer();
 
-        if(System.getSecurityManager() == null)
-            System.setSecurityManager(new SecurityManager());
+        registry.bind(SERVER_NAME, server);
 
-        Registry registry = LocateRegistry.getRegistry(port);
-        boolean bound = false;
-        for(int i = 0; !bound && i < 2; i++) {
-            try {
-                registry.rebind(SERVER_NAME, server);
-                bound = true;
-                System.out.println("Server bound to Registry on Port: " + port);
-
-            } catch (RemoteException e) {
-                registry = LocateRegistry.createRegistry(port);
-                System.out.println("Registry started on Port: " + port);
-            }
-        }
         System.out.println("Server is ready");
 
         while (true) {

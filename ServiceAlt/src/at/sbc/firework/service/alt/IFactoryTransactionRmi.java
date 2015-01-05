@@ -35,5 +35,4 @@ public interface IFactoryTransactionRmi extends Remote {
 
     void commit() throws ServiceException, RemoteException;
     void rollback() throws ServiceException, RemoteException;
-
 }
