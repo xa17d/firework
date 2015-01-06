@@ -1,10 +1,12 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.ICustomerTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.transactions.TransactionManager;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -34,6 +36,12 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     private Container stockContainer = new Container("stock");
     public Container getStockContainer() { return stockContainer; }
 
+    public Container[] getContainers() {
+        return new Container[] {
+                stockContainer
+        };
+    }
+
     @Override
     public void stop() throws ServiceException {
         registry.unbind(address);
@@ -52,5 +60,18 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     @Override
     public ICustomerTransactionRmi startTransaction() throws ServiceException, RemoteException {
         return new CustomerTransaction(this, transactionManager);
+    }
+
+    @Override
+    public void registerNotification(IRemoteEventListener notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
+        boolean all = ("*".equals(containerId));
+
+        for (Container container : getContainers()) {
+            if (all || (container.getId().equals(containerId))) {
+                AltNotification listener = new AltNotification(notification, operation, mode);
+                container.registerNotification(listener);
+                Log("registerNotification "+operation+"@"+container.getId()+"#"+mode);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.service.alt.*;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -43,21 +44,47 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public void stop() throws ServiceException {
-
+        try {
+            remoteService.stop();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public String getAddress() throws ServiceException {
-        return null;
+        try {
+            return remoteService.getAddress();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ArrayList<Rocket> listRockets() throws ServiceException {
-        return null;
+        try {
+            return remoteService.listRockets();
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override
     public ICustomerTransaction startTransaction() throws ServiceException {
-        return null;
+        try {
+            return new CustomerTransactionAlt(remoteService.startTransaction());
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
+        try {
+            RemoteEventListener remoteListener = new RemoteEventListener(notification);
+            remoteService.registerNotification(remoteListener, containerId, operation, mode);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 }

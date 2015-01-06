@@ -1,6 +1,7 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.utils.NotificationMode;
 
 import java.util.ArrayList;
 
@@ -17,4 +18,6 @@ public interface ICustomerService {
     ArrayList<Rocket> listRockets() throws ServiceException;
 
     ICustomerTransaction startTransaction() throws ServiceException;
+
+    void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException;
 }
