@@ -21,4 +21,9 @@ public class Order implements Serializable {
     private Color[] colors;
     private String addressShipping;
     private OrderStatus status = OrderStatus.New;
+
+    @Override
+    public String toString() {
+        return "Order #" + id + "   { " + count + " Rockets (" + colors[0] + "|" + colors[1] + "|" + colors[2] + ") Status: " + status + " }";
+    }
 }
