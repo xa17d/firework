@@ -1,7 +1,9 @@
 package at.sbc.firework.service.alt.transactions;
 
 import at.sbc.firework.service.ContainerOperation;
+import at.sbc.firework.service.ITransaction;
 import at.sbc.firework.service.NotAvailableException;
+import at.sbc.firework.service.alt.FactoryTransaction;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.alt.containers.ItemSelector;
 
@@ -10,13 +12,13 @@ import at.sbc.firework.service.alt.containers.ItemSelector;
  */
 public class TransactionOperationTake extends TransactionOperation {
 
-    public TransactionOperationTake(FactoryTransaction transaction, Container container, ItemSelector selector) {
+    public TransactionOperationTake(Transaction transaction, Container container, ItemSelector selector) {
         super(container);
         this.transaction = transaction;
         this.selector = selector;
     }
 
-    private FactoryTransaction transaction;
+    private Transaction transaction;
     private ItemSelector selector;
 
     @Override

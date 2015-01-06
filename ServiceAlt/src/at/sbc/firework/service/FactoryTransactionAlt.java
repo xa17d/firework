@@ -135,8 +135,12 @@ public class FactoryTransactionAlt implements IFactoryTransaction {
     }
 
     @Override
-    public void addRocketToOrder(Rocket rocket) {
-        // TODO: implement
+    public void addRocketToOrder(Rocket rocket) throws ServiceException {
+        try {
+            remoteTransaction.addRocketToOrder(rocket);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override

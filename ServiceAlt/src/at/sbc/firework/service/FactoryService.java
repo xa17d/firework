@@ -144,7 +144,6 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
-        // TODO: implement correctly
         try {
             RemoteEventListener remoteListener = new RemoteEventListener(notification);
             remoteService.registerNotification(remoteListener, containerId, operation, mode);

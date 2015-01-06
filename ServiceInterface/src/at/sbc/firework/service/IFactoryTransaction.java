@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Transaktiona wörn mit Hilfe vom IService erstellt. Am Schluss muss immr
  * commit() ufgruafa wöra
  */
-public interface IFactoryTransaction {
+public interface IFactoryTransaction extends ITransaction {
 
     void addToStock(Part part) throws ServiceException;
     ArrayList<Part> takeFromStock(Class<?> type, int count) throws ServiceException;
@@ -31,7 +31,4 @@ public interface IFactoryTransaction {
     EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException;
 
     void addRocketToOrder(Rocket rocket) throws ServiceException;
-
-    void commit() throws ServiceException;
-    void rollback() throws ServiceException;
 }

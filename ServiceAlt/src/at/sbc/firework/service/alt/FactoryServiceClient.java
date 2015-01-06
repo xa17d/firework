@@ -3,8 +3,8 @@ package at.sbc.firework.service.alt;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.alt.containers.Container;
-import at.sbc.firework.service.alt.transactions.FactoryTransaction;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.service.alt.transactions.TransactionManager;
 import at.sbc.firework.utils.NotificationMode;
 
 import java.rmi.RemoteException;
@@ -34,9 +34,8 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
 
     public FactoryServer getServer() { return server; }
 
-    private ArrayList<FactoryTransaction> transactions = new ArrayList<FactoryTransaction>();
-
     private Date lastPing;
+    private TransactionManager transactionManager = new TransactionManager();
 
     public Date getLastPing() { return lastPing; }
 
@@ -48,12 +47,7 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
     public void cancel() throws ServiceException{
         Log("Client disconnected");
 
-        synchronized (transactions)
-        {
-            while (!transactions.isEmpty()) {
-                transactions.get(0).rollback();
-            }
-        }
+        transactionManager.cancel();
 
         server.disconnectClient(this);
     }
@@ -70,23 +64,13 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
 
     @Override
     public IFactoryTransactionRmi startTransaction() throws ServiceException {
-        synchronized (transactions) {
-            FactoryTransaction t;
-            try {
-                t = new FactoryTransaction(this);
-            } catch (RemoteException e) {
-                throw new ServiceException(e);
-            }
-            transactions.add(t);
-            return t;
+        FactoryTransaction t;
+        try {
+            t = new FactoryTransaction(this, transactionManager);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
         }
-    }
-
-    public void endTransaction(FactoryTransaction t) {
-        synchronized (transactions)
-        {
-            transactions.remove(t);
-        }
+        return t;
     }
 
     @Override

@@ -53,9 +53,11 @@ public class QualityController extends Actor {
 
 
             //dr quality typ bewertet d Qualität speichert noch sine id
-            // TODO: d Qualität wirklich bewerta lo, i han jetzt mol einfach uf ClassA gstellt wenn se ned damaged isch
-            if (damagedCount <= 1 && propellingChargeCount >= 120)
+
+            if (damagedCount == 0 && propellingChargeCount >= 130)
                 rocket.setQuality(id, Quality.ClassA);
+            else if (damagedCount <= 1 && propellingChargeCount >= 120)
+                rocket.setQuality(id, Quality.ClassB);
             else
                 rocket.setQuality(id, Quality.Damaged);
 
