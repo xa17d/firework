@@ -1,6 +1,7 @@
 package at.sbc.firework.service;
 
 import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.utils.NotificationMode;
 import org.mozartspaces.capi3.*;
 import org.mozartspaces.core.*;
 
@@ -25,6 +26,10 @@ public class CustomerService implements ICustomerService {
         // Container erstella
         try {
             stockContainer = utils.findOrCreateContainer(CONTAINER_NAME_STOCK, false, false, true, false);
+
+            allContainers = new ContainerReference[] {
+                    stockContainer
+            };
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
@@ -48,6 +53,7 @@ public class CustomerService implements ICustomerService {
 
     private static final String CONTAINER_NAME_STOCK = "stock";
     private ContainerReference stockContainer;
+    private ContainerReference[] allContainers;
 
     public ContainerReference getStockContainer() { return stockContainer; }
 
@@ -80,6 +86,25 @@ public class CustomerService implements ICustomerService {
             return new CustomerTransactionXvsm(this);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
+        }
+    }
+
+    @Override
+    public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
+        boolean all = ("*".equals(containerId));
+
+        for (ContainerReference container : allContainers) {
+            if (all || (container.getId().equals(containerId))) {
+                try {
+
+                    XvsmNotificationListener listener = new XvsmNotificationListener(capi.getCore(), notification, container, operation, mode);
+
+                } catch (InterruptedException e) {
+                    throw new ServiceException(e);
+                } catch (MzsCoreException e) {
+                    throw new ServiceException(e);
+                }
+            }
         }
     }
 }
