@@ -2,10 +2,15 @@ package at.sbc.firework.gui.customer;
 
 import at.sbc.firework.Customer;
 import at.sbc.firework.gui.customer.MainController;
+import at.sbc.firework.service.IFactoryService;
+import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.service.ServiceFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,7 +22,9 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+
     private Customer customer;
+    private IFactoryService service;
 
     @Override
     public void start(Stage primaryStage) {
@@ -25,6 +32,14 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         customer = new Customer(args);
+
+        try {
+            service = customer.getFactoryService();
+            service.start();
+        }
+        catch (ServiceException e) {
+            e.printStackTrace();
+        }
 
         initLayout();
     }
@@ -45,11 +60,24 @@ public class Main extends Application {
 
             MainController controller = loader.getController();
             controller.setCustomer(customer);
+            controller.setService(service);
+
+            //factory selection popup
+            Stage factorySelectionStage = new Stage();
+
+            FXMLLoader loader2 = new FXMLLoader();
+            loader2.setLocation(getClass().getResource("factory_selection.fxml"));
+
+            factorySelectionStage.setScene(new Scene((AnchorPane) loader2.load()));
+            factorySelectionStage.initModality(Modality.APPLICATION_MODAL);
+            factorySelectionStage.show();
+
+            FactorySelectionController factorySelectionController = loader2.getController();
+            factorySelectionController.setMainController(controller);
 
         } catch(IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static String[] args;

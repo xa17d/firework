@@ -5,24 +5,37 @@ import at.sbc.firework.OrderManager;
 import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.Color;
 import at.sbc.firework.entities.Order;
+import at.sbc.firework.entities.Part;
+import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.IFactoryService;
+import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.utils.NotificationMode;
+import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableListBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by daniel on 20.12.2014.
  */
-public class MainController {
+public class MainController implements INotification {
 
     private Customer customer;
+    private String factoryUrl;
+
+    private IFactoryService service;
 
     @FXML
-    private Button btCreateOrder;
+    private TextField tfFactoryUrl;
 
     @FXML
     private TextField tfAmount;
@@ -37,6 +50,10 @@ public class MainController {
     private ChoiceBox<Color> cbColor2;
     @FXML
     private ChoiceBox<Color> cbColor3;
+
+    @FXML
+    private ListView<Order> lvTrace;
+    private ObservableList<Order> observableOrderList;
 
     /**
      * called on initializing the controller by fx
@@ -64,6 +81,8 @@ public class MainController {
         cbColor3.setItems(colorTypes);
         cbColor3.setValue(Color.Red);
 
+        observableOrderList = new ObservableListWrapper<Order>(new ArrayList<Order>());
+        lvTrace.setItems(observableOrderList);
     }
 
     @FXML
@@ -88,20 +107,59 @@ public class MainController {
 
         try {
             customer.order(amount, colors);
-            //TODO imma neua thread???
         }
         catch (ServiceException e) {
             e.printStackTrace();
             //TODO haendln
         }
-
-        btCreateOrder.setDisable(true);
-        btCreateOrder.setText("on order");
-
-        //TODO set on "received"
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(Customer customer) { this.customer = customer; }
+    public void setFactoryUrl(String url) {
+        this.factoryUrl = url;
+        tfFactoryUrl.setText(factoryUrl);
+    }
+
+    public void setService(IFactoryService service) {
+
+        this.service = service;
+        //TODO register notification
+        /*
+        try {
+            service.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        */
+        dataChanged();
+    }
+
+    @Override
+    public void dataChanged() {
+
+        ArrayList<Order> orderList = null;
+        try {
+            orderList = service.listOrders();
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        Platform.runLater(new UpdateListRunnable(orderList));
+    }
+
+    private class UpdateListRunnable implements Runnable {
+
+        private ArrayList<Order> orderList;
+
+        public UpdateListRunnable(ArrayList<Order> orderList) {
+            this.orderList = orderList;
+        }
+
+        @Override
+        public void run() {
+
+            observableOrderList.clear();
+            observableOrderList.addAll(orderList);
+        }
     }
 }
