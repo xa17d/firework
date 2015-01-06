@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class ItemSelectorColorOrderPosition extends ItemSelector {
 
-    public ItemSelectorColor(ArrayList<Long> excludeIds) {
+    public ItemSelectorColorOrderPosition(ArrayList<Long> excludeIds) {
         this.excludeIds = excludeIds;
     }
 
