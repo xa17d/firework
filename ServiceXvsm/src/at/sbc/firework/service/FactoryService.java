@@ -228,6 +228,15 @@ public class FactoryService implements IFactoryService {
     }
 
     @Override
+    public Order getOrder(long orderId) throws ServiceException {
+        return (Order)utils.takeById(
+                null,
+                getOrdersContainer(),
+                orderId
+        );
+    }
+
+    @Override
     public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
 
         boolean all = ("*".equals(containerId));

@@ -39,69 +39,9 @@ public class Manufacturer extends Actor {
         try {
             t = service.startTransaction();
 
-            // Töal vom Lager hola
-
-            System.out.print("Getting Stick...\t");
-            Stick stick = (Stick) t.takeFromStock(Stick.class, 1).get(0);
-            System.out.println(stick.toString());
-
-            System.out.print("Getting Casing...\t");
-            Casing casing = (Casing) t.takeFromStock(Casing.class, 1).get(0);
-            System.out.println(casing.toString());
-
-            System.out.println("Getting EffectCharges...\t");
-            EffectCharge[] effectCharges = (EffectCharge[]) Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
-
-            System.out.println("\t" + effectCharges[0].toString());
-            System.out.println("\t" + effectCharges[1].toString());
-            System.out.println("\t" + effectCharges[2].toString());
-
-            // PropellingCharge hola
-
-            System.out.print("Getting PropellingCharge...");
-
-            ArrayList<PropellingCharge> propellingCharge = new ArrayList<PropellingCharge>();
-
-            // 130g +- 15g
-            int amount = Utils.randomInt(115, 145);
-            int amountRemaining = amount;
-
-            System.out.println(amount + "g");
-
-            while (amountRemaining > 0) {
-                PropellingChargePackage p = t.takePropellingChargePackageFromStock();
-
-                PropellingCharge charge = p.takeOut(amountRemaining);
-                propellingCharge.add(charge);
-
-                System.out.println("\ttook " + charge.getAmount() + "g from " + p.toString());
-
-                amountRemaining -= charge.getAmount();
-
-                if (!p.isEmpty()) {
-                    t.addToStock(p);
-                }
-            }
-
-            // Rocket zemmbaua
-
-            System.out.print("Building new Rocket...\t");
-
-            long rocketId = service.getNewId();
-
-            // TODO: Wenns für an Auftrag isch muss denn spöter die OrderPosition statt null gsetzt wöras
-            Rocket rocket = new Rocket(id, rocketId, null, stick, casing, effectCharges, Utils.listToArrayP(propellingCharge));
-
-            // Ind QualityCheckQueue
-
-            t.addToQualityCheckQueue(rocket);
-
-            // Arbeitszit
-            //TODO enable sleep
-            //Utils.sleep(1000, 2000);
+            Rocket rocket = buildRocket(t, null);
 
             // Commit
-
             t.commit();
 
             System.out.println(rocket.toString());
@@ -118,4 +58,81 @@ public class Manufacturer extends Actor {
         }
     }
 
+    private Rocket buildRocket(IFactoryTransaction t, OrderPosition orderPosition) throws ServiceException {
+        // Töal vom Lager hola
+
+        System.out.print("Getting Stick...\t");
+        Stick stick = (Stick) t.takeFromStock(Stick.class, 1).get(0);
+        System.out.println(stick.toString());
+
+        System.out.print("Getting Casing...\t");
+        Casing casing = (Casing) t.takeFromStock(Casing.class, 1).get(0);
+        System.out.println(casing.toString());
+
+        System.out.println("Getting EffectCharges...\t");
+        EffectCharge[] effectCharges;
+
+        if (orderPosition == null) {
+            effectCharges = (EffectCharge[]) Utils.<EffectCharge>listToArrayE(t.takeFromStock(EffectCharge.class, 3));
+        }
+        else {
+            Order order = service.getOrder(orderPosition.getOrderId());
+
+            Color[] colors = order.getColors();
+            effectCharges = new EffectCharge[] {
+                    t.takeEffectChargeFromStock(colors[0]),
+                    t.takeEffectChargeFromStock(colors[1]),
+                    t.takeEffectChargeFromStock(colors[2])
+            };
+        }
+
+        System.out.println("\t" + effectCharges[0].toString());
+        System.out.println("\t" + effectCharges[1].toString());
+        System.out.println("\t" + effectCharges[2].toString());
+
+        // PropellingCharge hola
+
+        System.out.print("Getting PropellingCharge...");
+
+        ArrayList<PropellingCharge> propellingCharge = new ArrayList<PropellingCharge>();
+
+        // 130g +- 15g
+        int amount = Utils.randomInt(115, 145);
+        int amountRemaining = amount;
+
+        System.out.println(amount + "g");
+
+        while (amountRemaining > 0) {
+            PropellingChargePackage p = t.takePropellingChargePackageFromStock();
+
+            PropellingCharge charge = p.takeOut(amountRemaining);
+            propellingCharge.add(charge);
+
+            System.out.println("\ttook " + charge.getAmount() + "g from " + p.toString());
+
+            amountRemaining -= charge.getAmount();
+
+            if (!p.isEmpty()) {
+                t.addToStock(p);
+            }
+        }
+
+        // Rocket zemmbaua
+
+        System.out.print("Building new Rocket...\t");
+
+        long rocketId = service.getNewId();
+
+        Rocket rocket = new Rocket(id, rocketId, orderPosition, stick, casing, effectCharges, Utils.listToArrayP(propellingCharge));
+
+        // Ind QualityCheckQueue
+
+        t.addToQualityCheckQueue(rocket);
+
+        // Arbeitszit
+        //TODO enable sleep
+        //Utils.sleep(1000, 2000);
+
+        return rocket;
+    }
 }

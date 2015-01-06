@@ -143,6 +143,15 @@ public class FactoryService implements IFactoryService {
     }
 
     @Override
+    public Order getOrder(long orderId) throws ServiceException {
+        try {
+            return remoteService.getOrder(orderId);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException {
         try {
             RemoteEventListener remoteListener = new RemoteEventListener(notification);

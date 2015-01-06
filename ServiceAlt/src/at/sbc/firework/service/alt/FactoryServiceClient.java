@@ -132,6 +132,17 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
     }
 
     @Override
+    public Order getOrder(long orderId) throws ServiceException, RemoteException {
+        for (Order o : listOrders()) {
+            if (o.getId() == orderId) {
+                return o;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public void registerNotification(IRemoteEventListener notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException, RemoteException {
         boolean all = ("*".equals(containerId));
 

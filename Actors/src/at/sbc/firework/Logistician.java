@@ -3,6 +3,7 @@ package at.sbc.firework;
 import at.sbc.firework.actors.Actor;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.IFactoryTransaction;
+import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class Logistician extends Actor {
 
     @Override
     public void work() {
+
+        // falls vorher ned gnuag Raketa do gsi sind, warta bis wieder welle kond
+        waitForNotification();
 
         IFactoryTransaction t = null;
 
@@ -54,7 +58,11 @@ public class Logistician extends Actor {
             t.addToDistributionStock(new RocketPackage5(id, service.getNewId(), distributionList.toArray(new Rocket[1])));
             t.commit();
             System.out.println("package put to distribution stock...");
-
+        }
+        catch (NotAvailableException e) {
+            System.out.println("not available");
+            registerNotification(e);
+            tryRollback(t);
         } catch (ServiceException e) {
             e.printStackTrace();
 

@@ -28,6 +28,7 @@ public interface IFactoryService {
     ArrayList<Order> listOrders() throws ServiceException;
     ArrayList<Rocket> listOrderRockets(long orderId) throws ServiceException;
     int getOrderRocketCount(long orderId) throws ServiceException;
+    Order getOrder(long orderId) throws ServiceException;
 
     void registerNotification(INotification notification, String containerId, ContainerOperation operation, NotificationMode mode) throws ServiceException;
 

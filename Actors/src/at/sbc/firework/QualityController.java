@@ -6,6 +6,7 @@ import at.sbc.firework.entities.PropellingCharge;
 import at.sbc.firework.entities.Quality;
 import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.service.IFactoryTransaction;
+import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
 
 /**
@@ -28,6 +29,9 @@ public class QualityController extends Actor {
 
     @Override
     public void work() {
+
+        // falls vorher ned gnuag Raketa do gsi sind, warta bis wieder welle kond
+        waitForNotification();
 
         IFactoryTransaction t = null;
 
@@ -66,16 +70,13 @@ public class QualityController extends Actor {
             t.addToPackingQueue(rocket);
             t.commit();
 
+        } catch (NotAvailableException e) {
+            System.out.println("not available");
+            registerNotification(e);
+            tryRollback(t);
         } catch (ServiceException e) {
             e.printStackTrace();
-
-            if (t != null) {
-                try {
-                    t.rollback();
-                } catch (ServiceException e1) {
-                    e1.printStackTrace();
-                }
-            }
+            tryRollback(t);
         }
     }
 }
