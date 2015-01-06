@@ -108,7 +108,7 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
 
     @Override
     public void addOrder(Order order) throws ServiceException {
-        Log("addToDistributionStock "+order);
+        Log("addOrder "+order);
 
         containerAdd(service.getServer().getOrdersContainer(), order);
     }

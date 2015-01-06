@@ -24,6 +24,7 @@ public class Customer extends Actor {
     public void work() {}
 
     public IFactoryService getFactoryService() { return factoryService; }
+    public ICustomerService getCustomerService() { return customerService; }
 
     /**
      * Gibt a bestellung bi da Fabrik uf

@@ -60,7 +60,6 @@ public class Main extends Application {
 
             MainController controller = loader.getController();
             controller.setCustomer(customer);
-            controller.setService(service);
 
             //factory selection popup
             Stage factorySelectionStage = new Stage();

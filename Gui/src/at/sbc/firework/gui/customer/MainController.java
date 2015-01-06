@@ -3,13 +3,8 @@ package at.sbc.firework.gui.customer;
 import at.sbc.firework.Customer;
 import at.sbc.firework.OrderManager;
 import at.sbc.firework.Supplier;
-import at.sbc.firework.entities.Color;
-import at.sbc.firework.entities.Order;
-import at.sbc.firework.entities.Part;
-import at.sbc.firework.service.ContainerOperation;
-import at.sbc.firework.service.IFactoryService;
-import at.sbc.firework.service.INotification;
-import at.sbc.firework.service.ServiceException;
+import at.sbc.firework.entities.*;
+import at.sbc.firework.service.*;
 import at.sbc.firework.utils.NotificationMode;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
@@ -32,7 +27,8 @@ public class MainController implements INotification {
     private Customer customer;
     private String factoryUrl;
 
-    private IFactoryService service;
+    private IFactoryService factoryService;
+    private ICustomerService customerService;
 
     @FXML
     private TextField tfFactoryUrl;
@@ -114,24 +110,22 @@ public class MainController implements INotification {
         }
     }
 
-    public void setCustomer(Customer customer) { this.customer = customer; }
-    public void setFactoryUrl(String url) {
-        this.factoryUrl = url;
-        tfFactoryUrl.setText(factoryUrl);
-    }
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+        this.factoryService = customer.getFactoryService();
+        this.customerService = customer.getCustomerService();
 
-    public void setService(IFactoryService service) {
-
-        this.service = service;
-        //TODO register notification
-        /*
         try {
-            service.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
+            customerService.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        */
         dataChanged();
+    }
+
+    public void setFactoryUrl(String url) {
+        this.factoryUrl = url;
+        tfFactoryUrl.setText(factoryUrl);
     }
 
     @Override
@@ -139,7 +133,7 @@ public class MainController implements INotification {
 
         ArrayList<Order> orderList = null;
         try {
-            orderList = service.listOrders();
+            orderList = factoryService.listOrders();
         } catch (ServiceException e) {
             e.printStackTrace();
         }
