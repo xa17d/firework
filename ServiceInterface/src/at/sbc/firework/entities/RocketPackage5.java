@@ -26,6 +26,7 @@ public class RocketPackage5 implements Serializable {
     public Rocket[] getContent() { return content; }
     public long getId() { return id; }
 
+    /*
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -40,5 +41,10 @@ public class RocketPackage5 implements Serializable {
         }
 
         return sb.toString();
+    }
+    */
+    @Override
+    public String toString() {
+        return "RocketPackage (" +  getId() + " | Logistican: " + logisticianId + ")";
     }
 }

@@ -12,6 +12,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 import java.util.ArrayList;
 
@@ -29,7 +31,7 @@ public class TableController implements INotification {
     private ListView<Rocket> lvProduced;
     private ObservableList<Rocket> observedProducedList;
     @FXML
-    private ListView<RocketPackage5> lvShipped;
+    private TreeView<String> tvShipped;
     private ObservableList<RocketPackage5> observedDeliveredList;
     @FXML
     private ListView<Rocket> lvDisposed;
@@ -56,8 +58,9 @@ public class TableController implements INotification {
         observedProducedList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvProduced.setItems(observedProducedList);
 
-        observedDeliveredList = new ObservableListWrapper<RocketPackage5>(new ArrayList<RocketPackage5>());
-        lvShipped.setItems(observedDeliveredList);
+        //observedDeliveredList = new ObservableListWrapper<RocketPackage5>(new ArrayList<RocketPackage5>());
+        //lvShipped.setItems(observedDeliveredList);
+        //tvShipped = new TreeView<String>();
 
         observedDisposedList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvDisposed.setItems(observedDisposedList);
@@ -162,8 +165,22 @@ public class TableController implements INotification {
             observedProducedList.addAll(packingQueue);
             observedProducedList.addAll(qualityCheckQueue);
 
-            observedDeliveredList.clear();
-            observedDeliveredList.addAll(distributionPackages);
+            //observedDeliveredList.clear();
+            //observedDeliveredList.addAll(distributionPackages);
+
+            TreeItem<String> rootItem = new TreeItem<String>("Root");
+            TreeItem<String> treeItem;
+            TreeItem<String> nodeItem;
+
+            for(RocketPackage5 rp : distributionPackages) {
+                treeItem = new TreeItem<String>(rp.toString());
+                for(Rocket r : rp.getContent()) {
+                    nodeItem = new TreeItem<String>(r.toString());
+                    treeItem.getChildren().add(nodeItem);
+                }
+                rootItem.getChildren().add(treeItem);
+            }
+            tvShipped = new TreeView<String>(rootItem);
 
             observedDisposedList.clear();
             observedDisposedList.addAll(garbage);
