@@ -108,29 +108,41 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
 
     @Override
     public void addOrder(Order order) throws ServiceException {
-        // TODO: implement
+        Log("addToDistributionStock "+order);
+
+        containerAdd(service.getServer().getOrdersContainer(), order);
     }
 
     @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
-        // TODO: implement
+        Log("addOrderPosition "+orderPosition);
+
+        containerAdd(service.getServer().getOrderPositionsContainer(), orderPosition);
     }
 
     @Override
     public OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException {
-        // TODO: implement
-        return null;
+        Log("takeOrderPosition "+excludeIds.toString());
+
+        return (OrderPosition)containerTake(
+                service.getServer().getStockContainer(),
+                new ItemSelectorColorOrderPosition(excludeIds));
     }
 
     @Override
     public EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException {
-        // TODO: implement
-        return null;
+        Log("takeEffectChargeFromStock "+color);
+
+        return (EffectCharge)containerTake(
+                service.getServer().getStockContainer(),
+                new ItemSelectorColor(color));
     }
 
     @Override
     public void addRocketToOrder(Rocket rocket) throws ServiceException {
-        // TODO: implement
+        Log("addRocketToOrder "+rocket);
+
+        containerAdd(service.getServer().getOrderPositionsContainer(), rocket);
     }
 
     @Override
