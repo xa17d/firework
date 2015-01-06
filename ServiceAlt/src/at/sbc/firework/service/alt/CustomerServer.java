@@ -4,6 +4,7 @@ import at.sbc.firework.entities.Rocket;
 import at.sbc.firework.service.ICustomerTransaction;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.alt.containers.Container;
+import at.sbc.firework.service.alt.transactions.TransactionManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -17,6 +18,7 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     private static final String SERVER_NAME_PREFIX = "FireworkCustomer";
     private RmiRegistry registry;
     private String address;
+    private TransactionManager transactionManager = new TransactionManager();
 
     public CustomerServer(long customerId) throws ServiceException, RemoteException {
         address = SERVER_NAME_PREFIX + customerId;
@@ -48,7 +50,7 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     }
 
     @Override
-    public ICustomerTransactionRmi startTransaction() throws ServiceException {
-        throw new ServiceException("startTransaction not implemented yet");
+    public ICustomerTransactionRmi startTransaction() throws ServiceException, RemoteException {
+        return new CustomerTransaction(this, transactionManager);
     }
 }
