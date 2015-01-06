@@ -60,7 +60,8 @@ public class Supplier implements Runnable {
     private void addToStock(Part part) throws ServiceException {
         IFactoryTransaction t = service.startTransaction();
         t.addToStock(part);
-        Utils.sleep(1000, 2000);
+        //TODO enable sleep
+        //Utils.sleep(1000, 2000);
         t.commit();
     }
 }

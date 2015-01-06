@@ -79,15 +79,18 @@ public class MainController {
         int amount = 0;
         try {
             amount = Integer.parseInt(tfAmount.getText());
-
-            Customer customer = new Customer(new String[0]);
-            customer.order(amount, colors);
-            //TODO imma neua thread???
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
             //TODO haendln
-        } catch (ServiceException e) {
+        }
+
+
+        try {
+            customer.order(amount, colors);
+            //TODO imma neua thread???
+        }
+        catch (ServiceException e) {
             e.printStackTrace();
             //TODO haendln
         }

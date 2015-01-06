@@ -97,8 +97,8 @@ public class Manufacturer extends Actor {
             t.addToQualityCheckQueue(rocket);
 
             // Arbeitszit
-
-            Utils.sleep(1000, 2000);
+            //TODO enable sleep
+            //Utils.sleep(1000, 2000);
 
             // Commit
 
