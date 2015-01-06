@@ -48,7 +48,7 @@ public abstract class Actor {
         this.notification = notification;
     }
 
-    protected void tryRollback(IFactoryTransaction t) {
+    protected void tryRollback(ITransaction t) {
         if (t!=null)
         {
             try {

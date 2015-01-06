@@ -144,7 +144,9 @@ public class XvsmUtils {
 
             Query query = new Query().filter(Property.forName("id").equalTo(id)).cnt(1);
             selectors.add(QueryCoordinator.newSelector(query, 1));
-            items = capi.read(container, selectors, XvsmUtils.DEFAULT_TIMEOUT, transaction);
+            items = capi.take(container, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(container.getId(), e);
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
         }
