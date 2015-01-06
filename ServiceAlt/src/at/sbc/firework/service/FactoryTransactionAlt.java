@@ -108,6 +108,15 @@ public class FactoryTransactionAlt implements IFactoryTransaction {
     }
 
     @Override
+    public Order takeOrder(long orderId) throws ServiceException {
+        try {
+            return remoteTransaction.takeOrder(orderId);
+        } catch (RemoteException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
         try {
             remoteTransaction.addOrderPosition(orderPosition);

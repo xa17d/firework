@@ -27,6 +27,7 @@ public interface IFactoryTransactionRmi extends Remote {
     void addToDistributionStock(RocketPackage5 rocket) throws ServiceException, RemoteException;
 
     void addOrder(Order order) throws ServiceException, RemoteException;
+    Order takeOrder(long orderId) throws ServiceException, RemoteException;
     void addOrderPosition(OrderPosition orderPosition) throws ServiceException, RemoteException;
     OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException, RemoteException;
     EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException, RemoteException;

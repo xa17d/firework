@@ -90,6 +90,11 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
     }
 
     @Override
+    public Order takeOrder(long orderId) throws ServiceException {
+        return (Order)utils.takeById(transaction, service.getOrdersContainer(), orderId);
+    }
+
+    @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
         utils.addToContainer(transaction, service.getOrderPositionsContainer(), orderPosition);
     }

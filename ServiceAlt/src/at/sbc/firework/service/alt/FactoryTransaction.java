@@ -114,6 +114,15 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
     }
 
     @Override
+    public Order takeOrder(long orderId) throws ServiceException {
+        Log("takeOrder "+orderId);
+
+        return (Order)containerTake(
+                service.getServer().getOrdersContainer(),
+                new ItemSelectorOrderId(orderId));
+    }
+
+    @Override
     public void addOrderPosition(OrderPosition orderPosition) throws ServiceException {
         Log("addOrderPosition "+orderPosition);
 

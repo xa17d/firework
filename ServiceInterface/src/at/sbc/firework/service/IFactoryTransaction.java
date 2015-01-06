@@ -26,6 +26,7 @@ public interface IFactoryTransaction extends ITransaction {
     void addToDistributionStock(RocketPackage5 rocketPackage) throws ServiceException;
 
     void addOrder(Order order) throws ServiceException;
+    Order takeOrder(long orderId) throws ServiceException;
     void addOrderPosition(OrderPosition orderPosition) throws ServiceException;
     OrderPosition takeOrderPosition(ArrayList<Long> excludeIds) throws ServiceException;
     EffectCharge takeEffectChargeFromStock(Color color) throws ServiceException;

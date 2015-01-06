@@ -22,8 +22,12 @@ public abstract class Actor {
 
         id = Utils.getIdFromArgsOrGenerate(args, service);
 
+        System.out.println(name + " #" + id + " init...");
+        init();
         System.out.println(name + " #" + id + " ready for work...");
     }
+
+    public void init() { }
 
     public abstract void work();
 
@@ -56,12 +60,15 @@ public abstract class Actor {
     }
 
     private Notification notification = null;
+    protected boolean resetNotification = true;
 
     protected void waitForNotification() {
         if (notification != null) {
             notification.waitForNotification(5000);
 
-            notification = null;
+            if (resetNotification) {
+                notification = null;
+            }
         }
     }
 

@@ -136,4 +136,24 @@ public class XvsmUtils {
         }
     }
 
+    public Serializable takeById(TransactionReference transaction, ContainerReference container, long id) throws ServiceException {
+        ArrayList<Serializable> items;
+
+        try {
+            ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+            Query query = new Query().filter(Property.forName("id").equalTo(id)).cnt(1);
+            selectors.add(QueryCoordinator.newSelector(query, 1));
+            items = capi.read(container, selectors, XvsmUtils.DEFAULT_TIMEOUT, transaction);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        if (items.isEmpty()) {
+            return null;
+        }
+        else {
+            return items.get(0);
+        }
+    }
 }
