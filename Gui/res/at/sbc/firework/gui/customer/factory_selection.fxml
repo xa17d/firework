@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.sbc.firework.gui.customer.FactorySelectionController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="Please enter the Factory-URL:" />
+            <TextField fx:id="tfFactoryUrl" text="our_default_url">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+               </VBox.margin>
+            </TextField>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <center>
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#saveFactoryUrl" text="Save URL" BorderPane.alignment="CENTER" />
+               </center>
+            </BorderPane>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</AnchorPane>
