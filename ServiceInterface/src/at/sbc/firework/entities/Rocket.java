@@ -102,4 +102,8 @@ public class Rocket implements Serializable {
 
         //TODO oftrag o noch azaega
     }
+
+    public void setOrderPosition(OrderPosition orderPosition) {
+        this.orderPosition = orderPosition;
+    }
 }

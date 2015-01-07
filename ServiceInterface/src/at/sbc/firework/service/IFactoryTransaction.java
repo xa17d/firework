@@ -19,7 +19,7 @@ public interface IFactoryTransaction extends ITransaction {
     Rocket takeFromQualityCheckQueue() throws ServiceException;
 
     void addToPackingQueue(Rocket rocket) throws ServiceException;
-    Rocket takeFromPackingQueue() throws ServiceException;
+    ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException;
 
     void addToGarbage(Rocket rocket) throws ServiceException;
 
