@@ -60,7 +60,7 @@ public class FactoryService implements IFactoryService {
         try {
             stockContainer = utils.findOrCreateContainer(CONTAINER_NAME_STOCK, false, true, true, false);
             qualityCheckQueueContainer = utils.findOrCreateContainer(CONTAINER_NAME_QUALITYCHECKQUEUE, true, false, false, false);
-            packingQueueContainer = utils.findOrCreateContainer(CONTAINER_NAME_PACKINGQUEUE, true, false, false, false);
+            packingQueueContainer = utils.findOrCreateContainer(CONTAINER_NAME_PACKINGQUEUE, true, false, true, false);
             garbageContainer = utils.findOrCreateContainer(CONTAINER_NAME_GARBAGE, true, false, false, false);
             distributionStockContainer = utils.findOrCreateContainer(CONTAINER_NAME_DISTRIBUTIONSTOCK, true, false, false, false);
             ordersContainer = utils.findOrCreateContainer(CONTAINER_NAME_ORDERS, false, false, true, false);

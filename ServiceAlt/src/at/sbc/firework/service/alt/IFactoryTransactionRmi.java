@@ -20,7 +20,7 @@ public interface IFactoryTransactionRmi extends Remote {
     Rocket takeFromQualityCheckQueue() throws ServiceException, RemoteException;
 
     void addToPackingQueue(Rocket rocket) throws ServiceException, RemoteException;
-    Rocket takeFromPackingQueue() throws ServiceException, RemoteException;
+    ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException, RemoteException;
 
     void addToGarbage(Rocket rocket) throws ServiceException, RemoteException;
 

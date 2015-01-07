@@ -70,8 +70,47 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
     }
 
     @Override
-    public Rocket takeFromPackingQueue() throws ServiceException {
-        return utils.take1FromQueue(transaction, service.getPackingQueueContainer());
+    public ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException {
+
+        ArrayList<Selector> selectors = new ArrayList<Selector>();
+
+        Query query = null;
+
+        switch (orderMode) {
+
+            case Indifferent:
+                query = new Query().filter(Property.forName("quality").equalTo(quality)).cnt(count);
+                break;
+            case MustBeOrdered:
+                query = new Query().filter(
+                        Matchmakers.and(
+                                Property.forName("quality").equalTo(quality),
+                                Property.forName("orderId").notEqualTo(-1)
+                        )
+                ).cnt(count);
+                break;
+            case MustNotBeOrdered:
+                query = new Query().filter(
+                        Matchmakers.and(
+                                Property.forName("quality").equalTo(quality),
+                                Property.forName("orderId").equalTo(-1)
+                        )
+                ).cnt(count);
+                break;
+        }
+
+        selectors.add(QueryCoordinator.newSelector(query, count));
+
+        ArrayList<Rocket> entries = null;
+        try {
+            entries = utils.getCapi().take(service.getPackingQueueContainer(), selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+        } catch (CountNotMetException e) {
+            throw new NotAvailableException(service.getPackingQueueContainer().getId(), e);
+        } catch (MzsCoreException e) {
+            throw new XvsmException(e);
+        }
+
+        return entries;
     }
 
     @Override

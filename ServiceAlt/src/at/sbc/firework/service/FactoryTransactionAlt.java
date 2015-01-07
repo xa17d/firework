@@ -72,9 +72,9 @@ public class FactoryTransactionAlt implements IFactoryTransaction {
     }
 
     @Override
-    public Rocket takeFromPackingQueue() throws ServiceException {
+    public ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException {
         try {
-            return remoteTransaction.takeFromPackingQueue();
+            return remoteTransaction.takeFromPackingQueue(count, quality, orderMode);
         } catch (RemoteException e) {
             throw new ServiceException(e);
         }

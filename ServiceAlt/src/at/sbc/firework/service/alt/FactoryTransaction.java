@@ -84,12 +84,17 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
     }
 
     @Override
-    public Rocket takeFromPackingQueue() throws ServiceException {
-        Log("takeFromPackingQueue");
+    public ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException {
+        Log("takeFromPackingQueue count: "+count+"; quality: "+quality);
 
-        return (Rocket)containerTake(
-                service.getServer().getPackingQueueContainer(),
-                new ItemSelectorFirst());
+        ArrayList<Rocket> result = new ArrayList<Rocket>();
+
+        for (int i = 0; i<count; i++) {
+            Object item = containerTake(service.getServer().getPackingQueueContainer(), new ItemSelectorQuality(quality));
+            result.add((Rocket)item);
+        }
+
+        return result;
     }
 
     @Override
