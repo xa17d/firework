@@ -79,6 +79,7 @@ public class FactoryService implements IFactoryService {
             };
 
             idCounterContainer = utils.findOrCreateContainer(CONTAINER_NAME_IDCOUNTER, false, false, false, true);
+            initIdContainer();
 
         } catch (MzsCoreException e) {
             throw new XvsmException(e);
@@ -145,6 +146,33 @@ public class FactoryService implements IFactoryService {
         return utils.listFifoContainer(getDistributionStockContainer());
     }
 
+    private void initIdContainer() throws ServiceException {
+        List<Selector> selectors = new ArrayList<Selector>();
+        selectors.add(KeyCoordinator.newSelector(IDCOUNTER_KEY));
+
+        try {
+
+            // check if available
+
+            try {
+                capi.read(idCounterContainer, selectors, MzsConstants.RequestTimeout.TRY_ONCE, null);
+            }
+            catch (CountNotMetException e) {
+
+                // if not, add it
+
+                Entry entry = new Entry(new Long(0L), KeyCoordinator.newCoordinationData(IDCOUNTER_KEY));
+                capi.write(entry, idCounterContainer, XvsmUtils.DEFAULT_TIMEOUT, null);
+
+            }
+
+        } catch (MzsCoreException e) {
+
+            throw new ServiceException("Could not initialize ID-Container "+e.getMessage());
+        }
+
+    }
+
     @Override
     public long getNewId() throws ServiceException {
 
@@ -160,17 +188,14 @@ public class FactoryService implements IFactoryService {
             // vom Container
             ArrayList<Long> items;
             try {
-                items = capi.take(idCounterContainer, selectors, MzsConstants.RequestTimeout.TRY_ONCE, transaction);
+                items = capi.take(idCounterContainer, selectors, XvsmUtils.DEFAULT_TIMEOUT, transaction);
             }
             catch (CountNotMetException e) {
-                items = null;
+                throw new NotAvailableException("ID_CONTAINER", e);
             }
 
             Long counter;
-            if (items == null)
-            { counter = new Long(0L); }
-            else
-            { counter = items.get(0); }
+            counter = items.get(0);
 
             // Increment
             id = counter + 1;

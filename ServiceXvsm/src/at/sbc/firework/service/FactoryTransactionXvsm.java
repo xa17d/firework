@@ -85,7 +85,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
                 query = new Query().filter(
                         Matchmakers.and(
                                 Property.forName("quality").equalTo(quality),
-                                Property.forName("orderId").notEqualTo(-1)
+                                Property.forName("orderId").notEqualTo(-1L)
                         )
                 ).cnt(count);
                 break;
@@ -93,7 +93,7 @@ public class FactoryTransactionXvsm implements IFactoryTransaction {
                 query = new Query().filter(
                         Matchmakers.and(
                                 Property.forName("quality").equalTo(quality),
-                                Property.forName("orderId").equalTo(-1)
+                                Property.forName("orderId").equalTo(-1L)
                         )
                 ).cnt(count);
                 break;

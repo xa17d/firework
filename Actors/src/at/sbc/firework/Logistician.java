@@ -74,7 +74,7 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Class B Package...\t");
+            System.out.print("Class B Package...\t\t");
             t = service.startTransaction();
 
             // Probiera zum 5 Rockets zöm hola, wenns zwenig sind, würd a NotAvailableException ghaut.
@@ -138,7 +138,7 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Find Damaged...\t");
+            System.out.print("Find Damaged...\t\t");
             t = service.startTransaction();
 
             ArrayList<Rocket> rockets = t.takeFromPackingQueue(1, Quality.Damaged, OrderMode.Indifferent);
