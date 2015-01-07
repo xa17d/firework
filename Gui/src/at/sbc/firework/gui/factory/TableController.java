@@ -30,10 +30,13 @@ public class TableController implements INotification {
     private ObservableList<Rocket> observedProducedList;
     @FXML
     private ListView<RocketPackage5> lvShipped;
-    private ObservableList<RocketPackage5> observedDeliveredList;
+    private ObservableList<RocketPackage5> observedShippedList;
     @FXML
     private ListView<Rocket> lvDisposed;
     private ObservableList<Rocket> observedDisposedList;
+    @FXML
+    private ListView<Order> lvDelivered;
+    private ObservableList<Order> observedDeliveredList;
 
     @FXML
     private Label lbCasingAmount;
@@ -43,6 +46,15 @@ public class TableController implements INotification {
     private Label lbPropellingChargeAmount;
     @FXML
     private Label lbStickAmount;
+
+    @FXML
+    private Label lbShippedAmount;
+    @FXML
+    private Label lbDisposedAmount;
+    @FXML
+    private Label lbOrderedAmount;
+    @FXML
+    private Label lbDeliveredAmount;
 
     /**
      * called on initializing the controller by fx
@@ -56,11 +68,14 @@ public class TableController implements INotification {
         observedProducedList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvProduced.setItems(observedProducedList);
 
-        observedDeliveredList = new ObservableListWrapper<RocketPackage5>(new ArrayList<RocketPackage5>());
-        lvShipped.setItems(observedDeliveredList);
+        observedShippedList = new ObservableListWrapper<RocketPackage5>(new ArrayList<RocketPackage5>());
+        lvShipped.setItems(observedShippedList);
 
         observedDisposedList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvDisposed.setItems(observedDisposedList);
+
+        observedDeliveredList = new ObservableListWrapper<Order>(new ArrayList<Order>());
+        lvDelivered.setItems(observedDeliveredList);
     }
 
     public void setService(IFactoryService service) {
@@ -82,6 +97,7 @@ public class TableController implements INotification {
         ArrayList<Rocket> qualityCheckQueue = null;
         ArrayList<RocketPackage5> distributionPackages = null;
         ArrayList<Rocket> garbage = null;
+        ArrayList<Order> orderRockets = new ArrayList<Order>();
 
         try {
             stock = service.listStock();
@@ -89,11 +105,17 @@ public class TableController implements INotification {
             qualityCheckQueue = service.listQualityCheckQueue();
             distributionPackages = service.listDistributionStock();
             garbage = service.listGarbage();
+
+            for(Order order : service.listOrders()) {
+                if(order.getStatus() == OrderStatus.Done)
+                    orderRockets.add(order);
+            }
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
 
-        Platform.runLater(new UpdateTableRunnable(stock, packingQueue, qualityCheckQueue, distributionPackages, garbage));
+        Platform.runLater(new UpdateTableRunnable(stock, packingQueue, qualityCheckQueue, distributionPackages, garbage, orderRockets));
     }
 
     private class UpdateTableRunnable implements Runnable {
@@ -103,14 +125,16 @@ public class TableController implements INotification {
         private ArrayList<Rocket> qualityCheckQueue;
         private ArrayList<RocketPackage5> distributionPackages;
         private ArrayList<Rocket> garbage;
+        private ArrayList<Order> orderRockets;
 
 
-        public UpdateTableRunnable(ArrayList<Part> stock, ArrayList<Rocket> packingQueue, ArrayList<Rocket> qualityCheckQueue, ArrayList<RocketPackage5> distributionPackages, ArrayList<Rocket> garbage) {
+        public UpdateTableRunnable(ArrayList<Part> stock, ArrayList<Rocket> packingQueue, ArrayList<Rocket> qualityCheckQueue, ArrayList<RocketPackage5> distributionPackages, ArrayList<Rocket> garbage, ArrayList<Order> orderRockets) {
             this.stock = stock;
             this.packingQueue = packingQueue;
             this.qualityCheckQueue = qualityCheckQueue;
             this.distributionPackages = distributionPackages;
             this.garbage = garbage;
+            this.orderRockets = orderRockets;
         }
 
         @Override
@@ -162,11 +186,22 @@ public class TableController implements INotification {
             observedProducedList.addAll(packingQueue);
             observedProducedList.addAll(qualityCheckQueue);
 
-            observedDeliveredList.clear();
-            observedDeliveredList.addAll(distributionPackages);
+            observedShippedList.clear();
+            observedShippedList.addAll(distributionPackages);
 
             observedDisposedList.clear();
             observedDisposedList.addAll(garbage);
+
+            //TODO show rockets
+            observedDeliveredList.clear();
+            observedDeliveredList.addAll(orderRockets);
+
+            lbShippedAmount.setText(String.valueOf(lvShipped.getItems().size()));
+            lbDisposedAmount.setText(String.valueOf(lvDisposed.getItems().size()));
+            lbDeliveredAmount.setText(String.valueOf(lvDelivered.getItems().size()));
+
+            //TODO show amount of rockets
+            lbOrderedAmount.setText("TODO");
         }
     }
 }
