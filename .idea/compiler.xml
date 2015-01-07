@@ -18,5 +18,13 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.7">
+      <module name="Actors" target="1.7" />
+      <module name="Firework" target="1.7" />
+      <module name="Gui" target="1.7" />
+      <module name="ServiceAlt" target="1.7" />
+      <module name="ServiceInterface" target="1.7" />
+      <module name="ServiceXvsm" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>

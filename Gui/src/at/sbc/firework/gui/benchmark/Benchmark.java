@@ -48,7 +48,7 @@ public class Benchmark {
             while(service.listStock().size() < rocketAmount * 6) {
                 System.out.println(service.listStock().size() + " of " + rocketAmount*6 + "Parts created..");
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
