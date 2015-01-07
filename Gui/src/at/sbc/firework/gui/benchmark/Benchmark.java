@@ -30,7 +30,7 @@ public class Benchmark {
         System.out.println("Starting Benchmark");
 
         try {
-            IFactoryService service = ServiceFactory.getFactory();
+            final IFactoryService service = ServiceFactory.getFactory();
             service.start();
 
             int rocketAmount = 1500;
@@ -61,7 +61,6 @@ public class Benchmark {
                     new Manufacturer(new String[]{"101"}).workLoop();
                 }
             });
-            System.out.println("Manufacturer 1 started");
 
             Thread m2 = new Thread(new Runnable() {
                 @Override
@@ -69,7 +68,6 @@ public class Benchmark {
                     new Manufacturer(new String[]{"102"}).workLoop();
                 }
             });
-            System.out.println("Manufacturer 2 started");
 
             Thread q1 = new Thread(new Runnable() {
                 @Override
@@ -77,7 +75,6 @@ public class Benchmark {
                     new QualityController(new String[]{"103"}).workLoop();
                 }
             });
-            System.out.println("QualityController started");
 
             Thread l1 = new Thread(new Runnable() {
                 @Override
@@ -85,24 +82,27 @@ public class Benchmark {
                     new Logistician(new String[]{"104"}).workLoop();
                 }
             });
-            System.out.println("Logistician started");
 
             System.out.println("Building Rockets for 60 seconds");
 
-            PrintStream printStreamOriginal=System.out;
+            /*PrintStream printStreamOriginal=System.out;
             System.setOut(new PrintStream(new OutputStream() {
                 public void write(int b) {
                     // NO-OP
                 }
-            }));
+            }));*/
 
             Date startTime = new Date();
             m1.start();
+            System.out.println("Manufacturer 1 started");
             m2.start();
+            System.out.println("Manufacturer 2 started");
             q1.start();
+            System.out.println("QualityController started");
             l1.start();
+            System.out.println("Logistician started");
 
-            for(int i = 0; i < 60; i++) {
+            /*for(int i = 0; i < 60; i++) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -113,17 +113,39 @@ public class Benchmark {
                     break;
                 }
             }
+            */
+
+            System.out.println("time|DistributionStock|Garbage|PackingQueue|Sum");
+
+            double t = 0;
+            while (t < 60.0) {
+                t = (new Date().getTime() - startTime.getTime()) / 1000.0;
+
+                int distStock = service.listDistributionStock().size() * 5;
+                int garbage = service.listGarbage().size();
+                int packingQueue = service.listPackingQueue().size();
+                int sum = (distStock + garbage + packingQueue);
+
+                System.out.println(t+"s\t" + distStock + "\t" + garbage + "\t" + packingQueue + "\t = " + sum);
+
+                if (sum == rocketAmount) { break; }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             Date stopTime = new Date();
 
-            /*
             m1.stop();
             m2.stop();
             q1.stop();
             l1.stop();
-            */
 
-            System.setOut(printStreamOriginal);
+
+            //System.setOut(printStreamOriginal);
 
             System.out.println("\nBenchmark ended\n\n ++++ Result: ++++");
             System.out.println("needed Time: " + (stopTime.getTime() - startTime.getTime()) / 1000.0 + " seconds");
