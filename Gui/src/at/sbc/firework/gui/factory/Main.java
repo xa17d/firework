@@ -79,7 +79,7 @@ public class Main extends Application {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("table_frame.fxml"));
+            loader.setLocation(getClass().getResource("table_fram.fxml"));
 
             tableLayout = (GridPane) loader.load();
             rootLayout.setCenter(tableLayout);
