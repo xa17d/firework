@@ -22,9 +22,9 @@ public abstract class Actor {
 
         id = Utils.getIdFromArgsOrGenerate(args, service);
 
-        System.out.println(name + " #" + id + " init...");
+        Console.println(name + " #" + id + " init...");
         init();
-        System.out.println(name + " #" + id + " ready for work...");
+        Console.println(name + " #" + id + " ready for work...");
     }
 
     public void init() { }
@@ -77,7 +77,7 @@ public abstract class Actor {
 
         while (true) {
             work();
-            System.out.println("--------------");
+            Console.println("--------------");
         }
     }
 

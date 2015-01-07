@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt;
 
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.ServiceException;
 
 import java.rmi.NotBoundException;
@@ -42,13 +43,13 @@ public class RmiRegistry {
             try {
                 registry.rebind(name, obj);
                 bound = true;
-                System.out.println("Server bound to Registry on Port: " + port+" name: "+name);
+                Console.println("Server bound to Registry on Port: " + port + " name: " + name);
 
             } catch (RemoteException e) {
                 exception = e;
                 try {
                     registry = LocateRegistry.createRegistry(port);
-                    System.out.println("Registry started on Port: " + port);
+                    Console.println("Registry started on Port: " + port);
                 } catch (RemoteException e1) {
                     throw new ServiceException(e1);
                 }

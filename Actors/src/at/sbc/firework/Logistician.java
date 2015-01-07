@@ -2,6 +2,7 @@ package at.sbc.firework;
 
 import at.sbc.firework.actors.Actor;
 import at.sbc.firework.entities.*;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
@@ -45,7 +46,7 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Class A Package...\t");
+            Console.print("Class A Package...\t");
             t = service.startTransaction();
 
             // Probiera zum 5 Rockets zöm hola, wenns zwenig sind, würd a NotAvailableException ghaut.
@@ -53,15 +54,15 @@ public class Logistician extends Actor {
             ArrayList<Rocket> rockets = t.takeFromPackingQueue(5, Quality.ClassA, OrderMode.MustNotBeOrdered);
             RocketPackage5 rocketPackage = new RocketPackage5(id, service.getNewId(), rockets.toArray(new Rocket[1]));
 
-            System.out.println(rocketPackage);
+            Console.println(rocketPackage);
 
             t.addToDistributionStock(rocketPackage);
             t.commit();
-            System.out.println("package put to distribution stock...");
+            Console.println("package put to distribution stock...");
             hasDoneSomething = true;
         }
         catch (NotAvailableException e) {
-            System.out.println("not enough available");
+            Console.println("not enough available");
             notAvailableException = e;
             tryRollback(t);
         } catch (ServiceException e) {
@@ -74,7 +75,7 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Class B Package...\t\t");
+            Console.print("Class B Package...\t\t");
             t = service.startTransaction();
 
             // Probiera zum 5 Rockets zöm hola, wenns zwenig sind, würd a NotAvailableException ghaut.
@@ -90,15 +91,15 @@ public class Logistician extends Actor {
             // packa
             RocketPackage5 rocketPackage = new RocketPackage5(id, service.getNewId(), rockets.toArray(new Rocket[1]));
 
-            System.out.println(rocketPackage);
+            Console.println(rocketPackage);
 
             t.addToDistributionStock(rocketPackage);
             t.commit();
-            System.out.println("package put to distribution stock...");
+            Console.println("package put to distribution stock...");
             hasDoneSomething = true;
         }
         catch (NotAvailableException e) {
-            System.out.println("not enough available");
+            Console.println("not enough available");
             notAvailableException = e;
             tryRollback(t);
         } catch (ServiceException e) {
@@ -111,21 +112,21 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Delivering...\t");
+            Console.print("Delivering...\t");
             t = service.startTransaction();
 
             ArrayList<Rocket> rockets = t.takeFromPackingQueue(1, Quality.ClassA, OrderMode.MustBeOrdered);
             Rocket rocket = rockets.get(0);
 
-            System.out.println(rocket);
+            Console.println(rocket);
 
             t.addRocketToOrder(rocket);
             t.commit();
-            System.out.println("rocket put to orders stock...");
+            Console.println("rocket put to orders stock...");
             hasDoneSomething = true;
         }
         catch (NotAvailableException e) {
-            System.out.println("not enough available");
+            Console.println("not enough available");
             notAvailableException = e;
             tryRollback(t);
         } catch (ServiceException e) {
@@ -138,21 +139,21 @@ public class Logistician extends Actor {
         //
         t = null;
         try {
-            System.out.print("Find Damaged...\t\t");
+            Console.print("Find Damaged...\t\t");
             t = service.startTransaction();
 
             ArrayList<Rocket> rockets = t.takeFromPackingQueue(1, Quality.Damaged, OrderMode.Indifferent);
             Rocket rocket = rockets.get(0);
 
-            System.out.println(rocket);
+            Console.println(rocket);
 
             t.addToGarbage(rocket);
-            System.out.println("putting rocket (" + rocket.getId() + ") to garbage");
+            Console.println("putting rocket (" + rocket.getId() + ") to garbage");
             t.commit();
             hasDoneSomething = true;
         }
         catch (NotAvailableException e) {
-            System.out.println("not enough available");
+            Console.println("not enough available");
             notAvailableException = e;
             tryRollback(t);
         } catch (ServiceException e) {
@@ -174,7 +175,7 @@ public class Logistician extends Actor {
         OrderPosition orderPosition = rocket.getOrderPosition();
         if (orderPosition != null) {
             rocket.setOrderPosition(null);
-            System.out.println("  put OrderPosition back "+orderPosition);
+            Console.println("  put OrderPosition back " + orderPosition);
             t.addOrderPosition(orderPosition);
         }
     }

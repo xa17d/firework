@@ -1,6 +1,7 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.ICustomerTransaction;
 import at.sbc.firework.service.ServiceException;
@@ -30,7 +31,7 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     }
 
     public void Log(String msg) {
-        System.out.println(address+": "+msg);
+        Console.println(address + ": " + msg);
     }
 
     private Container stockContainer = new Container("stock");

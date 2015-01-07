@@ -27,7 +27,7 @@ public class Benchmark {
         System.out.println("Starting Benchmark");
 
         try {
-            IFactoryService service = ServiceFactory.getFactory();
+            final IFactoryService service = ServiceFactory.getFactory();
             service.start();
 
             int rocketAmount = 1500;
@@ -58,8 +58,6 @@ public class Benchmark {
                     new Manufacturer(new String[]{"101"}).workLoop();
                 }
             });
-            m1.start();
-            System.out.println("Manufacturer 1 started");
 
             Thread m2 = new Thread(new Runnable() {
                 @Override
@@ -67,8 +65,6 @@ public class Benchmark {
                     new Manufacturer(new String[]{"102"}).workLoop();
                 }
             });
-            m2.start();
-            System.out.println("Manufacturer 2 started");
 
             Thread q1 = new Thread(new Runnable() {
                 @Override
@@ -76,8 +72,6 @@ public class Benchmark {
                     new QualityController(new String[]{"103"}).workLoop();
                 }
             });
-            q1.start();
-            System.out.println("QualityController started");
 
             Thread l1 = new Thread(new Runnable() {
                 @Override
@@ -85,10 +79,41 @@ public class Benchmark {
                     new Logistician(new String[]{"104"}).workLoop();
                 }
             });
+
+            m1.start();
+            System.out.println("Manufacturer 1 started");
+
+            m2.start();
+            System.out.println("Manufacturer 2 started");
+
+            q1.start();
+            System.out.println("QualityController started");
+
             l1.start();
             System.out.println("Logistician started");
 
             System.out.println("Building Rockets for 60 seconds");
+
+            Thread infoThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            displayInfo(service);
+                            System.out.println("---");
+                        } catch (ServiceException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            infoThread.start();
 
             try {
                 Thread.sleep(60000);
@@ -100,10 +125,10 @@ public class Benchmark {
             m2.stop();
             q1.stop();
             l1.stop();
+            infoThread.stop();
 
             System.out.println("Benchmark ended\n\n ++++ Result: ++++");
-            System.out.println("Rockets in DistributionStock: " + service.listDistributionStock().size() * 5);
-            System.out.println("Rockets in Garbage: " + service.listGarbage().size());
+            displayInfo(service);
 
             System.console().readLine();
         }
@@ -111,5 +136,12 @@ public class Benchmark {
             e.printStackTrace();
         }
 
+    }
+
+    private static void displayInfo(IFactoryService service) throws ServiceException {
+        int distStock = service.listDistributionStock().size() * 5;
+        int garbage = service.listGarbage().size();
+        int packingQueue = service.listPackingQueue().size();
+        System.out.println("DistributionStock|Garbage|PackingQueue|Sum " + distStock + "\t" + garbage + "\t" + packingQueue + "\t = "+(distStock+garbage+packingQueue));
     }
 }

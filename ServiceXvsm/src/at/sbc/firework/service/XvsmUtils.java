@@ -60,7 +60,7 @@ public class XvsmUtils {
         try {
             container = capi.lookupContainer(name, spaceUri, MzsConstants.RequestTimeout.TRY_ONCE, null);
         } catch (MzsCoreException e) {
-            System.out.println(name + " not found and will be created.");
+            Console.println(name + " not found and will be created.");
             ArrayList<Coordinator> obligatoryCoords = new ArrayList<Coordinator>();
             if (fifo) { obligatoryCoords.add(new FifoCoordinator()); }
             if (type) { obligatoryCoords.add(new TypeCoordinator()); }

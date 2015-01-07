@@ -22,7 +22,7 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public void start() throws ServiceException {
-        System.out.println("--- Alternative Service ---");
+        Console.println("--- Alternative Service ---");
 
         System.setProperty("java.security.policy","file:./firework.policy");
 
@@ -30,13 +30,13 @@ public class FactoryService implements IFactoryService {
             if(System.getSecurityManager() == null)
                 System.setSecurityManager(new SecurityManager());
 
-            System.out.println("Lookup RMI...");
+            Console.println("Lookup RMI...");
             server = (IFactoryServerRmi) Naming.lookup("rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
 
-            System.out.println("Get Remote Service...");
+            Console.println("Get Remote Service...");
             remoteService = server.getService();
 
-            System.out.println("connected to server: " + "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
+            Console.println("connected to server: " + "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
 
             pinger = new Pinger(remoteService);
             pinger.start();

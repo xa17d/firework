@@ -46,12 +46,12 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public void start() throws ServiceException {
-        System.out.println("Starting XVSM...");
+        Console.println("Starting XVSM...");
 
         // Initialisierung
         MzsCore core;
         core = DefaultMzsCore.newInstance(0);
-        System.out.println("Space URI: " + this.spaceUri);
+        Console.println("Space URI: " + this.spaceUri);
 
         capi = new Capi(core);
         utils = new XvsmUtils(capi, spaceUri);

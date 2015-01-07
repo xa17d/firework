@@ -17,7 +17,7 @@ public class CustomerService implements ICustomerService {
         this.spaceUri = URI.create(address);
         this.isHost = true;
 
-        System.out.println("create MzsCore " + address);
+        Console.println("create MzsCore " + address);
         MzsCore core = DefaultMzsCore.newInstance(spaceUri.getPort());
         this.capi = new Capi(core);
 

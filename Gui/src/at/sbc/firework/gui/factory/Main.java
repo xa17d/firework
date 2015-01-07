@@ -1,5 +1,6 @@
 package at.sbc.firework.gui.factory;
 
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
@@ -28,7 +29,7 @@ public class Main extends Application {
 
         this.primaryStage = primaryStage;
 
-        System.out.println("init service...");
+        Console.println("init service...");
 
         try {
             service = ServiceFactory.getFactory();
@@ -38,34 +39,34 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        System.out.println("init layout...");
+        Console.println("init layout...");
         initLayout();
     }
 
     private void initLayout() {
 
         try {
-            System.out.println(" - loader");
+            Console.println(" - loader");
             FXMLLoader loader = new FXMLLoader();
-            System.out.println(" - setLocation");
+            Console.println(" - setLocation");
             loader.setLocation(getClass().getResource("main_frame.fxml"));
 
-            System.out.println(" - load");
+            Console.println(" - load");
             rootLayout = (BorderPane) loader.load();
             //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
-            System.out.println(" - title");
+            Console.println(" - title");
             primaryStage.setTitle("Firework - Factory");
 
-            System.out.println(" - new scene");
+            Console.println(" - new scene");
             Scene rootScene = new Scene(rootLayout);
-            System.out.println(" - set scene");
+            Console.println(" - set scene");
             primaryStage.setScene(rootScene);
-            System.out.println(" - show");
+            Console.println(" - show");
             primaryStage.show();
 
-            System.out.println(" - get main controller");
+            Console.println(" - get main controller");
             MainController controller = loader.getController();
-            System.out.println(" - set service");
+            Console.println(" - set service");
             controller.setService(service);
 
         } catch(IOException e) {

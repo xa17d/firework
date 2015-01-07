@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt;
 
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.alt.IRemoteEventListener;
 import at.sbc.firework.service.alt.containers.Container;
@@ -29,7 +30,8 @@ public class AltNotification {
             try {
                 notification.invoke();
             } catch (RemoteException e) {
-                System.out.println("Could not invoke remote Notification");
+                Console.println("Could not invoke remote Notification");
+                done = true; // damit die Notification nocha glöscht würd wenn se scho kaputt isch
                 e.printStackTrace();
             }
 

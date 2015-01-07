@@ -1,6 +1,7 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.*;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.ServiceException;
@@ -27,7 +28,7 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
     }
 
     public void Log(String msg) {
-        System.out.println("C#"+hashCode()+": "+msg);
+        Console.println("C#" + hashCode() + ": " + msg);
     }
 
     private FactoryServer server;

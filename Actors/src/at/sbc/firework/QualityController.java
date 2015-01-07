@@ -5,6 +5,7 @@ import at.sbc.firework.entities.EffectCharge;
 import at.sbc.firework.entities.PropellingCharge;
 import at.sbc.firework.entities.Quality;
 import at.sbc.firework.entities.Rocket;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
@@ -39,7 +40,7 @@ public class QualityController extends Actor {
             t = service.startTransaction();
 
             //amol a Rocket usserholla
-            System.out.println("getting next rocket...");
+            Console.println("getting next rocket...");
             Rocket rocket = t.takeFromQualityCheckQueue();
 
 
@@ -65,13 +66,13 @@ public class QualityController extends Actor {
             else
                 rocket.setQuality(id, Quality.Damaged);
 
-            System.out.println(rocket.toString());
+            Console.println(rocket.toString());
 
             t.addToPackingQueue(rocket);
             t.commit();
 
         } catch (NotAvailableException e) {
-            System.out.println("not available");
+            Console.println("not available");
             registerNotification(e);
             tryRollback(t);
         } catch (ServiceException e) {

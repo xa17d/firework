@@ -3,6 +3,7 @@ package at.sbc.firework;
 import at.sbc.firework.actors.Actor;
 import at.sbc.firework.actors.Utils;
 import at.sbc.firework.entities.*;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.NotAvailableException;
 import at.sbc.firework.service.ServiceException;
@@ -44,10 +45,10 @@ public class Manufacturer extends Actor {
             // Commit
             t.commit();
 
-            System.out.println(rocket.toString());
+            Console.println(rocket.toString());
         }
         catch (NotAvailableException e) {
-            System.out.println("not available");
+            Console.println("not available");
             registerNotification(e);
             tryRollback(t);
         }
@@ -61,15 +62,15 @@ public class Manufacturer extends Actor {
     private Rocket buildRocket(IFactoryTransaction t, OrderPosition orderPosition) throws ServiceException {
         // Töal vom Lager hola
 
-        System.out.print("Getting Stick...\t");
+        Console.print("Getting Stick...\t");
         Stick stick = (Stick) t.takeFromStock(Stick.class, 1).get(0);
-        System.out.println(stick.toString());
+        Console.println(stick.toString());
 
-        System.out.print("Getting Casing...\t");
+        Console.print("Getting Casing...\t");
         Casing casing = (Casing) t.takeFromStock(Casing.class, 1).get(0);
-        System.out.println(casing.toString());
+        Console.println(casing.toString());
 
-        System.out.println("Getting EffectCharges...\t");
+        Console.println("Getting EffectCharges...\t");
         EffectCharge[] effectCharges;
 
         if (orderPosition == null) {
@@ -86,13 +87,13 @@ public class Manufacturer extends Actor {
             };
         }
 
-        System.out.println("\t" + effectCharges[0].toString());
-        System.out.println("\t" + effectCharges[1].toString());
-        System.out.println("\t" + effectCharges[2].toString());
+        Console.println("\t" + effectCharges[0].toString());
+        Console.println("\t" + effectCharges[1].toString());
+        Console.println("\t" + effectCharges[2].toString());
 
         // PropellingCharge hola
 
-        System.out.print("Getting PropellingCharge...");
+        Console.print("Getting PropellingCharge...");
 
         ArrayList<PropellingCharge> propellingCharge = new ArrayList<PropellingCharge>();
 
@@ -100,7 +101,7 @@ public class Manufacturer extends Actor {
         int amount = Utils.randomInt(115, 145);
         int amountRemaining = amount;
 
-        System.out.println(amount + "g");
+        Console.println(amount + "g");
 
         while (amountRemaining > 0) {
             PropellingChargePackage p = t.takePropellingChargePackageFromStock();
@@ -108,7 +109,7 @@ public class Manufacturer extends Actor {
             PropellingCharge charge = p.takeOut(amountRemaining);
             propellingCharge.add(charge);
 
-            System.out.println("\ttook " + charge.getAmount() + "g from " + p.toString());
+            Console.println("\ttook " + charge.getAmount() + "g from " + p.toString());
 
             amountRemaining -= charge.getAmount();
 
@@ -119,7 +120,7 @@ public class Manufacturer extends Actor {
 
         // Rocket zemmbaua
 
-        System.out.print("Building new Rocket...\t");
+        Console.print("Building new Rocket...\t");
 
         long rocketId = service.getNewId();
 

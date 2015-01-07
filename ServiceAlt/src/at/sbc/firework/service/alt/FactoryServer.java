@@ -1,5 +1,6 @@
 package at.sbc.firework.service.alt;
 
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.alt.containers.Container;
 import at.sbc.firework.service.INotification;
 import at.sbc.firework.service.ServiceException;
@@ -25,7 +26,7 @@ public class FactoryServer extends UnicastRemoteObject implements IFactoryServer
      * @throws RemoteException
      */
     public static void main(String[] args) throws RemoteException, ServiceException {
-        System.out.println("--- Alternative Server ---");
+        Console.println("--- Alternative Server ---");
 
         RmiRegistry registry = new RmiRegistry();
 
@@ -33,7 +34,7 @@ public class FactoryServer extends UnicastRemoteObject implements IFactoryServer
 
         registry.bind(SERVER_NAME, server);
 
-        System.out.println("Server is ready");
+        Console.println("Server is ready");
 
         while (true) {
 
@@ -74,7 +75,7 @@ public class FactoryServer extends UnicastRemoteObject implements IFactoryServer
         }
 
         for (FactoryServiceClient client : deadClients) {
-            System.out.println("! dead client C#"+client.hashCode());
+            Console.println("! dead client C#"+client.hashCode());
             disconnectClient(client);
         }
     }
