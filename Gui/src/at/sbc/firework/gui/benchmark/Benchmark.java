@@ -36,10 +36,12 @@ public class Benchmark {
             int rocketAmount = 1500;
             System.out.println("Creating Parts for " + rocketAmount + " Rockets...");
 
+            double errorRate = 5;
+
             new Thread(new Supplier(service, EnumParts.CASING, rocketAmount, 0, null)).start();
-            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, 5, Color.Blue)).start();
-            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, 5, Color.Green)).start();
-            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, 5, Color.Red)).start();
+            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, errorRate, Color.Blue)).start();
+            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, errorRate, Color.Green)).start();
+            new Thread(new Supplier(service, EnumParts.EFFECT_CHARGE, rocketAmount, errorRate, Color.Red)).start();
             new Thread(new Supplier(service, EnumParts.PROPELLING_CHARGE, rocketAmount, 0, null)).start();
             new Thread(new Supplier(service, EnumParts.STICK, rocketAmount, 0, null)).start();
 
@@ -117,9 +119,8 @@ public class Benchmark {
 
             System.out.println("time|DistributionStock|Garbage|PackingQueue|Sum");
 
-            double t = 0;
+            double t = (new Date().getTime() - startTime.getTime()) / 1000.0;
             while (t < 60.0) {
-                t = (new Date().getTime() - startTime.getTime()) / 1000.0;
 
                 int distStock = service.listDistributionStock().size() * 5;
                 int garbage = service.listGarbage().size();
@@ -135,6 +136,8 @@ public class Benchmark {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                t = (new Date().getTime() - startTime.getTime()) / 1000.0;
             }
 
             Date stopTime = new Date();

@@ -1,17 +1,12 @@
 package at.sbc.firework.service.alt;
 
 import at.sbc.firework.entities.*;
-import at.sbc.firework.service.alt.containers.Container;
-import at.sbc.firework.service.alt.FactoryServiceClient;
-import at.sbc.firework.service.alt.ServiceAltException;
 import at.sbc.firework.service.alt.containers.*;
 import at.sbc.firework.service.IFactoryTransaction;
 import at.sbc.firework.service.ServiceException;
-import at.sbc.firework.service.alt.IFactoryTransactionRmi;
 import at.sbc.firework.service.alt.transactions.*;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
 /**
@@ -85,12 +80,12 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
 
     @Override
     public ArrayList<Rocket> takeFromPackingQueue(int count, Quality quality, OrderMode orderMode) throws ServiceException {
-        Log("takeFromPackingQueue count: "+count+"; quality: "+quality);
+        Log("takeFromPackingQueue count: "+count+"; quality: "+quality+"; orderMode: "+orderMode);
 
         ArrayList<Rocket> result = new ArrayList<Rocket>();
 
         for (int i = 0; i<count; i++) {
-            Object item = containerTake(service.getServer().getPackingQueueContainer(), new ItemSelectorQuality(quality));
+            Object item = containerTake(service.getServer().getPackingQueueContainer(), new ItemSelectorQualityOrderMode(quality, orderMode));
             result.add((Rocket)item);
         }
 
