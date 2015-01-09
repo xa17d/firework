@@ -5,7 +5,7 @@ package at.sbc.firework.service;
  */
 public class Console {
 
-    public static boolean OutputEnabled = false;
+    public static boolean OutputEnabled = true;
 
     public static void print(Object s) {
         if (OutputEnabled)

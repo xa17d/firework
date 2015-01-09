@@ -134,8 +134,8 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
         Log("takeOrderPosition "+excludeIds.toString());
 
         return (OrderPosition)containerTake(
-                service.getServer().getStockContainer(),
-                new ItemSelectorColorOrderPosition(excludeIds));
+                service.getServer().getOrderPositionsContainer(),
+                new ItemSelectorOrderPosition(excludeIds));
     }
 
     @Override

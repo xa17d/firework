@@ -254,7 +254,7 @@ public class FactoryService implements IFactoryService {
 
     @Override
     public Order getOrder(long orderId) throws ServiceException {
-        return (Order)utils.takeById(
+        return (Order)utils.readById(
                 null,
                 getOrdersContainer(),
                 orderId

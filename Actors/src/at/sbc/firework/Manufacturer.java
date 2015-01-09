@@ -42,21 +42,35 @@ public class Manufacturer extends Actor {
         try {
             t = service.startTransaction();
 
-            OrderPosition orderPosition = t.takeOrderPosition(excludeOrderIds);
+            OrderPosition orderPosition = tryTakeOrderPosition(t, excludeOrderIds);
 
             if (orderPosition == null) {
                 // es git koa Aufträg, drum mach ma einfach so a Rakete
+                Console.println("no order -> build random rocket");
 
-                Rocket rocket = buildRocket(t, null);
-                t.commit();
-                Console.println(rocket.toString());
+                try {
+                    Rocket rocket = buildRocket(t, null);
+                    t.commit();
+                }
+                catch (NotAvailableException notAvailableExcaption) {
+                    // do fehlen töal also abbrecha und warta bis neue gliefert wora sind
+
+                    Console.println("not available -> wait for new parts");
+
+                    registerNotification(notAvailableExcaption);
+                    tryRollback(t);
+                    t = null;
+                }
             }
             else {
                 // es gibt an Auftrag
+                Console.println("order present.");
 
                 while (orderPosition != null)
                 {
                     Rocket rocket;
+
+                    Console.println("-- Rocket for "+orderPosition);
 
                     try {
                         rocket = buildRocket(t, orderPosition);
@@ -67,12 +81,16 @@ public class Manufacturer extends Actor {
                         t.commit();
                         t = service.startTransaction();
 
+                        Console.println("---");
+
                         // schaua obs do nomol an Auftrag git
-                        orderPosition = t.takeOrderPosition(excludeOrderIds);
+                        orderPosition = tryTakeOrderPosition(t, excludeOrderIds);
                     }
                     catch (EffectChargeNotAvailableException effectChargeNotAvailableException) {
                         // es git die erforderlicha EffectCharges numma, abr viellicht kann er jo an andra Auftrag macha
                         // drum addama dean mol zur exclude list und holan an neue OrderPosition ussa
+
+                        Console.println("not available -> try other order");
 
                         excludeOrderIds.add(orderPosition.getOrderId());
 
@@ -80,15 +98,24 @@ public class Manufacturer extends Actor {
                         tryRollback(t);
                         t = service.startTransaction();
 
-                        orderPosition = t.takeOrderPosition(excludeOrderIds);
+                        orderPosition = tryTakeOrderPosition(t, excludeOrderIds);
+
+                        if (orderPosition == null) {
+                            // wait for new parts
+                            tryRollback(t);
+                            t = null;
+                            registerNotification(effectChargeNotAvailableException);
+                        }
                     }
                     catch (NotAvailableException notAvailableExcaption) {
                         // do fehlen töal also abbrecha und warta bis neue gliefert wora sind
 
-                        registerNotification(notAvailableExcaption);
+                        Console.println("not available -> wait for new parts");
+
                         tryRollback(t);
                         t = null;
                         orderPosition = null;
+                        registerNotification(notAvailableExcaption);
                     }
                 }
 
@@ -97,15 +124,30 @@ public class Manufacturer extends Actor {
             }
 
         }
-        catch (NotAvailableException e) {
-            Console.println("not available");
-            registerNotification(e);
-            tryRollback(t);
-        }
         catch (ServiceException e)
         {
             e.printStackTrace();
             tryRollback(t);
+        }
+    }
+
+    private OrderPosition tryTakeOrderPosition(IFactoryTransaction t, ArrayList<Long> excludeIds) throws ServiceException {
+        Console.print("Getting OrderPosition ");
+
+        for (Long id : excludeIds) {
+            Console.print(id+";");
+        }
+
+        Console.print("...\t");
+
+        try {
+            OrderPosition p = t.takeOrderPosition(excludeIds);
+            Console.println(p);
+            return p;
+        }
+        catch (NotAvailableException e) {
+            Console.println("null");
+            return null;
         }
     }
 
@@ -130,6 +172,7 @@ public class Manufacturer extends Actor {
             Order order = service.getOrder(orderPosition.getOrderId());
 
             Color[] colors = order.getColors();
+            Console.println("try to find "+colors[0]+","+colors[1]+","+colors[2]+"");
             try {
                 effectCharges = new EffectCharge[]{
                         t.takeEffectChargeFromStock(colors[0]),
@@ -184,6 +227,8 @@ public class Manufacturer extends Actor {
         // Ind QualityCheckQueue
 
         t.addToQualityCheckQueue(rocket);
+
+        Console.println(rocket.toString());
 
         // Arbeitszit
         //TODO enable sleep
