@@ -35,8 +35,8 @@ public class TableController implements INotification {
     private ListView<Rocket> lvDisposed;
     private ObservableList<Rocket> observedDisposedList;
     @FXML
-    private ListView<Order> lvDelivered;
-    private ObservableList<Order> observedDeliveredList;
+    private ListView<Rocket> lvDelivered;
+    private ObservableList<Rocket> observedDeliveredList;
 
     @FXML
     private Label lbCasingAmount;
@@ -74,7 +74,7 @@ public class TableController implements INotification {
         observedDisposedList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvDisposed.setItems(observedDisposedList);
 
-        observedDeliveredList = new ObservableListWrapper<Order>(new ArrayList<Order>());
+        observedDeliveredList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvDelivered.setItems(observedDeliveredList);
     }
 
@@ -97,7 +97,8 @@ public class TableController implements INotification {
         ArrayList<Rocket> qualityCheckQueue = null;
         ArrayList<RocketPackage5> distributionPackages = null;
         ArrayList<Rocket> garbage = null;
-        ArrayList<Order> orderRockets = new ArrayList<Order>();
+        ArrayList<Rocket> orderRocketsDone = new ArrayList<Rocket>();
+        int amountOrderedRockets = 0;
 
         try {
             stock = service.listStock();
@@ -107,15 +108,16 @@ public class TableController implements INotification {
             garbage = service.listGarbage();
 
             for(Order order : service.listOrders()) {
+                amountOrderedRockets += order.getCount();
                 if(order.getStatus() == OrderStatus.Done)
-                    orderRockets.add(order);
+                    orderRocketsDone.addAll(service.listOrderRockets(order.getId()));
             }
 
         } catch (ServiceException e) {
             e.printStackTrace();
         }
 
-        Platform.runLater(new UpdateTableRunnable(stock, packingQueue, qualityCheckQueue, distributionPackages, garbage, orderRockets));
+        Platform.runLater(new UpdateTableRunnable(stock, packingQueue, qualityCheckQueue, distributionPackages, garbage, amountOrderedRockets, orderRocketsDone));
     }
 
     private class UpdateTableRunnable implements Runnable {
@@ -125,15 +127,16 @@ public class TableController implements INotification {
         private ArrayList<Rocket> qualityCheckQueue;
         private ArrayList<RocketPackage5> distributionPackages;
         private ArrayList<Rocket> garbage;
-        private ArrayList<Order> orderRockets;
+        private int amountOrderedRockets;
+        private ArrayList<Rocket> orderRockets;
 
-
-        public UpdateTableRunnable(ArrayList<Part> stock, ArrayList<Rocket> packingQueue, ArrayList<Rocket> qualityCheckQueue, ArrayList<RocketPackage5> distributionPackages, ArrayList<Rocket> garbage, ArrayList<Order> orderRockets) {
+        public UpdateTableRunnable(ArrayList<Part> stock, ArrayList<Rocket> packingQueue, ArrayList<Rocket> qualityCheckQueue, ArrayList<RocketPackage5> distributionPackages, ArrayList<Rocket> garbage, int amountOrderedRockets, ArrayList<Rocket> orderRockets) {
             this.stock = stock;
             this.packingQueue = packingQueue;
             this.qualityCheckQueue = qualityCheckQueue;
             this.distributionPackages = distributionPackages;
             this.garbage = garbage;
+            this.amountOrderedRockets = amountOrderedRockets;
             this.orderRockets = orderRockets;
         }
 
@@ -192,7 +195,6 @@ public class TableController implements INotification {
             observedDisposedList.clear();
             observedDisposedList.addAll(garbage);
 
-            //TODO show rockets
             observedDeliveredList.clear();
             observedDeliveredList.addAll(orderRockets);
 
@@ -200,8 +202,7 @@ public class TableController implements INotification {
             lbDisposedAmount.setText(String.valueOf(lvDisposed.getItems().size()));
             lbDeliveredAmount.setText(String.valueOf(lvDelivered.getItems().size()));
 
-            //TODO show amount of rockets
-            lbOrderedAmount.setText("TODO");
+            lbOrderedAmount.setText(String.valueOf(amountOrderedRockets));
         }
     }
 }
