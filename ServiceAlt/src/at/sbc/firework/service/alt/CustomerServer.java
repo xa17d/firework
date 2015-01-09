@@ -24,10 +24,12 @@ public class CustomerServer extends UnicastRemoteObject implements ICustomerServ
     private TransactionManager transactionManager = new TransactionManager();
 
     public CustomerServer(long customerId) throws ServiceException, RemoteException {
-        address = SERVER_NAME_PREFIX + customerId;
+        String name = SERVER_NAME_PREFIX + customerId;
 
         registry = new RmiRegistry();
-        registry.bind(address, this);
+        registry.bind(name, this);
+
+        address = "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + name;
     }
 
     public void Log(String msg) {

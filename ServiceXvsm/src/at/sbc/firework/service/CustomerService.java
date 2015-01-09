@@ -18,7 +18,15 @@ public class CustomerService implements ICustomerService {
         this.isHost = true;
 
         Console.println("create MzsCore " + address);
-        MzsCore core = DefaultMzsCore.newInstance(spaceUri.getPort());
+
+        MzsCore core;
+
+        if (isHost) {
+            core = DefaultMzsCore.newInstance(spaceUri.getPort());
+        }
+        else {
+            core = DefaultMzsCore.newInstance(0);
+        }
         this.capi = new Capi(core);
 
         this.utils = new XvsmUtils(capi, spaceUri);

@@ -31,7 +31,7 @@ public class ServiceFactory {
      * @param address Adress vom Customer
      * @return Customer-Service-Interface
      */
-    public static ICustomerService getCustomer(String address) {
+    public static ICustomerService getCustomer(String address) throws ServiceException {
         try {
             ICustomerService customerService = (ICustomerService) Class.forName("at.sbc.firework.service.CustomerService").newInstance();
             customerService.startGet(address);
@@ -41,8 +41,6 @@ public class ServiceFactory {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (ServiceException e) {
             e.printStackTrace();
         }
 

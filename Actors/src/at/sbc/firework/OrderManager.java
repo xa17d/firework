@@ -81,9 +81,12 @@ public class OrderManager extends Actor {
                 //
                 else if (order.getStatus() == OrderStatus.InProgress) {
 
-                    Console.println("== In Progress " + order + " ==");
+                    Console.print("== In Progress " + order + " | ");
 
-                    if (service.getOrderRocketCount(order.getId()) == order.getCount()) {
+                    int progress = service.getOrderRocketCount(order.getId());
+                    Console.println(progress+"/"+order.getCount()+" ==");
+
+                    if (progress == order.getCount()) {
 
                         // alls produziert, denn liefra ma des mol us...
 
@@ -91,54 +94,50 @@ public class OrderManager extends Actor {
                         ArrayList<Rocket> rockets = service.listOrderRockets(order.getId());
                         Console.println("got "+rockets.size());
 
-                        IFactoryTransaction t = service.startTransaction();
+                        // Connecten zum Lager vom Customer
+                        ICustomerService customerService;
+                        ICustomerTransaction ct = null;
                         try {
-                            // Connecten zum Lager vom Customer
-                            ICustomerService customerService;
-                            ICustomerTransaction ct = null;
-                            try {
-                                Console.print("Connect to Customer "+order.getAddressShipping()+"...\t");
-                                customerService = ServiceFactory.getCustomer(order.getAddressShipping());
-                                Console.println("ok");
+                            Console.print("Connect to Customer "+order.getAddressShipping()+"...\t");
+                            customerService = ServiceFactory.getCustomer(order.getAddressShipping());
+                            Console.println("ok");
 
-                                Console.print("Shipping rockets...\t");
-                                ct = customerService.startTransaction();
-                                for (Rocket r : rockets) {
-                                    ct.addRocket(r);
-                                }
-                                Console.print(rockets.size());
-                                ct.commit();
-                                Console.println("done");
-                            } catch (ServiceException e) {
-                                tryRollback(ct);
-
-                                Console.print("Could not deliver...\t");
-                                t.takeOrder(order.getId());
-                                order.setStatus(OrderStatus.CouldNotDeliver);
-                                t.addOrder(order);
-
-                                t.commit();
-                                Console.println("status set");
-
-                                throw e;
+                            Console.print("Shipping rockets...\t");
+                            ct = customerService.startTransaction();
+                            for (Rocket r : rockets) {
+                                ct.addRocket(r);
                             }
-
-                            // No da Status updaten, denn simmr fertig
+                            Console.print(rockets.size());
+                            ct.commit();
+                            Console.println("done");
 
                             Console.print("Update Order Status...\t");
-                            t.takeOrder(order.getId());
-                            order.setStatus(OrderStatus.Done);
-                            t.addOrder(order);
-
-                            t.commit();
+                            updateOrderStatus(order, OrderStatus.Done);
                             Console.println("done");
-                        }
-                        catch (ServiceException e) {
-                            e.printStackTrace();
-                            tryRollback(t);
+
+                        } catch (ServiceException e) {
+                            tryRollback(ct);
+
+                            Console.print("Could not deliver...\t");
+                            updateOrderStatus(order, OrderStatus.CouldNotDeliver);
+                            Console.println("status set");
+
+                            Console.println("reason: "+e.getMessage());
                         }
 
                     }
+                }
+                //
+                // Could Not Deliver - do müss ma nix tua
+                //
+                else if (order.getStatus() == OrderStatus.CouldNotDeliver) {
+                    Console.println("== CouldNotDeliver " + order + " ==");
+                }
+                //
+                // Done - do müss ma nix tua
+                //
+                else if (order.getStatus() == OrderStatus.Done) {
+                    Console.println("== Done " + order + " ==");
                 }
 
             }
@@ -150,6 +149,22 @@ public class OrderManager extends Actor {
             }
         } catch (ServiceException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private void updateOrderStatus(Order order, OrderStatus newStatus) throws ServiceException {
+
+        IFactoryTransaction t = service.startTransaction();
+        try {
+            t = service.startTransaction();
+            t.takeOrder(order.getId());
+            order.setStatus(newStatus);
+            t.addOrder(order);
+            t.commit();
+        } catch (ServiceException e) {
+            tryRollback(t);
+            throw e;
         }
 
     }

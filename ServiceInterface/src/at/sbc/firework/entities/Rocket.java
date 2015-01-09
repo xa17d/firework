@@ -85,6 +85,7 @@ public class Rocket implements Serializable {
 
         sb.append("Rocket (" + getId() + " | Manufacturer: " + getManufacturerId());
         sb.append((getQualityControllerId() == -1 ? "" : " | QualityController: " + getQualityControllerId()+ " -> " + getQuality().toString()) + ")");
+        sb.append("\n * Order: " + (getOrderPosition() == null ? "-" : "#"+orderId));
         sb.append("\n * " + getCasing());
 
         sb.append("\n * ");
@@ -105,5 +106,11 @@ public class Rocket implements Serializable {
 
     public void setOrderPosition(OrderPosition orderPosition) {
         this.orderPosition = orderPosition;
+        if (orderPosition == null) {
+            orderId = -1;
+        }
+        else {
+            orderId = orderPosition.getOrderId();
+        }
     }
 }

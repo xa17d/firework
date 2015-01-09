@@ -112,7 +112,7 @@ public class FactoryServiceClient extends UnicastRemoteObject implements IFactor
                     @Override
                     public boolean test(Rocket rocket) {
                         OrderPosition p = rocket.getOrderPosition();
-                        return (p != null) && (p.getOrderId() == orderId);
+                        return (p != null) && (p.getOrderId() != orderId);
                     }
                 }
         );
