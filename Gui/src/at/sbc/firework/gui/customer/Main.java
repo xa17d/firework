@@ -1,11 +1,8 @@
 package at.sbc.firework.gui.customer;
 
 import at.sbc.firework.Customer;
-<<<<<<< HEAD
-=======
-import at.sbc.firework.gui.customer.MainController;
+import at.sbc.firework.gui.customer.Controller;
 import at.sbc.firework.service.Console;
->>>>>>> 871e1d31460bdc8e43cdb30672bcef0486759cdf
 import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import javafx.application.Application;

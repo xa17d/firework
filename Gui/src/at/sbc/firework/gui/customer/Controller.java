@@ -171,6 +171,7 @@ public class Controller implements INotification {
 
             Stage orderStage = new Stage();
             orderStage.setScene(new Scene((AnchorPane) loader.load()));
+            ((OrderController) loader.getController()).setCustomer(customer);
             orderStage.initModality(Modality.APPLICATION_MODAL);
             orderStage.show();
         }
