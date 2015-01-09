@@ -5,86 +5,368 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="800.0" minWidth="1200.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.sbc.firework.gui.factory.MainController">
-    <left>
-        <VBox alignment="CENTER" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <children>
-                <ChoiceBox fx:id="cbSupplier" prefWidth="150.0">
-                    <VBox.margin>
-                        <Insets bottom="5.0" left="10.0" right="10.0" />
-                    </VBox.margin></ChoiceBox>
-                <HBox>
-                    <children>
-                        <Label text="Amount: ">
-                            <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                            </HBox.margin>
-                        </Label>
-                        <TextField fx:id="tfAmount" alignment="CENTER_RIGHT" prefWidth="60.0" text="1">
-                            <HBox.margin>
-                                <Insets bottom="5.0" left="12.0" right="5.0" top="5.0" />
-                            </HBox.margin>
-                        </TextField>
-                    </children>
-                    <VBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                    </VBox.margin>
-                </HBox>
-            <HBox>
+<BorderPane minHeight="700.0" minWidth="1000.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.sbc.firework.gui.factory.Controller">
+   <left>
+      <ScrollPane prefViewportHeight="1022.0" prefViewportWidth="250.0" BorderPane.alignment="CENTER">
+         <content>
+              <VBox alignment="CENTER" BorderPane.alignment="TOP_LEFT">
+                  <children>
+                  <TitledPane maxWidth="250.0" text="CREATE">
+                     <content>
+                        <VBox alignment="CENTER_LEFT">
+                           <children>
+                                  <ChoiceBox fx:id="cbSupplier" prefWidth="120.0">
+                                      <VBox.margin>
+                                          <Insets bottom="5.0" left="10.0" right="10.0" />
+                                      </VBox.margin>
+                              </ChoiceBox>
+                                  <HBox>
+                                      <children>
+                                          <Label text="Amount: ">
+                                              <HBox.margin>
+                                                  <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                              </HBox.margin>
+                                          </Label>
+                                          <TextField fx:id="tfAmount" alignment="CENTER_RIGHT" prefWidth="60.0" text="1">
+                                              <HBox.margin>
+                                                  <Insets bottom="5.0" left="12.0" right="5.0" top="5.0" />
+                                              </HBox.margin>
+                                          </TextField>
+                                      </children>
+                                      <VBox.margin>
+                                          <Insets left="10.0" right="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                              <HBox fx:id="hbError">
+                                 <children>
+                                    <Label text="Error Rate:">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <TextField fx:id="tfErrorRate" alignment="CENTER_RIGHT" prefWidth="60.0" text="25">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </HBox.margin>
+                                    </TextField>
+                                    <Label text="\%">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" right="5.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <HBox fx:id="hbColor">
+                                 <children>
+                                    <Label text="Color:">
+                                       <HBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <ChoiceBox fx:id="cbColor" prefWidth="80.0">
+                                       <HBox.margin>
+                                          <Insets left="29.0" top="5.0" />
+                                       </HBox.margin>
+                                    </ChoiceBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets left="10.0" right="10.0" />
+                                 </VBox.margin>
+                              </HBox>
+                                  <Button fx:id="btSupplier" mnemonicParsing="false" onAction="#createSupplier" text="Create Supplier">
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="15.0" />
+                                      </VBox.margin>
+                              </Button>
+                           </children>
+                        </VBox>
+                     </content>
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                  </TitledPane>
+                  <TitledPane maxWidth="250.0" text="STATUS">
+                     <content>
+                        <VBox>
+                           <children>
+                              <GridPane>
+                                 <children>
+                                    <Label text="Stick:" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Propelling Charge:" GridPane.rowIndex="5">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="EC (Blue):" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbCasingAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Casing:">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbStickAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbECBlue" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbPropellingChargeAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label layoutX="20.0" layoutY="75.0" text="EC (Green):" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label layoutX="20.0" layoutY="75.0" text="EC (Red):" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbECGreen" layoutX="188.0" layoutY="75.0" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbECRed" layoutX="188.0" layoutY="75.0" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <Separator maxWidth="190.0">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                              </Separator>
+                              <GridPane>
+                                 <children>
+                                    <Label text="Disposed Rockets:" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbShippedAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Shipped Rockets:">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbDisposedAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                              <Separator maxWidth="190.0">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                              </Separator>
+                              <GridPane>
+                                 <children>
+                                    <Label text="Delivered Rockets:" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbOrderedAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Ordered Rockets:">
+                                       <GridPane.margin>
+                                          <Insets bottom="3.0" left="10.0" right="3.0" top="3.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label fx:id="lbDeliveredAmount" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                 </children>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="70.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </content>
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                  </TitledPane>
+                  <TitledPane text="TRACE">
+                     <content>
+                          <ListView fx:id="lvTrace">
+                           <VBox.margin>
+                              <Insets bottom="3.0" left="3.0" right="3.0" top="15.0" />
+                           </VBox.margin>
+                        </ListView>
+                     </content>
+                     <VBox.margin>
+                        <Insets right="10.0" />
+                     </VBox.margin>
+                  </TitledPane>
+                  </children>
+                  <opaqueInsets>
+                      <Insets />
+                  </opaqueInsets>
+                  <BorderPane.margin>
+                      <Insets />
+                  </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+              </VBox>
+         </content>
+      </ScrollPane>
+   </left>
+   <center>
+      <GridPane prefHeight="600.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="50.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="50.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox>
                <children>
-                  <Label text="Error Rate:">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <TextField fx:id="tfErrorRate" alignment="CENTER_RIGHT" prefWidth="60.0" text="25">
-                     <HBox.margin>
+                  <Label text="Parts in Stock" />
+                  <ListView fx:id="lvStock" minHeight="300.0" minWidth="300.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </TextField>
-                  <Label text="\%">
-                     <HBox.margin>
-                        <Insets bottom="5.0" right="5.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
+                     </VBox.margin>
+                  </ListView>
                </children>
-               <VBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </VBox>
+            <Pane style="-fx-background-color: #eeeeee;" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+               <opaqueInsets>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </opaqueInsets>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Pane>
+            <VBox GridPane.rowIndex="1">
                <children>
-                  <Label text="Color:">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <ChoiceBox fx:id="cbColor" prefWidth="100.0">
-                     <HBox.margin>
-                        <Insets left="20.0" top="5.0" />
-                     </HBox.margin>
-                  </ChoiceBox>
+                  <Label text="Disposed Rockets" />
+                  <ListView fx:id="lvDisposed" minHeight="300.0" minWidth="300.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ListView>
                </children>
-               <VBox.margin>
-                  <Insets left="10.0" right="10.0" />
-               </VBox.margin>
-            </HBox>
-                <Button fx:id="btSupplier" mnemonicParsing="false" onAction="#createSupplier" text="Create Supplier">
-                    <VBox.margin>
-                        <Insets left="10.0" right="10.0" top="15.0" />
-                    </VBox.margin></Button>
-              <ListView fx:id="lvTrace" prefHeight="400.0">
-               <VBox.margin>
-                  <Insets bottom="3.0" left="3.0" right="3.0" top="50.0" />
-               </VBox.margin>
-            </ListView>
-            </children>
-            <opaqueInsets>
-                <Insets />
-            </opaqueInsets>
-            <BorderPane.margin>
-                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-            </BorderPane.margin>
-        </VBox>
-    </left>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </VBox>
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Shipped Rockets" />
+                  <ListView fx:id="lvShipped" minHeight="300.0" minWidth="300.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ListView>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </VBox>
+            <VBox GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Delivered Rockets (Order)" />
+                  <ListView fx:id="lvDelivered" minHeight="300.0" minWidth="300.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ListView>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </VBox>
+            <VBox GridPane.columnIndex="1">
+               <children>
+                  <Label text="Produced Rockets (in QualityCheck- or Packing-Queue)" />
+                  <ListView fx:id="lvProduced" minHeight="300.0" minWidth="300.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ListView>
+               </children>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </center>
 </BorderPane>

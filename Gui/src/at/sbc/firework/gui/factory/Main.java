@@ -46,13 +46,16 @@ public class Main extends Application {
     private void initLayout() {
 
         try {
+            /*
+             * MAIN
+             */
             Console.println(" - loader");
-            FXMLLoader loader = new FXMLLoader();
+            FXMLLoader loaderMain = new FXMLLoader();
             Console.println(" - setLocation");
-            loader.setLocation(getClass().getResource("main_frame.fxml"));
+            loaderMain.setLocation(getClass().getResource("main_fram.fxml"));
 
             Console.println(" - load");
-            rootLayout = (BorderPane) loader.load();
+            rootLayout = (BorderPane) loaderMain.load();
             //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
             Console.println(" - title");
             primaryStage.setTitle("Firework - Factory");
@@ -64,28 +67,16 @@ public class Main extends Application {
             Console.println(" - show");
             primaryStage.show();
 
-            Console.println(" - get main controller");
-            MainController controller = loader.getController();
+            /*
+             * set service
+             */
+            Console.println(" - get controller");
+            Controller controller = loaderMain.getController();
+
+            Console.println(" - initialize layout");
+            controller.initializeLayout();
+
             Console.println(" - set service");
-            controller.setService(service);
-
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        initTableLayout();
-    }
-
-    private void initTableLayout() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("table_fram.fxml"));
-
-            tableLayout = (GridPane) loader.load();
-            rootLayout.setCenter(tableLayout);
-
-            TableController controller = loader.getController();
             controller.setService(service);
 
         } catch(IOException e) {

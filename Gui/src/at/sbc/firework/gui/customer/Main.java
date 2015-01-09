@@ -1,10 +1,8 @@
 package at.sbc.firework.gui.customer;
 
 import at.sbc.firework.Customer;
-import at.sbc.firework.gui.customer.MainController;
 import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
-import at.sbc.firework.service.ServiceFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -48,7 +46,7 @@ public class Main extends Application {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("main_frame.fxml"));
+            loader.setLocation(getClass().getResource("main_fram.fxml"));
 
             rootLayout = (BorderPane) loader.load();
             //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
@@ -58,7 +56,7 @@ public class Main extends Application {
             primaryStage.setScene(rootScene);
             primaryStage.show();
 
-            MainController controller = loader.getController();
+            Controller controller = loader.getController();
             controller.setCustomer(customer);
 
             //factory selection popup
@@ -72,7 +70,7 @@ public class Main extends Application {
             factorySelectionStage.show();
 
             FactorySelectionController factorySelectionController = loader2.getController();
-            factorySelectionController.setMainController(controller);
+            factorySelectionController.setController(controller);
 
         } catch(IOException e) {
             e.printStackTrace();

@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="100.0" minWidth="200.0" prefHeight="500.0" prefWidth="400.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.sbc.firework.gui.customer.MainController">
+<BorderPane minHeight="100.0" minWidth="200.0" prefHeight="500.0" prefWidth="400.0" styleClass="background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.sbc.firework.gui.customer.Controller">
    <center>
       <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
         <columnConstraints>
@@ -42,7 +42,20 @@
                </children>
             </HBox>
             <Label text="Amount: " GridPane.rowIndex="1" />
-            <Button maxWidth="-Infinity" minWidth="90.0" mnemonicParsing="false" onAction="#createOrder" prefWidth="140.0" text="Create Order" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <HBox GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+               <children>
+                  <Button alignment="CENTER" maxWidth="-Infinity" minWidth="90.0" mnemonicParsing="false" onAction="#createOrder" prefWidth="140.0" text="Create Order" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="40.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button alignment="CENTER" maxWidth="-Infinity" minWidth="90.0" mnemonicParsing="false" onAction="#showOrder" prefWidth="140.0" text="Show Order">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
             <Label text="Colors: " GridPane.rowIndex="2" />
             <Label text="Address: " GridPane.rowIndex="3" />
             <TextField fx:id="tfAmount" alignment="CENTER_RIGHT" maxWidth="100.0" prefWidth="100.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="NEVER">

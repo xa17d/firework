@@ -4,7 +4,7 @@ package at.sbc.firework.entities;
  * d Farb vo na EffectCharge
  */
 public enum Color {
-    Red(0, "Red"), Green(1, "Green"), Blue(2, "Blue");
+    Blue(0, "Blue"), Green(1, "Green"), Red(2, "Red");
 
     private int id;
     private String name;

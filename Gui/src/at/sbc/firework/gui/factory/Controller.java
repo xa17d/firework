@@ -1,5 +1,6 @@
 package at.sbc.firework.gui.factory;
 
+import at.sbc.firework.Supplier;
 import at.sbc.firework.entities.*;
 import at.sbc.firework.service.ContainerOperation;
 import at.sbc.firework.service.INotification;
@@ -8,20 +9,51 @@ import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.utils.NotificationMode;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableListBase;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
 /**
  * Created by Lucas on 17.11.2014.
  */
-public class TableController implements INotification {
+public class Controller implements INotification {
 
     private IFactoryService service;
 
+    /*
+     * MAIN
+     */
+    @FXML
+    private ChoiceBox<EnumParts> cbSupplier;
+    private ObservableList<EnumParts> supplierTypes;
+
+    @FXML
+    private ListView<String> lvTrace;
+    private ObservableList<String> traceList;
+    private ArrayList<String> trace;
+
+    @FXML
+    private TextField tfAmount;
+
+    @FXML
+    private TextField tfErrorRate;
+
+    @FXML
+    private ChoiceBox<Color> cbColor;
+    private ObservableList<Color> colorTypes;
+
+    /*
+     * TABLE
+     */
     @FXML
     private ListView<Part> lvStock;
     private ObservableList<Part> observedStockList;
@@ -41,7 +73,11 @@ public class TableController implements INotification {
     @FXML
     private Label lbCasingAmount;
     @FXML
-    private Label lbEffectChargeAmount;
+    private Label lbECBlue;
+    @FXML
+    private Label lbECGreen;
+    @FXML
+    private Label lbECRed;
     @FXML
     private Label lbPropellingChargeAmount;
     @FXML
@@ -61,7 +97,51 @@ public class TableController implements INotification {
      */
     @FXML
     private void initialize() {
+        //do nothing
+    }
 
+    public void initializeLayout() {
+
+        /*
+         * MAIN
+         */
+        trace = new ArrayList<String>();
+        trace.add("Start Up Fireworks-App");
+
+        supplierTypes = new ObservableListBase<EnumParts>() {
+            @Override
+            public EnumParts get(int index) {
+                return EnumParts.getById(index);
+            }
+
+            @Override
+            public int size() {
+                return EnumParts.size();
+            }
+        };
+        cbSupplier.setItems(supplierTypes);
+        cbSupplier.setValue(EnumParts.CASING);
+
+        colorTypes = new ObservableListBase<Color>() {
+            @Override
+            public Color get(int index) {
+                return Color.getById(index);
+            }
+
+            @Override
+            public int size() {
+                return Color.size();
+            }
+        };
+        cbColor.setItems(colorTypes);
+        cbColor.setValue(Color.Blue);
+
+        traceList = new ObservableListWrapper<String>(trace);
+        lvTrace.setItems(traceList);
+
+        /*
+         * TABLE
+         */
         observedStockList = new ObservableListWrapper<Part>(new ArrayList<Part>());
         lvStock.setItems(observedStockList);
 
@@ -76,6 +156,15 @@ public class TableController implements INotification {
 
         observedDeliveredList = new ObservableListWrapper<Rocket>(new ArrayList<Rocket>());
         lvDelivered.setItems(observedDeliveredList);
+
+        cbSupplier.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                supplierChanged(newValue.intValue());
+            }
+        });
+
+        supplierChanged(0);
     }
 
     public void setService(IFactoryService service) {
@@ -175,9 +264,9 @@ public class TableController implements INotification {
             }
 
             lbCasingAmount.setText(String.valueOf(casingCount));
-            lbEffectChargeAmount.setText("B: " + String.valueOf(effectCountBlue) + " | " +
-                    "G: " + String.valueOf(effectCountGreen) + " | " +
-                    "R: " + String.valueOf(effectCountRed));
+            lbECBlue.setText(String.valueOf(effectCountBlue));
+            lbECGreen.setText(String.valueOf(effectCountGreen));
+            lbECRed.setText(String.valueOf(effectCountRed));
             lbPropellingChargeAmount.setText(String.valueOf(propellingCount));
             lbStickAmount.setText(String.valueOf(stickCount));
 
@@ -204,5 +293,45 @@ public class TableController implements INotification {
 
             lbOrderedAmount.setText(String.valueOf(amountOrderedRockets));
         }
+    }
+
+    /**
+     * called on "Create Supplier"-Button click
+     */
+    @FXML
+    private void createSupplier() {
+
+        EnumParts selectedPart = cbSupplier.getValue();
+        Color selectedColor = cbColor.getValue();
+
+        int amount = 0;
+        double errorRate = 0;
+        try {
+            amount = Integer.parseInt(tfAmount.getText());
+            errorRate = Double.parseDouble(tfErrorRate.getText());
+
+            Thread thread = new Thread(new Supplier(service, selectedPart, amount, errorRate, selectedColor));
+            thread.start();
+
+            traceList.add("added new part: " + amount + "x  " + selectedPart);
+        }
+        catch (NumberFormatException e) {
+            traceList.add("please type in a correct number for:\n * amount (whole number)\n * error rate (0-100%)");
+        }
+    }
+
+    @FXML
+    private HBox hbError;
+    @FXML
+    private HBox hbColor;
+
+    @FXML
+    private void supplierChanged(int index) {
+
+        //boolean isEC = cbSupplier.getValue() == EnumParts.EFFECT_CHARGE;
+        boolean isEC = index == 1;
+
+        hbError.setVisible(isEC);
+        hbColor.setVisible(isEC);
     }
 }
