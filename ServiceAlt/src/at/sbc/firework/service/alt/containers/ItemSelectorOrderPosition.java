@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /**
  * Created by daniel on 06.01.2015.
  */
-public class ItemSelectorColorOrderPosition extends ItemSelector {
+public class ItemSelectorOrderPosition extends ItemSelector {
 
-    public ItemSelectorColorOrderPosition(ArrayList<Long> excludeIds) {
+    public ItemSelectorOrderPosition(ArrayList<Long> excludeIds) {
         this.excludeIds = excludeIds;
     }
 

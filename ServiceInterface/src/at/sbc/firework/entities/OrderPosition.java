@@ -16,4 +16,9 @@ public class OrderPosition implements Serializable {
     private long orderId;
 
     public long getOrderId() { return orderId; }
+
+    @Override
+    public String toString() {
+        return "Order #"+orderId;
+    }
 }

@@ -108,6 +108,38 @@ public class Logistician extends Actor {
         }
 
         //
+        // Mol schaua obs Class B Raketa gibt, wo a OrderPosition hond. Do sött ma die OrderPositions
+        // wieder zruck tua, weil sus müsst ma warta bis se in an 5er Pack vrpackt wörn
+        //
+        t = null;
+        try {
+            Console.print("Class B Freeing...\t\t");
+            t = service.startTransaction();
+
+            ArrayList<Rocket> rockets = t.takeFromPackingQueue(1, Quality.ClassB, OrderMode.MustBeOrdered);
+
+            for (Rocket r : rockets) {
+
+                // OrderPosition zruckbringa
+                putOrderPositionBack(r, t);
+
+                // wieder ind Queue haua
+                t.addToPackingQueue(r);
+            }
+
+            t.commit();
+            hasDoneSomething = true;
+        }
+        catch (NotAvailableException e) {
+            Console.println("not enough available");
+            notAvailableException = e;
+            tryRollback(t);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            tryRollback(t);
+        }
+
+        //
         // Mol schaua obs was zum usliefra git
         //
         t = null;
@@ -144,6 +176,8 @@ public class Logistician extends Actor {
 
             ArrayList<Rocket> rockets = t.takeFromPackingQueue(1, Quality.Damaged, OrderMode.Indifferent);
             Rocket rocket = rockets.get(0);
+
+            putOrderPositionBack(rocket, t);
 
             Console.println(rocket);
 

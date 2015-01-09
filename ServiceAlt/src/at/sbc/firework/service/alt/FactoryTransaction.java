@@ -134,8 +134,8 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
         Log("takeOrderPosition "+excludeIds.toString());
 
         return (OrderPosition)containerTake(
-                service.getServer().getStockContainer(),
-                new ItemSelectorColorOrderPosition(excludeIds));
+                service.getServer().getOrderPositionsContainer(),
+                new ItemSelectorOrderPosition(excludeIds));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class FactoryTransaction extends Transaction implements IFactoryTransacti
     public void addRocketToOrder(Rocket rocket) throws ServiceException {
         Log("addRocketToOrder "+rocket);
 
-        containerAdd(service.getServer().getOrderPositionsContainer(), rocket);
+        containerAdd(service.getServer().getOrderStockContainer(), rocket);
     }
 
     @Override

@@ -34,8 +34,8 @@ public class CustomerService implements ICustomerService {
                 System.setSecurityManager(new SecurityManager());
 
             Console.println("Lookup RMI...");
-            remoteService = (ICustomerServerRmi) Naming.lookup("rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
-            Console.println("connected to server: " + "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
+            remoteService = (ICustomerServerRmi) Naming.lookup(address);
+            Console.println("connected to server: " + address);
 
         } catch (Exception e) {
             throw new ServiceException(e);
