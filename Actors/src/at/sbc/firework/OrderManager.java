@@ -109,7 +109,7 @@ public class OrderManager extends Actor {
                             }
                             Console.print(rockets.size());
                             ct.commit();
-                            Console.println("done");
+                            Console.println(" done");
 
                             Console.print("Update Order Status...\t");
                             updateOrderStatus(order, OrderStatus.Done);
@@ -118,11 +118,11 @@ public class OrderManager extends Actor {
                         } catch (ServiceException e) {
                             tryRollback(ct);
 
-                            Console.print("Could not deliver...\t");
+                            Console.println("could not deliver");
+                            Console.println("reason: "+e.getMessage());
                             updateOrderStatus(order, OrderStatus.CouldNotDeliver);
                             Console.println("status set");
 
-                            Console.println("reason: "+e.getMessage());
                         }
 
                     }

@@ -2,6 +2,7 @@ package at.sbc.firework.gui.customer;
 
 import at.sbc.firework.Customer;
 import at.sbc.firework.gui.customer.MainController;
+import at.sbc.firework.service.Console;
 import at.sbc.firework.service.IFactoryService;
 import at.sbc.firework.service.ServiceException;
 import at.sbc.firework.service.ServiceFactory;
@@ -36,6 +37,10 @@ public class Main extends Application {
         try {
             service = customer.getFactoryService();
             service.start();
+
+            Console.println("Fetching rockets...");
+            customer.fetchRockets();
+            Console.println("Fetching Done");
         }
         catch (ServiceException e) {
             e.printStackTrace();
