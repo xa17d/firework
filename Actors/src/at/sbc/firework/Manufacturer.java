@@ -36,16 +36,66 @@ public class Manufacturer extends Actor {
         // falls vorher ned gnuag töal do gsi sind, warta bis sich do was gändert hat
         waitForNotification();
 
+        ArrayList<Long> excludeOrderIds = new ArrayList<Long>();
+
         IFactoryTransaction t = null;
         try {
             t = service.startTransaction();
 
-            Rocket rocket = buildRocket(t, null);
+            OrderPosition orderPosition = t.takeOrderPosition(excludeOrderIds);
 
-            // Commit
-            t.commit();
+            if (orderPosition == null) {
+                // es git koa Aufträg, drum mach ma einfach so a Rakete
 
-            Console.println(rocket.toString());
+                Rocket rocket = buildRocket(t, null);
+                t.commit();
+                Console.println(rocket.toString());
+            }
+            else {
+                // es gibt an Auftrag
+
+                while (orderPosition != null)
+                {
+                    Rocket rocket;
+
+                    try {
+                        rocket = buildRocket(t, orderPosition);
+
+                        Console.println(rocket.toString());
+
+                        // alles hat passt, also commiten und a neue transaction starta
+                        t.commit();
+                        t = service.startTransaction();
+
+                        // schaua obs do nomol an Auftrag git
+                        orderPosition = t.takeOrderPosition(excludeOrderIds);
+                    }
+                    catch (EffectChargeNotAvailableException effectChargeNotAvailableException) {
+                        // es git die erforderlicha EffectCharges numma, abr viellicht kann er jo an andra Auftrag macha
+                        // drum addama dean mol zur exclude list und holan an neue OrderPosition ussa
+
+                        excludeOrderIds.add(orderPosition.getOrderId());
+
+                        // die Transaction zrucksetza und a neue starta
+                        tryRollback(t);
+                        t = service.startTransaction();
+
+                        orderPosition = t.takeOrderPosition(excludeOrderIds);
+                    }
+                    catch (NotAvailableException notAvailableExcaption) {
+                        // do fehlen töal also abbrecha und warta bis neue gliefert wora sind
+
+                        registerNotification(notAvailableExcaption);
+                        tryRollback(t);
+                        t = null;
+                        orderPosition = null;
+                    }
+                }
+
+                // falls no was uncommited isch, mach ma besser an rollback
+                tryRollback(t);
+            }
+
         }
         catch (NotAvailableException e) {
             Console.println("not available");
@@ -80,11 +130,16 @@ public class Manufacturer extends Actor {
             Order order = service.getOrder(orderPosition.getOrderId());
 
             Color[] colors = order.getColors();
-            effectCharges = new EffectCharge[] {
-                    t.takeEffectChargeFromStock(colors[0]),
-                    t.takeEffectChargeFromStock(colors[1]),
-                    t.takeEffectChargeFromStock(colors[2])
-            };
+            try {
+                effectCharges = new EffectCharge[]{
+                        t.takeEffectChargeFromStock(colors[0]),
+                        t.takeEffectChargeFromStock(colors[1]),
+                        t.takeEffectChargeFromStock(colors[2])
+                };
+            }
+            catch (NotAvailableException e) {
+                throw new EffectChargeNotAvailableException(e.getContainerId(), e);
+            }
         }
 
         Console.println("\t" + effectCharges[0].toString());
@@ -135,5 +190,11 @@ public class Manufacturer extends Actor {
         //Utils.sleep(1000, 2000);
 
         return rocket;
+    }
+
+    private class EffectChargeNotAvailableException extends NotAvailableException {
+        public EffectChargeNotAvailableException(String containerId, Exception innerException) {
+            super(containerId, innerException);
+        }
     }
 }
