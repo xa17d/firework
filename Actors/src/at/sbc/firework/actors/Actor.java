@@ -12,8 +12,12 @@ public abstract class Actor {
     private static final int WAITING_TIME = 500;
 
     public Actor(String name, String[] args) {
+        this(name, args, ServiceFactory.getDefaultFactoryAddress());
+    }
 
-        service = ServiceFactory.getFactory();
+    public Actor(String name, String[] args, String address) {
+
+        service = ServiceFactory.getFactory(address);
         try {
             service.start();
         } catch (ServiceException e) {

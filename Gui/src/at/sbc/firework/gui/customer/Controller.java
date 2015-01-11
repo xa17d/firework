@@ -121,10 +121,14 @@ public class Controller implements INotification {
         this.customerService = customer.getCustomerService();
 
         try {
+            this.tfAddress.setEditable(false);
+            this.tfAddress.setText(customerService.getAddress());
             customerService.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
+
+
         dataChanged();
     }
 

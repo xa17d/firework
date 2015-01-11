@@ -32,7 +32,7 @@ public class Main extends Application {
         Console.println("init service...");
 
         try {
-            service = ServiceFactory.getFactory();
+            service = ServiceFactory.getFactory(ServiceFactory.getDefaultFactoryAddress());
             service.start();
         }
         catch (ServiceException e) {

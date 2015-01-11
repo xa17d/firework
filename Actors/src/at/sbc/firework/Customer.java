@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public class Customer extends Actor {
 
-    public Customer(String[] args) {
-        super("Customer", args);
+    public Customer(String[] args, String factoryAddress) {
+        super("Customer", args, factoryAddress);
 
         factoryService = service;
         customerService = ServiceFactory.createCustomer(id);

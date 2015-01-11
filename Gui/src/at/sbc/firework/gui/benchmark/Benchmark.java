@@ -30,7 +30,7 @@ public class Benchmark {
         System.out.println("Starting Benchmark");
 
         try {
-            final IFactoryService service = ServiceFactory.getFactory();
+            final IFactoryService service = ServiceFactory.getFactory(ServiceFactory.getDefaultFactoryAddress());
             service.start();
 
             int rocketAmount = 1500;

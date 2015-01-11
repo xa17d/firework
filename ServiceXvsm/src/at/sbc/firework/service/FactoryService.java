@@ -10,6 +10,7 @@ import org.mozartspaces.core.*;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class FactoryService implements IFactoryService {
     private Capi capi;
     private XvsmUtils utils;
 
-    private URI spaceUri = URI.create("xvsm://localhost:9876");
+    private URI spaceUri = URI.create(getDefaultFactoryAddress());
     // Lager
     private static final String CONTAINER_NAME_STOCK = "stock";
     private static final String CONTAINER_NAME_QUALITYCHECKQUEUE= "qualityCheckQueue";
@@ -43,6 +44,10 @@ public class FactoryService implements IFactoryService {
     private ContainerReference orderPositionsContainer;
     private ContainerReference idCounterContainer;
     private ContainerReference[] allContainers;
+
+    public static String getDefaultFactoryAddress() {
+        return "xvsm://localhost:9876";
+    }
 
     @Override
     public void start() throws ServiceException {
@@ -98,6 +103,15 @@ public class FactoryService implements IFactoryService {
                 throw new XvsmException(e);
             }
             capi = null;
+        }
+    }
+
+    @Override
+    public void setAddress(String address) {
+        try {
+            this.spaceUri = new URI(address);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 

@@ -19,6 +19,11 @@ public class FactoryService implements IFactoryService {
     private IFactoryServerRmi server;
     private IFactoryServiceRmi remoteService;
     private Pinger pinger;
+    private String address;
+
+    public static String getDefaultFactoryAddress() {
+        return "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME;
+    }
 
     @Override
     public void start() throws ServiceException {
@@ -31,12 +36,12 @@ public class FactoryService implements IFactoryService {
                 System.setSecurityManager(new SecurityManager());
 
             Console.println("Lookup RMI...");
-            server = (IFactoryServerRmi) Naming.lookup("rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
+            server = (IFactoryServerRmi) Naming.lookup(address);
 
             Console.println("Get Remote Service...");
             remoteService = server.getService();
 
-            Console.println("connected to server: " + "rmi://" + RmiRegistry.HOST + ":" + RmiRegistry.PORT + "/" + FactoryServer.SERVER_NAME);
+            Console.println("connected to server: " + address);
 
             pinger = new Pinger(remoteService);
             pinger.start();
@@ -59,6 +64,11 @@ public class FactoryService implements IFactoryService {
                 throw new ServiceException(e);
             }
         }
+    }
+
+    @Override
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

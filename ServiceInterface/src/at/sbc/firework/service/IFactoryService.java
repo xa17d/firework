@@ -17,6 +17,8 @@ public interface IFactoryService {
     void start() throws ServiceException;
     void stop() throws ServiceException;
 
+    void setAddress(String address);
+
     IFactoryTransaction startTransaction() throws ServiceException;
 
     ArrayList<Part> listStock() throws ServiceException;

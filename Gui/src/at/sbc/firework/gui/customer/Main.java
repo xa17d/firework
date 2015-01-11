@@ -25,25 +25,12 @@ public class Main extends Application {
 
     private Customer customer;
     private IFactoryService service;
+    private Controller controller;
 
     @Override
     public void start(Stage primaryStage) {
 
         this.primaryStage = primaryStage;
-
-        customer = new Customer(args);
-
-        try {
-            service = customer.getFactoryService();
-            service.start();
-
-            Console.println("Fetching rockets...");
-            customer.fetchRockets();
-            Console.println("Fetching Done");
-        }
-        catch (ServiceException e) {
-            e.printStackTrace();
-        }
 
         initLayout();
     }
@@ -62,8 +49,7 @@ public class Main extends Application {
             primaryStage.setScene(rootScene);
             primaryStage.show();
 
-            Controller controller = loader.getController();
-            controller.setCustomer(customer);
+            this.controller = loader.getController();
 
             //factory selection popup
             Stage factorySelectionStage = new Stage();
@@ -77,8 +63,28 @@ public class Main extends Application {
 
             FactorySelectionController factorySelectionController = loader2.getController();
             factorySelectionController.setController(controller);
+            factorySelectionController.setMain(this);
 
         } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createCustomer(String factoryAddress) {
+        customer = new Customer(args, factoryAddress);
+
+        try {
+            service = customer.getFactoryService();
+            service.start();
+
+            Console.println("Fetching rockets...");
+            customer.fetchRockets();
+            Console.println("Fetching Done");
+
+            controller.setCustomer(customer);
+
+        }
+        catch (ServiceException e) {
             e.printStackTrace();
         }
     }
