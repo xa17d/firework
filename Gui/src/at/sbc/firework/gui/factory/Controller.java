@@ -287,11 +287,11 @@ public class Controller implements INotification {
             observedDeliveredList.clear();
             observedDeliveredList.addAll(orderRockets);
 
-            lbShippedAmount.setText(String.valueOf(lvShipped.getItems().size()));
-            lbDisposedAmount.setText(String.valueOf(lvDisposed.getItems().size()));
-            lbDeliveredAmount.setText(String.valueOf(lvDelivered.getItems().size()));
-
+            lbShippedAmount.setText(String.valueOf(observedShippedList.size() * 5));
+            lbDisposedAmount.setText(String.valueOf(observedDisposedList.size()));
             lbOrderedAmount.setText(String.valueOf(amountOrderedRockets));
+            lbDeliveredAmount.setText(String.valueOf(observedDeliveredList.size()));
+
         }
     }
 

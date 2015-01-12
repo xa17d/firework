@@ -231,8 +231,7 @@ public class Manufacturer extends Actor {
         Console.println(rocket.toString());
 
         // Arbeitszit
-        //TODO enable sleep
-        //Utils.sleep(1000, 2000);
+        Utils.sleep(1000, 2000);
 
         return rocket;
     }

@@ -53,8 +53,8 @@ public class Controller implements INotification {
     private ChoiceBox<Color> cbColor3;
 
     @FXML
-    private ListView<Order> lvTrace;
-    private ObservableList<Order> observableOrderList;
+    private ListView<String> lvTrace;
+    private ObservableList<String> observableOrderList;
 
     /**
      * called on initializing the controller by fx
@@ -82,7 +82,7 @@ public class Controller implements INotification {
         cbColor3.setItems(colorTypes);
         cbColor3.setValue(Color.Red);
 
-        observableOrderList = new ObservableListWrapper<Order>(new ArrayList<Order>());
+        observableOrderList = new ObservableListWrapper<String>(new ArrayList<String>());
         lvTrace.setItems(observableOrderList);
     }
 
@@ -102,16 +102,13 @@ public class Controller implements INotification {
         }
         catch (NumberFormatException e) {
             e.printStackTrace();
-            //TODO haendln
         }
-
 
         try {
             customer.order(amount, colors);
         }
         catch (ServiceException e) {
             e.printStackTrace();
-            //TODO haendln
         }
     }
 
@@ -121,13 +118,12 @@ public class Controller implements INotification {
         this.customerService = customer.getCustomerService();
 
         try {
-            this.tfAddress.setEditable(false);
-            this.tfAddress.setText(customerService.getAddress());
-            customerService.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
+            tfAddress.setEditable(false);
+            tfAddress.setText(customerService.getAddress());
+            factoryService.registerNotification(this, "*", ContainerOperation.All, NotificationMode.Permanent);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-
 
         dataChanged();
     }
@@ -162,7 +158,19 @@ public class Controller implements INotification {
         public void run() {
 
             observableOrderList.clear();
-            observableOrderList.addAll(orderList);
+            for(Order order : orderList) {
+                String orderString = order.toString();
+
+                if(order.getStatus() == OrderStatus.InProgress) {
+                    try {
+                        orderString += " - " + factoryService.getOrderRocketCount(order.getId()) + "/" + order.getCount();
+                    } catch (ServiceException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                observableOrderList.add(orderString);
+            }
         }
     }
 
@@ -175,7 +183,8 @@ public class Controller implements INotification {
 
             Stage orderStage = new Stage();
             orderStage.setScene(new Scene((AnchorPane) loader.load()));
-            ((OrderController) loader.getController()).setCustomer(customer);
+            OrderController controller = (OrderController) loader.getController();
+            controller.setCustomer(customer);
             orderStage.initModality(Modality.APPLICATION_MODAL);
             orderStage.show();
         }
