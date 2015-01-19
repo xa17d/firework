@@ -7,6 +7,7 @@ import at.sbc.firework.service.ServiceFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -56,7 +57,7 @@ public class Main extends Application {
 
             Console.println(" - load");
             rootLayout = (BorderPane) loaderMain.load();
-            //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
+            primaryStage.getIcons().add(new Image("file:icon.png"));
             Console.println(" - title");
             primaryStage.setTitle("Firework - Factory");
 

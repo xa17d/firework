@@ -8,6 +8,7 @@ import at.sbc.firework.service.ServiceException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -42,7 +43,7 @@ public class Main extends Application {
             loader.setLocation(getClass().getResource("main_fram.fxml"));
 
             rootLayout = (BorderPane) loader.load();
-            //primaryStage.getIcons().add(new Image("file:resource/icon/icon.png"));
+            primaryStage.getIcons().add(new Image("file:icon.png"));
             primaryStage.setTitle("Firework - Customer");
 
             Scene rootScene = new Scene(rootLayout);
